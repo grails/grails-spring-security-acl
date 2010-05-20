@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="src/groovy"/>
+	<classpathentry kind="src" path="grails-app/conf"/>
+	<classpathentry kind="src" path="grails-app/controllers"/>
+	<classpathentry kind="src" path="grails-app/domain"/>
+	<classpathentry kind="src" path="grails-app/services"/>
+	<classpathentry kind="src" path="grails-app/taglib"/>
+	<classpathentry kind="src" path="grails-app/views"/>
+	<classpathentry kind="src" path="test/integration"/>
+	<classpathentry kind="src" path="test/functional"/>
+	<classpathentry kind="src" path="test/unit"/>
+	<classpathentry kind="src" path="plugins/spring-security-acl-0.1/src/groovy"/>
+	<classpathentry kind="src" path="plugins/spring-security-acl-0.1/src/java"/>
+	<classpathentry kind="src" path="plugins/spring-security-acl-0.1/grails-app/services"/>
+	<classpathentry kind="src" path="plugins/spring-security-core-0.3.1/grails-app/services"/>
+	<classpathentry kind="src" path="plugins/spring-security-core-0.3.1/src/groovy"/>
+	<classpathentry kind="src" path="plugins/spring-security-core-0.3.1/src/java"/>
+	<classpathentry kind="src" path="plugins/functional-test-1.2.7/src/groovy"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/grails1.3"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.springframework.security/org.springframework.security.core/jars/org.springframework.security.core-3.0.2.RELEASE.jar" sourcepath="/SPRING_SECURITY_SOURCE/spring-security-core-3.0.2.RELEASE-sources.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.springframework.security/org.springframework.security.web/jars/org.springframework.security.web-3.0.2.RELEASE.jar" sourcepath="/SPRING_SECURITY_SOURCE/spring-security-web-3.0.2.RELEASE-sources.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.springframework.security/org.springframework.security.acls/jars/org.springframework.security.acls-3.0.2.RELEASE.jar" sourcepath="/SPRING_SECURITY_SOURCE/spring-security-acl-3.0.2.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="plugins/functional-test-1.2.7/lib/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="plugins/functional-test-1.2.7/lib/htmlunit-2.5.jar"/>
+	<classpathentry kind="lib" path="plugins/functional-test-1.2.7/lib/sac-1.3.jar"/>
+	<classpathentry kind="lib" path="plugins/functional-test-1.2.7/lib/htmlunit-core-js-2.5.jar"/>
+	<classpathentry kind="output" path="target/eclipseclasses"/>
+</classpath>
