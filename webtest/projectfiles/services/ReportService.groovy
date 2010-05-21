@@ -21,12 +21,12 @@ class ReportService {
 	}
 
 	@PreAuthorize("hasPermission(#report, admin)")
-//	@Transactional
+	@Transactional
 	void addPermission(Report report, String username, Permission permission) {
 		aclUtilService.addPermission report, username, permission
 	}
 
-//	@Transactional
+	@Transactional
 	@PreAuthorize("hasRole('ROLE_USER')")
 	Report create(String name) {
 		Report report = new Report(name: name)
@@ -53,13 +53,13 @@ class ReportService {
 		Report.count()
 	}
 
-//	@Transactional
+	@Transactional
 	@PreAuthorize("hasPermission(#report, write) or hasPermission(#report, admin)")
 	void update(Report report, String name) {
 		report.name = name
 	}
 
-//	@Transactional
+	@Transactional
 	@PreAuthorize("hasPermission(#report, delete) or hasPermission(#report, admin)")
 	void delete(Report report) {
 		report.delete()
@@ -73,7 +73,7 @@ class ReportService {
 		User.executeQuery 'SELECT username FROM User ORDER BY username'
 	}
 
-//	@Transactional
+	@Transactional
 	@PreAuthorize("hasPermission(#report, admin)")
 	void deletePermission(Report report, String username, Permission permission) {
 		def acl = aclUtilService.readAcl(report)
