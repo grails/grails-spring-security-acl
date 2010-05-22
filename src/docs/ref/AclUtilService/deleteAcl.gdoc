@@ -1,0 +1,22 @@
+h1. deleteAcl
+
+h2. Purpose
+
+Deletes the ACL for a domain class instance.
+
+h2. Examples
+
+{code:java}
+aclUtilService.deleteAcl reportInstance
+{code}
+
+h4. Description
+
+{code:java}
+void deleteAcl(domainObject)
+{code}
+
+h4. Parameters
+
+* @domainObject@ - the domain class instance
+

@@ -1,0 +1,23 @@
+h1. changeOwner
+
+h2. Purpose
+
+Change the ACL owner for a domain class instance.
+
+h2. Examples
+
+{code:java}
+aclUtilService.changeOwner reportInstance, 'user123'
+{code}
+
+h4. Description
+
+{code:java}
+void changeOwner(domainObject, String newUsername)
+{code}
+
+h4. Parameters
+
+* @domainObject@ - the domain class instance
+* @newUsername@ - the username of the new owner
+
