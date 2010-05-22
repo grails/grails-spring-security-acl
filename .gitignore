@@ -1,6 +1,6 @@
 /plugin.xml
 /grails-spring-security-acl-*.zip
-/testapps.config.properties
+/testapps.config.groovy
 /target
 
 /*.log
