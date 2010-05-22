@@ -122,7 +122,7 @@ class ReportController {
 		report
 	}
 
-	private void redirectShow(String message, id) {
+	private void redirectShow(message, id) {
 		flash.message = message
 		redirect action: show, id: id
 	}
