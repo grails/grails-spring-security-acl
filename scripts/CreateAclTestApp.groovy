@@ -14,7 +14,7 @@
  */
 
 /**
- * Creates a test application for functional tests.
+ * Creates test applications for functional tests.
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
@@ -29,39 +29,46 @@ projectDir = null
 pluginVersion = null
 pluginZip = null
 testprojectRoot = null
+deleteAll = false
 
-target(createAclTestApps: 'Creates ACL test app') {
-	init()
-	createApp()
-	installPlugins()
-	runQuickstart()
-	createProjectFiles()
-}
+target(createAclTestApps: 'Creates ACL test apps') {
 
-private void init() {
-
-	def configFile = new File(basedir, 'testapps.config.properties')
+	def configFile = new File(basedir, 'testapps.config.groovy')
 	if (!configFile.exists()) {
 		error "$configFile.path not found"
 	}
-	def props = new Properties()
-	props.load new FileInputStream(configFile)
-	appName = props.appName
-	grailsHome = props.grailsHome
-	dotGrails = props.dotGrails
-	projectDir = props.projectDir
-	pluginVersion = props.pluginVersion
+
+	new ConfigSlurper().parse(configFile.text).each { name, config ->
+		echo "\nCreating app based on configuration $name: ${config.flatten()}\n"
+		init name, config
+		createApp()
+		installPlugins()
+		runQuickstart()
+		createProjectFiles()
+	}
+}
+
+private void init(String name, config) {
+
+	pluginVersion = config.pluginVersion
+	if (!pluginVersion) {
+		error "pluginVersion wasn't specified for config '$name'"
+	}
 
 	pluginZip = new File(basedir, "grails-spring-security-acl-${pluginVersion}.zip")
 	if (!pluginZip.exists()) {
 		error "plugin $pluginZip.absolutePath not found"
 	}
 
+	grailsHome = config.grailsHome
 	if (!new File(grailsHome).exists()) {
 		error "Grails home $grailsHome not found"
 	}
 
+	projectDir = config.projectDir
+	appName = 'spring-security-acl-test-' + name
 	testprojectRoot = "$projectDir/$appName"
+	dotGrails = config.dotGrails
 }
 
 private void createApp() {
@@ -124,11 +131,14 @@ private void createProjectFiles() {
 }
 
 private void deleteDir(String path) {
-	if (new File(path).exists()) {
+	if (new File(path).exists() && !deleteAll) {
 		String code = "confirm.delete.$path"
-		ant.input message: "$path exists, ok to delete?", addproperty: code, validargs: 'y,n'
+		ant.input message: "$path exists, ok to delete?", addproperty: code, validargs: 'y,n,a'
 		def result = ant.antProject.properties[code]
-		if (!'y'.equalsIgnoreCase(result)) {
+		if ('a'.equalsIgnoreCase(result)) {
+			deleteAll = true
+		}
+		else if (!'y'.equalsIgnoreCase(result)) {
 			ant.echo "\nNot deleting $path"
 			exit 1
 		}
