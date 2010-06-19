@@ -7,6 +7,7 @@ class AdminFunctionalTests extends AbstractSecurityWebTest {
 	void testAdmin() {
 		login 'admin', 'admin123'
 
+		checkTags()
 		viewAll()
 		editReport15()
 		deleteReport15()
@@ -62,5 +63,29 @@ class AdminFunctionalTests extends AbstractSecurityWebTest {
 		login 'user2', 'password2'
 		get "/report/show/16" 
 		assertContentContains "report16"
+	}
+
+	private void checkTags() {
+		get '/tagLibTest/test'
+		assertContentContains 'test 1 true 1'
+		assertContentContains 'test 2 true 1'
+		assertContentContains 'test 3 true 1'
+		assertContentContains 'test 4 true 1'
+		assertContentContains 'test 5 true 1'
+		assertContentContains 'test 6 true 1'
+
+		assertContentContains 'test 1 true 13'
+		assertContentContains 'test 2 true 13'
+		assertContentContains 'test 3 true 13'
+		assertContentContains 'test 4 true 13'
+		assertContentContains 'test 5 true 13'
+		assertContentContains 'test 6 true 13'
+
+		assertContentContains 'test 1 true 80'
+		assertContentContains 'test 2 true 80'
+		assertContentContains 'test 3 true 80'
+		assertContentContains 'test 4 true 80'
+		assertContentContains 'test 5 true 80'
+		assertContentContains 'test 6 true 80'
 	}
 }

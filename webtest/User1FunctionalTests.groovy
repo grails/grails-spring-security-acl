@@ -13,6 +13,7 @@ class User1FunctionalTests extends AbstractSecurityWebTest {
 		grantEdit12()
 		grantEdit13()
 		editReport20()
+		checkTags()
 	}
 
 	private void viewAll() {
@@ -93,5 +94,29 @@ class User1FunctionalTests extends AbstractSecurityWebTest {
 		}
 
 		assertContentContains 'Access Denied'
+	}
+
+	private void checkTags() {
+		get '/tagLibTest/test'
+		assertContentContains 'test 1 true 1'
+		assertContentContains 'test 2 true 1'
+		assertContentContains 'test 3 true 1'
+		assertContentContains 'test 4 true 1'
+		assertContentContains 'test 5 true 1'
+		assertContentContains 'test 6 true 1'
+
+		assertContentContains 'test 1 true 13'
+		assertContentContains 'test 2 true 13'
+		assertContentContains 'test 3 true 13'
+		assertContentContains 'test 4 true 13'
+		assertContentContains 'test 5 true 13'
+		assertContentContains 'test 6 true 13'
+
+		assertContentContains 'test 1 false 80'
+		assertContentContains 'test 2 false 80'
+		assertContentContains 'test 3 false 80'
+		assertContentContains 'test 4 false 80'
+		assertContentContains 'test 5 false 80'
+		assertContentContains 'test 6 false 80'
 	}
 }

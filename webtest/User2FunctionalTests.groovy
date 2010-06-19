@@ -14,6 +14,7 @@ class User2FunctionalTests extends AbstractSecurityWebTest {
 		editReport5()
 		editReport12()
 		checkListIsFiltered()
+		checkTags()
 	}
 
 	private void viewAll() {
@@ -100,5 +101,29 @@ class User2FunctionalTests extends AbstractSecurityWebTest {
 		get '/report/list?offset=80&max=10'
 		assertContentContains 'Next'
 		assertContentDoesNotContain 'report85'
+	}
+
+	private void checkTags() {
+		get '/tagLibTest/test'
+		assertContentContains 'test 1 true 1'
+		assertContentContains 'test 2 true 1'
+		assertContentContains 'test 3 true 1'
+		assertContentContains 'test 4 true 1'
+		assertContentContains 'test 5 true 1'
+		assertContentContains 'test 6 true 1'
+
+		assertContentContains 'test 1 false 13'
+		assertContentContains 'test 2 false 13'
+		assertContentContains 'test 3 false 13'
+		assertContentContains 'test 4 false 13'
+		assertContentContains 'test 5 false 13'
+		assertContentContains 'test 6 false 13'
+
+		assertContentContains 'test 1 false 80'
+		assertContentContains 'test 2 false 80'
+		assertContentContains 'test 3 false 80'
+		assertContentContains 'test 4 false 80'
+		assertContentContains 'test 5 false 80'
+		assertContentContains 'test 6 false 80'
 	}
 }

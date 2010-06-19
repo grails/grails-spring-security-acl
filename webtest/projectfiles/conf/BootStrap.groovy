@@ -78,8 +78,9 @@ class BootStrap {
 
 		// user 3 has no grants
 
-		// grant admin admin on all
+		// grant admin read and admin on all
 		for (report in reports) {
+			aclUtilService.addPermission report, 'admin', READ
 			aclUtilService.addPermission report, 'admin', ADMINISTRATION
 		}
 
