@@ -16,5 +16,6 @@ class AclSid {
 
 	static constraints = {
 		principal unique: 'sid'
+		sid blank: false, size: 1..255
 	}
 }
