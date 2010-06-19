@@ -160,7 +160,7 @@ class AclService implements MutableAclService {
 	protected void deleteEntries(AclObjectIdentity oid) {
 		AclEntry.executeUpdate(
 				"DELETE FROM AclEntry ae " +
-				"WHERE ae.aclObjectIdentity = ?", [oid])
+				"WHERE ae.aclObjectIdentity = :oid", [oid: oid])
 	}
 
 	/**

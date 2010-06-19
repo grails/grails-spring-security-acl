@@ -112,11 +112,11 @@ class GormAclLookupStrategy implements LookupStrategy {
 		Map<Serializable, Acl> acls = [:] // contains Acls with StubAclParents
 
 		def hql = new StringBuilder("FROM $AclObjectIdentity.name WHERE 1=0 ")
-		def params = []
+		def params = [:]
 		for (ObjectIdentity objectIdentity in objectIdentities) {
-			hql.append ' OR (objectId = ? AND aclClass.className = ?) '
-			params << objectIdentity.identifier
-			params << objectIdentity.type
+			hql.append ' OR (objectId = :objectId AND aclClass.className = :className) '
+			params.objectId = objectIdentity.identifier
+			params.className = objectIdentity.type
 		}
 		hql.append ' ORDER BY objectId ASC'
 
