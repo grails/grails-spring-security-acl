@@ -12,19 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-security {
+package test
 
-	acl {
-		authority {
-			changeOwnership = 'ROLE_ADMIN'
-			modifyAuditingDetails = 'ROLE_ADMIN'
-			changeAclDetails = 'ROLE_ADMIN'
-		}
+import grails.plugins.springsecurity.Secured
+
+class TestRunAsService {
+
+	def testSecureService
+
+	@Secured(['ROLE_ADMIN', 'RUN_AS_SUPERUSER'])
+	String method1() {
+		testSecureService.method1()
 	}
 
-	/**  Run-As Authentication Replacement */
-	useRunAs = false
-	runAs {
-		key = 'grails_spring_security_run_as' // should be changed
+	@Secured(['ROLE_ADMIN', 'RUN_AS_SUPERUSER'])
+	String method2() {
+		testSecureService.method2()
 	}
 }

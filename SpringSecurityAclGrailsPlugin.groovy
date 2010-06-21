@@ -46,6 +46,8 @@ import org.springframework.security.access.expression.method.ExpressionBasedAnno
 import org.springframework.security.access.expression.method.ExpressionBasedPostInvocationAdvice
 import org.springframework.security.access.expression.method.ExpressionBasedPreInvocationAdvice
 import org.springframework.security.access.intercept.AfterInvocationProviderManager
+import org.springframework.security.access.intercept.RunAsImplAuthenticationProvider
+import org.springframework.security.access.intercept.RunAsManagerImpl
 import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor
 import org.springframework.security.access.intercept.aopalliance.MethodSecurityMetadataSourceAdvisor
 import org.springframework.security.access.method.MapBasedMethodSecurityMetadataSource
@@ -75,9 +77,9 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl
  */
 class SpringSecurityAclGrailsPlugin {
 
-	String version = '0.1'
+	String version = '0.2'
 	String grailsVersion = '1.2.2 > *'
-	Map dependsOn = ['springSecurityCore': '0.3 > *']
+	Map dependsOn = ['springSecurityCore': '0.4 > *']
 	List pluginExcludes = [
 		'docs/**',
 		'src/docs/**',
@@ -105,6 +107,10 @@ class SpringSecurityAclGrailsPlugin {
 
 		// have to get again after overlaying DefaultAclSecurityConfig
 		conf = SpringSecurityUtils.securityConfig
+
+		if (conf.useRunAs) {
+			SpringSecurityUtils.registerProvider 'runAsAuthenticationProvider'
+		}
 
 		Map voterConfig = buildVoterConfig(conf, application)
 		debug "voterConfig: $voterConfig"
@@ -199,6 +205,16 @@ class SpringSecurityAclGrailsPlugin {
 	private configureSecuredServices = { conf, application ->
 
 		debug 'configuring secured services'
+
+		if (conf.useRunAs) {
+			runAsManager(RunAsManagerImpl) {
+				key = conf.runAs.key
+			}
+
+			runAsAuthenticationProvider(RunAsImplAuthenticationProvider) {
+				key = conf.runAs.key
+			}
+		}
 
 		def serviceNames = []
 		for (serviceClass in application.serviceClasses) {
@@ -324,10 +340,11 @@ class SpringSecurityAclGrailsPlugin {
 		}
 
 		methodSecurityInterceptor(MethodSecurityInterceptor) {
-				accessDecisionManager = ref('aclAccessDecisionManager')
-					authenticationManager = ref('authenticationManager')
-					afterInvocationManager = ref('afterInvocationManager')
+			accessDecisionManager = ref('aclAccessDecisionManager')
+			authenticationManager = ref('authenticationManager')
+			afterInvocationManager = ref('afterInvocationManager')
 			securityMetadataSource = ref('aclSecurityMetadataSource')
+			runAsManager = ref('runAsManager')
 			validateConfigAttributes = false
 		}
 

@@ -15,3 +15,19 @@ grails.plugins.springsecurity.acl.authority.changeOwnership =       'ROLE_ACL_CH
 grails.plugins.springsecurity.acl.authority.changeAclDetails =      'ROLE_ACL_CHANGE_DETAILS'
 {code}
 
+h4. Run-As Authentication Replacement
+
+There are also two options to configure [Run-As Authentication Replacement|http://static.springsource.org/spring-security/site/docs/3.0.x/reference/runas.html]:
+
+{table}
+*Attribute* | *Meaning*
+@grails.plugins.springsecurity.useRunAs@ | change to @true@ to enable; defaults to @false@
+@grails.plugins.springsecurity.runAs.key@ | a shared key between the two standard implementation classes, used to verify that a third party hasn't created a token for the user; should be changed from its default value
+{table}
+
+Example:
+
+{code}
+grails.plugins.springsecurity.useRunAs = true
+grails.plugins.springsecurity.runAs.key = 'your run-as key'
+{code}
