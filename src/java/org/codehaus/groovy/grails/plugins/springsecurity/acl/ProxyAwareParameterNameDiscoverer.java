@@ -42,9 +42,8 @@ public class ProxyAwareParameterNameDiscoverer extends LocalVariableTableParamet
 	 * @see org.springframework.core.LocalVariableTableParameterNameDiscoverer#getParameterNames(
 	 * 	java.lang.reflect.Constructor)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public String[] getParameterNames(final Constructor constructor) {
+	public String[] getParameterNames(@SuppressWarnings("rawtypes") final Constructor constructor) {
 		return super.getParameterNames(ProxyUtils.unproxy(constructor));
 	}
 }

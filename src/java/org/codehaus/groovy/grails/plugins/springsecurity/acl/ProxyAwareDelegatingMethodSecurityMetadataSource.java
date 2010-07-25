@@ -57,6 +57,7 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 	 * @see org.springframework.security.access.method.MethodSecurityMetadataSource#getAttributes(
 	 * 	java.lang.reflect.Method, java.lang.Class)
 	 */
+	@Override
 	public Collection<ConfigAttribute> getAttributes(final Method m, final Class<?> tc) {
 
 		Method method = ProxyUtils.unproxy(m);
@@ -103,6 +104,7 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 	 * {@inheritDoc}
 	 * @see org.springframework.security.access.SecurityMetadataSource#getAllConfigAttributes()
 	 */
+	@Override
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
 		Set<ConfigAttribute> set = new HashSet<ConfigAttribute>();
 		for (MethodSecurityMetadataSource s : _methodSecurityMetadataSources) {
@@ -126,6 +128,7 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 	 * {@inheritDoc}
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
+	@Override
 	public void afterPropertiesSet() {
 		Assert.notEmpty(_methodSecurityMetadataSources, "A list of MethodSecurityMetadataSources is required");
 	}

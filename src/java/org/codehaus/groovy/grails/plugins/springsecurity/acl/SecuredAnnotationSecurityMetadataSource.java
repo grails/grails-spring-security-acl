@@ -73,6 +73,7 @@ public class SecuredAnnotationSecurityMetadataSource extends AbstractFallbackMet
 	 * {@inheritDoc}
 	 * @see org.springframework.security.access.SecurityMetadataSource#getAllConfigAttributes()
 	 */
+	@Override
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
 		return null;
 	}

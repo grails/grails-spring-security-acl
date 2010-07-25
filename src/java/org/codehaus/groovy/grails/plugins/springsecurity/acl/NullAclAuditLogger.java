@@ -29,6 +29,7 @@ public class NullAclAuditLogger implements AuditLogger {
 	 * @see org.springframework.security.acls.domain.AuditLogger#logIfNeeded(
 	 * 	boolean, org.springframework.security.acls.model.AccessControlEntry)
 	 */
+	@Override
 	public void logIfNeeded(final boolean granted, final AccessControlEntry ace) {
 		// do nothing
 	}
