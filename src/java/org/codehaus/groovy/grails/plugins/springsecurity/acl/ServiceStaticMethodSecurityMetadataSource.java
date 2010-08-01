@@ -64,7 +64,6 @@ public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackM
 	 * {@inheritDoc}
 	 * @see org.springframework.security.access.SecurityMetadataSource#getAllConfigAttributes()
 	 */
-	@Override
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
 		return null;
 	}

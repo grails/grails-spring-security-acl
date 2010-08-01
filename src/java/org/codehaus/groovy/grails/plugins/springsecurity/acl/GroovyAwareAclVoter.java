@@ -46,7 +46,6 @@ public class GroovyAwareAclVoter implements AccessDecisionVoter {
 	 * {@inheritDoc}
 	 * @see org.springframework.security.access.AccessDecisionVoter#supports(org.springframework.security.access.ConfigAttribute)
 	 */
-	@Override
 	public boolean supports(final ConfigAttribute attribute) {
 		return true;
 	}
@@ -55,7 +54,6 @@ public class GroovyAwareAclVoter implements AccessDecisionVoter {
 	 * {@inheritDoc}
 	 * @see org.springframework.security.access.AccessDecisionVoter#supports(java.lang.Class)
 	 */
-	@Override
 	public boolean supports(final Class<?> clazz) {
 		return clazz.isAssignableFrom(MethodInvocation.class);
 	}
@@ -64,7 +62,6 @@ public class GroovyAwareAclVoter implements AccessDecisionVoter {
 	 * {@inheritDoc}
 	 * @see org.springframework.security.access.AccessDecisionVoter#vote(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection)
 	 */
-	@Override
 	public int vote(final Authentication authentication, final Object object,
 			final Collection<ConfigAttribute> attributes) {
 
