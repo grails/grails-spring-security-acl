@@ -113,11 +113,11 @@ class SecurityAclTagLib {
 			return permissions
 		}
 
-                if(resolvedPermissions.any {it instanceof Permission}) {
-                        return resolvedPermissions as Permission[]
-                } else {
-                        return permissions
-                }
+		if (resolvedPermissions.any {it instanceof Permission}) {
+			return resolvedPermissions as Permission[]
+		}
+
+		return permissions
 	}
 
 	protected void splitStringIntoPermissions(String permission, Set permissions) {
@@ -132,12 +132,12 @@ class SecurityAclTagLib {
 						permissions << aclPermissionFactory.buildFromName(token)
 					}
 					catch (IllegalArgumentException notfound) {
-                                                try {
-						        permissions << aclPermissionFactory.buildFromName(token.toUpperCase())
-                                                }
-                                                catch (IllegalArgumentException notfoundAgain) {
-                                                        permissions << token
-                                                }
+						try {
+							permissions << aclPermissionFactory.buildFromName(token.toUpperCase())
+						}
+						catch (IllegalArgumentException notfoundAgain) {
+							permissions << token
+						}
 					}
 				}
 			}
