@@ -24,6 +24,7 @@ import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.ApplicationHolder as AH
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.codehaus.groovy.grails.plugins.springsecurity.acl.ClassLoaderPerProxyBeanNameAutoProxyCreator
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.GormAclLookupStrategy
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.GormObjectIdentityRetrievalStrategy
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.GroovyAwareAclVoter
@@ -33,7 +34,6 @@ import org.codehaus.groovy.grails.plugins.springsecurity.acl.ProxyAwareParameter
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.SecuredAnnotationSecurityMetadataSource as GrailsSecuredAnnotationSecurityMetadataSource
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.ServiceStaticMethodSecurityMetadataSource
 
-import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 import org.springframework.expression.spel.standard.SpelExpressionParser
@@ -77,7 +77,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl
  */
 class SpringSecurityAclGrailsPlugin {
 
-	String version = '1.0.1'
+	String version = '1.0.2'
 	String grailsVersion = '1.2.3 > *'
 	Map dependsOn = ['springSecurityCore': '1.0 > *']
 	List pluginExcludes = [
@@ -225,7 +225,7 @@ class SpringSecurityAclGrailsPlugin {
 		}
 
 		if (serviceNames) {
-			securedServicesInterceptor(BeanNameAutoProxyCreator) {
+			securedServicesInterceptor(ClassLoaderPerProxyBeanNameAutoProxyCreator) {
 				proxyTargetClass = true
 				beanNames = serviceNames
 				interceptorNames = ['methodSecurityInterceptor']
