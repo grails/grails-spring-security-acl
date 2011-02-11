@@ -77,7 +77,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl
  */
 class SpringSecurityAclGrailsPlugin {
 
-	String version = '1.0.2'
+	String version = '1.0.3'
 	String grailsVersion = '1.2.3 > *'
 	Map dependsOn = ['springSecurityCore': '1.0 > *']
 	List pluginExcludes = [
@@ -102,11 +102,15 @@ class SpringSecurityAclGrailsPlugin {
 			return
 		}
 
-		println 'Configuring Spring Security ACL ...'
 		SpringSecurityUtils.loadSecondaryConfig 'DefaultAclSecurityConfig'
-
 		// have to get again after overlaying DefaultAclSecurityConfig
 		conf = SpringSecurityUtils.securityConfig
+
+		if (!conf.acl.active) {
+			return
+		}
+
+		println 'Configuring Spring Security ACL ...'
 
 		if (conf.useRunAs) {
 			SpringSecurityUtils.registerProvider 'runAsAuthenticationProvider'
@@ -135,7 +139,7 @@ class SpringSecurityAclGrailsPlugin {
 	def doWithApplicationContext = { ctx ->
 
 		def conf = SpringSecurityUtils.securityConfig
-		if (!conf || !conf.active) {
+		if (!conf || !conf.active || !conf.acl.active) {
 			return
 		}
 

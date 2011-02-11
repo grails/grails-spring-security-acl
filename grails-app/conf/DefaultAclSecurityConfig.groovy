@@ -15,6 +15,9 @@
 security {
 
 	acl {
+
+		active = true
+
 		authority {
 			changeOwnership = 'ROLE_ADMIN'
 			modifyAuditingDetails = 'ROLE_ADMIN'
