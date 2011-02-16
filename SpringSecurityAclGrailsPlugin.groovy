@@ -77,13 +77,12 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl
  */
 class SpringSecurityAclGrailsPlugin {
 
-	String version = '1.0.3'
-	String grailsVersion = '1.2.3 > *'
-	Map dependsOn = ['springSecurityCore': '1.0 > *']
+	String version = '1.1'
+	String grailsVersion = '1.3 > *'
+	Map dependsOn = [springSecurityCore: '1.0 > *']
 	List pluginExcludes = [
 		'docs/**',
 		'src/docs/**',
-		'grails-app/domain/**',
 		'grails-app/services/**/Test*Service.groovy',
 		'scripts/CreateAclTestApp.groovy'
 	]

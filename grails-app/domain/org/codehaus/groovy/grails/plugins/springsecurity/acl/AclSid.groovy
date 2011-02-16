@@ -14,8 +14,6 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.acl
 
-//not packaged, for tests only
-
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */

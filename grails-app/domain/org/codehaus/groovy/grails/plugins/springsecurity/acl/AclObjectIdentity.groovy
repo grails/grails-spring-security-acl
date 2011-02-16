@@ -16,8 +16,6 @@ package org.codehaus.groovy.grails.plugins.springsecurity.acl
 
 import grails.plugins.springsecurity.acl.AbstractAclObjectIdentity
 
-//not packaged, for tests only
-
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
