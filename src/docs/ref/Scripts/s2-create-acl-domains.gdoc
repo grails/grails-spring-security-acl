@@ -9,6 +9,5 @@ s2-create-acl-domains
 
 h2. Description
 
-This script is run when you install the plugin since the persistence code relies on the domain classes and won't compile otherwise. For this reason the names and packages are fixed, but the plugin installs the domain classes into your application's @grails-app/domain@ folder to allow minor customization.
+The plugin includes the required ACL domain classes, but if you want to customize them (for example to configure 2nd-level caching) you can use this script to generate the same domain classes in your application's @grails-app/domain@ folder to allow minor customization.
 
-Ordinarily you won't have any need to run this script, but it will be useful to regenerate the default implementation if necessary.
