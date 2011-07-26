@@ -84,6 +84,7 @@ class SpringSecurityAclGrailsPlugin {
 		'docs/**',
 		'src/docs/**',
 		'grails-app/services/**/Test*Service.groovy',
+		'grails-app/domain/test/TestReport.groovy',
 		'scripts/CreateAclTestApp.groovy'
 	]
 
