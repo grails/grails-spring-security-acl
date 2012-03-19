@@ -158,9 +158,8 @@ class AclService implements MutableAclService {
 	}
 
 	protected void deleteEntries(AclObjectIdentity oid) {
-		AclEntry.executeUpdate(
-				"DELETE FROM AclEntry ae " +
-				"WHERE ae.aclObjectIdentity = :oid", [oid: oid])
+        def results = AclEntry.createCriteria().list { eq('aclObjectIdentity', oid) }
+        results*.delete(flush:true)
 	}
 
 	/**
@@ -233,13 +232,16 @@ class AclService implements MutableAclService {
 	 * @see org.springframework.security.acls.model.AclService#findChildren(
 	 * 	org.springframework.security.acls.model.ObjectIdentity)
 	 */
-	List<ObjectIdentity> findChildren(ObjectIdentity parent) {
-		def children = AclObjectIdentity.executeQuery(
-				"FROM AclObjectIdentity " +
-				"WHERE parent.objectId = :objectId " +
-				"  AND parent.aclClass.className = :className",
-				[objectId: parent.identifier,
-				 className: parent.type])
+	List<ObjectIdentity> findChildren(ObjectIdentity prt) {
+		// find all ACL object identities..
+        def children = AclObjectIdentity.createCriteria().list() {
+            parent {
+                eq('objectId', prt.identifier)
+                aclClass {
+                    eq('className', prt.type)
+                }
+            }
+		}
 
 		if (!children) {
 			return null
@@ -305,12 +307,12 @@ class AclService implements MutableAclService {
 	}
 
 	protected AclObjectIdentity retrieveObjectIdentity(ObjectIdentity oid) {
-		return AclObjectIdentity.executeQuery(
-				"FROM AclObjectIdentity " +
-				"WHERE aclClass.className = :className " +
-				"  AND objectId = :objectId",
-				[className: oid.type,
-				 objectId: oid.identifier])[0]
+        return AclObjectIdentity.createCriteria().get {
+            eq('objectId', oid.identifier)
+            aclClass {
+                eq('className', oid.type)
+            }
+        }
 	}
 
 	protected save(bean) {
