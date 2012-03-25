@@ -158,7 +158,7 @@ class AclService implements MutableAclService {
 	}
 
 	protected void deleteEntries(AclObjectIdentity oid) {
-        def results = AclEntry.createCriteria().list { eq('aclObjectIdentity', oid) }
+        def results = AclEntry.withCriteria { eq('aclObjectIdentity', oid) }
         results*.delete(flush:true)
 	}
 
@@ -234,15 +234,17 @@ class AclService implements MutableAclService {
 	 */
 	List<ObjectIdentity> findChildren(ObjectIdentity prt) {
 		// find all ACL object identities..
-        def children = AclObjectIdentity.createCriteria().list() {
-            parent {
-                eq('objectId', prt.identifier)
-                aclClass {
-                    eq('className', prt.type)
-                }
-            }
+		def children = AclObjectIdentity.withCriteria {
+			parent {
+				eq('objectId', prt.identifier)
+				aclClass {
+					eq('className', prt.type)
+				}
+				join 'aclClass'
+			}
+			join 'parent'
+			join 'aclClass'
 		}
-
 		if (!children) {
 			return null
 		}

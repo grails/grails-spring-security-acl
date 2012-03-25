@@ -120,6 +120,7 @@ class GormAclLookupStrategy implements LookupStrategy {
                     }
                 }
             }
+            join 'aclClass'
             order('objectId', 'asc')
         }
         
