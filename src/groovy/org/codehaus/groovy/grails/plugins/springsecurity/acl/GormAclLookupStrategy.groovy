@@ -14,6 +14,8 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.acl
 
+import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
+
 import org.springframework.security.acls.domain.AccessControlEntryImpl
 import org.springframework.security.acls.domain.AclImpl
 import org.springframework.security.acls.domain.GrantedAuthoritySid
@@ -120,7 +122,7 @@ class GormAclLookupStrategy implements LookupStrategy {
 		}
 		hql.append ' ORDER BY objectId ASC'
 
-		def aclObjectIdentities = AclObjectIdentity.executeQuery(hql.toString(), params)
+		def aclObjectIdentities = AclObjectIdentity.executeQuery(hql.toString(), params).collect { GrailsHibernateUtil.unwrapIfProxy(it) }
 		Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap = findAcls(aclObjectIdentities)
 
 		List<AclObjectIdentity> parents = convertEntries(aclObjectIdentityMap, acls, sids)
