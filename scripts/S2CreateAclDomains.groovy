@@ -36,11 +36,14 @@ target(s2CreateAclDomains: 'Creates ACL Domain classes for Spring Security ACL p
 		ant.copy file: "$templateDir/_${name}.groovy", tofile: "$destFolder/${name}.groovy"
 	}
 
-	ant.echo """
+	printMessage """
 	**********************************************
 	* Your ACL domain classes have been created. *
 	**********************************************
 """
 }
+
+printMessage = { String message -> event('StatusUpdate', [message]) }
+errorMessage = { String message -> event('StatusError', [message]) }
 
 setDefaultTarget 's2CreateAclDomains'
