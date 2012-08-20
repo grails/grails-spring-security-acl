@@ -21,7 +21,6 @@ import grails.util.GrailsNameUtils
 
 import org.apache.log4j.Logger
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder as AH
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.ClassLoaderPerProxyBeanNameAutoProxyCreator
@@ -325,7 +324,7 @@ class SpringSecurityAclGrailsPlugin {
 
 		prePostAnnotationSecurityMetadataSource(PrePostAnnotationSecurityMetadataSource, ref('annotationInvocationFactory'))
 		grailsSecuredAnnotationSecurityMetadataSource(GrailsSecuredAnnotationSecurityMetadataSource) {
-			serviceClassNames = AH.application.serviceClasses*.clazz.name
+			serviceClassNames = application.serviceClasses*.clazz.name
 		}
 		springSecuredAnnotationSecurityMetadataSource(SpringSecuredAnnotationSecurityMetadataSource)
 
