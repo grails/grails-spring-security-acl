@@ -78,7 +78,7 @@ class SpringSecurityAclGrailsPlugin {
 
 	String version = '1.1'
 	String grailsVersion = '1.3 > *'
-	Map dependsOn = [springSecurityCore: '1.0 > *']
+	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
 		'docs/**',
 		'src/docs/**',
