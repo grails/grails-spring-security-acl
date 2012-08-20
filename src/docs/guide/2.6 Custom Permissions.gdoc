@@ -24,7 +24,21 @@ public class MyPermission extends BasePermission {
 
 It sets the mask value to 32 (1 << 5) since the values up to 16 are defined in the base class.
 
-To use this class, override the @aclPermissionFactory@ bean in @grails-app/conf/spring/resources.groovy@, keeping the @org.springframework.security.acls.domain.DefaultPermissionFactory@ class but passing your class as the constructor argument to keep it from defaulting to @BasePermission@:
+To use your class instead of the default, specify it in with the @grails.plugins.springsecurity.acl.permissionClass@ attribute either as a Class or a String, for example
+
+{code}
+import com.mycompany.myapp.MyPermissions
+...
+grails.plugins.springsecurity.acl.permissionClass = MyPermissions
+{code}
+
+or
+
+{code}
+grails.plugins.springsecurity.acl.permissionClass = 'com.mycompany.myapp.MyPermissions'
+{code}
+
+You can also override the @aclPermissionFactory@ bean in @grails-app/conf/spring/resources.groovy@, keeping the @org.springframework.security.acls.domain.DefaultPermissionFactory@ class but passing your class as the constructor argument to keep it from defaulting to @BasePermission@, or do a more complex override to more fully reconfigure the behavior:
 
 {code}
 import org.springframework.security.acls.domain.DefaultPermissionFactory

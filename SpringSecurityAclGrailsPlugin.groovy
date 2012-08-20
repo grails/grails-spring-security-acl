@@ -91,7 +91,6 @@ class SpringSecurityAclGrailsPlugin {
 	String authorEmail = 'beckwithb@vmware.com'
 	String title = 'ACL support for the Spring Security plugin.'
 	String description = 'ACL support for the Spring Security plugin.'
-
 	String documentation = 'http://grails.org/plugin/spring-security-acl'
 
 	def doWithSpring = {
@@ -176,7 +175,11 @@ class SpringSecurityAclGrailsPlugin {
 
 		aclAuditLogger(NullAclAuditLogger)
 
-		aclPermissionFactory(DefaultPermissionFactory)
+		def permissionClass = conf.acl.permissionClass
+		if (permissionClass instanceof String) {
+			permissionClass = classLoader.loadClass(permissionClass)
+		}
+		aclPermissionFactory(DefaultPermissionFactory, permissionClass ?: BasePermission)
 
 		aclLookupStrategy(GormAclLookupStrategy) {
 			aclAuthorizationStrategy = ref('aclAuthorizationStrategy')
@@ -193,7 +196,7 @@ class SpringSecurityAclGrailsPlugin {
 		permissionEvaluator(AclPermissionEvaluator, ref('aclService')) {
 			objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
 			objectIdentityGenerator = ref('objectIdentityRetrievalStrategy')
-			sidRetrievalStrategy = ref('sidRetrievalStrategy') 
+			sidRetrievalStrategy = ref('sidRetrievalStrategy')
 			permissionFactory = ref('aclPermissionFactory')
 		}
 
@@ -417,7 +420,7 @@ class SpringSecurityAclGrailsPlugin {
 				permissions: [BasePermission.ADMINISTRATION,
 				              BasePermission.WRITE]
 			],
-	
+
 			aclReportDeleteVoter: [
 				domainObjectClass: Report,
 				configAttribute: 'ACL_REPORT_DELETE',
