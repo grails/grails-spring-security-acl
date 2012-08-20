@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2009-2012 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@ package org.grails.plugins.springsecurity.service.acl
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder as SCH
 
 import test.TestReport as Report
 

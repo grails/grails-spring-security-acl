@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2009-2012 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.acl
 
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.domain.PrincipalSid;
-import org.springframework.security.acls.model.Acl;
-import org.springframework.security.acls.model.MutableAcl;
-import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
+import org.springframework.security.acls.domain.BasePermission
+import org.springframework.security.acls.domain.ObjectIdentityImpl
+import org.springframework.security.acls.domain.PrincipalSid
+import org.springframework.security.acls.model.Acl
+import org.springframework.security.acls.model.MutableAcl
+import org.springframework.security.acls.model.ObjectIdentity
+import org.springframework.security.acls.model.Permission
+import org.springframework.security.acls.model.Sid
 
 import test.TestReport as Report
 

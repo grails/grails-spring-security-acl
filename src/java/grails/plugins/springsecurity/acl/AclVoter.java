@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2009-2012 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,5 +53,5 @@ public @interface AclVoter {
     *
     * @return  the names
     */
-   String[] permissions() default { "READ" }; 
+   String[] permissions() default { "READ" };
 }

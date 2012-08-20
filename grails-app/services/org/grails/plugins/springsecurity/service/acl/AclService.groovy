@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2009-2012 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,14 @@ package org.grails.plugins.springsecurity.service.acl
 
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
-
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclClass
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclEntry
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclObjectIdentity
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclSid
-
 import org.springframework.security.acls.domain.AccessControlEntryImpl
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
-import org.springframework.security.acls.jdbc.JdbcAclService;
 import org.springframework.security.acls.model.Acl
 import org.springframework.security.acls.model.AlreadyExistsException
 import org.springframework.security.acls.model.AuditableAccessControlEntry
