@@ -17,36 +17,16 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>com.springsource.sts.grails.core.nature</nature>
+		<nature>org.grails.ide.eclipse.core.nature</nature>
 		<nature>org.eclipse.jdt.groovy.core.groovyNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 	</natures>
 	<linkedResources>
 		<link>
-			<name>spring-security-core-1.0-grails-app-conf</name>
+			<name>.link_to_grails_plugins</name>
 			<type>2</type>
-			<locationURI>DOTGRAILS/1.3.3/projects/grails-spring-security-acl/plugins/spring-security-core-1.0/grails-app/conf</locationURI>
-		</link>
-		<link>
-			<name>spring-security-core-1.0-grails-app-services</name>
-			<type>2</type>
-			<locationURI>DOTGRAILS/1.3.3/projects/grails-spring-security-acl/plugins/spring-security-core-1.0/grails-app/services</locationURI>
-		</link>
-		<link>
-			<name>spring-security-core-1.0-grails-app-taglib</name>
-			<type>2</type>
-			<locationURI>DOTGRAILS/1.3.3/projects/grails-spring-security-acl/plugins/spring-security-core-1.0/grails-app/taglib</locationURI>
-		</link>
-		<link>
-			<name>spring-security-core-1.0-src-groovy</name>
-			<type>2</type>
-			<locationURI>DOTGRAILS/1.3.3/projects/grails-spring-security-acl/plugins/spring-security-core-1.0/src/groovy</locationURI>
-		</link>
-		<link>
-			<name>spring-security-core-1.0-src-java</name>
-			<type>2</type>
-			<locationURI>DOTGRAILS/1.3.3/projects/grails-spring-security-acl/plugins/spring-security-core-1.0/src/java</locationURI>
+			<locationURI>GRAILS_ROOT/security/acl/grails-spring-security-acl/target/plugins</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
