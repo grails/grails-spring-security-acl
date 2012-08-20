@@ -39,7 +39,7 @@ public class ProxyUtils {
 	 */
 	public static Class<?> unproxy(final Class<?> clazz) {
 		Class<?> current = clazz;
-		while (AopUtils.isCglibProxyClass(current)) {
+		while (isCglibProxyClass(current)) {
 			current = current.getSuperclass();
 		}
 		return current;
@@ -53,7 +53,7 @@ public class ProxyUtils {
 	public static Method unproxy(final Method method) {
 		Class<?> clazz = method.getDeclaringClass();
 
-		if (!AopUtils.isCglibProxyClass(clazz)) {
+		if (!isCglibProxyClass(clazz)) {
 			return method;
 		}
 
@@ -69,7 +69,7 @@ public class ProxyUtils {
 	public static Constructor<?> unproxy(final Constructor<?> constructor) {
 		Class<?> clazz = constructor.getDeclaringClass();
 
-		if (!AopUtils.isCglibProxyClass(clazz)) {
+		if (!isCglibProxyClass(clazz)) {
 			return constructor;
 		}
 
@@ -86,5 +86,10 @@ public class ProxyUtils {
 		}
 
 		return null;
+	}
+
+	@SuppressWarnings("deprecation") // needs to work in Spring 3.1 and earlier
+	private static boolean isCglibProxyClass(Class<?> clazz) {
+		return AopUtils.isCglibProxyClass(clazz);
 	}
 }
