@@ -2,17 +2,22 @@ Creating, editing, or deleting permissions requires an authenticated user. In mo
 
 {table}
 *Attribute* | *Affected methods*
-@grails.plugins.springsecurity.acl.authority.modifyAuditingDetails@ | @AuditableAcl.updateAuditing()@
-@grails.plugins.springsecurity.acl.authority.changeOwnership@ | @OwnershipAcl.setOwner()@
-@grails.plugins.springsecurity.acl.authority.changeAclDetails@ | @MutableAcl.deleteAce()@, @MutableAcl.insertAce()@, @MutableAcl.setEntriesInheriting()@, @MutableAcl.setParent()@, @MutableAcl.updateAce()@
+@grails.plugins.springsecurity. acl.authority. modifyAuditingDetails@ | @AuditableAcl.updateAuditing()@
+@grails.plugins.springsecurity. acl.authority.changeOwnership@ | @OwnershipAcl.setOwner()@
+@grails.plugins.springsecurity. acl.authority. changeAclDetails@ | @MutableAcl.deleteAce()@, @MutableAcl.insertAce()@, @MutableAcl.setEntriesInheriting()@, @MutableAcl.setParent()@, @MutableAcl.updateAce()@
 {table}
 
 You can leave the attributes set to @ROLE_ADMIN@ or change them to have separate values, e.g.
 
 {code}
-grails.plugins.springsecurity.acl.authority.modifyAuditingDetails = 'ROLE_ACL_MODIFY_AUDITING'
-grails.plugins.springsecurity.acl.authority.changeOwnership =       'ROLE_ACL_CHANGE_OWNERSHIP'
-grails.plugins.springsecurity.acl.authority.changeAclDetails =      'ROLE_ACL_CHANGE_DETAILS'
+grails.plugins.springsecurity.acl.authority.
+        modifyAuditingDetails = 'ROLE_ACL_MODIFY_AUDITING'
+
+grails.plugins.springsecurity.acl.authority.
+        changeOwnership = 'ROLE_ACL_CHANGE_OWNERSHIP'
+
+grails.plugins.springsecurity.acl.authority.
+        changeAclDetails = 'ROLE_ACL_CHANGE_DETAILS'
 {code}
 
 h4. Run-As Authentication Replacement
@@ -21,8 +26,8 @@ There are also two options to configure [Run-As Authentication Replacement|http:
 
 {table}
 *Attribute* | *Meaning*
-@grails.plugins.springsecurity.useRunAs@ | change to @true@ to enable; defaults to @false@
-@grails.plugins.springsecurity.runAs.key@ | a shared key between the two standard implementation classes, used to verify that a third party hasn't created a token for the user; should be changed from its default value
+@grails.plugins.springsecurity. useRunAs@ | change to @true@ to enable; defaults to @false@
+@grails.plugins.springsecurity. runAs.key@ | a shared key between the two standard implementation classes, used to verify that a third party hasn't created a token for the user; should be changed from its default value
 {table}
 
 Example:

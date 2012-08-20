@@ -56,12 +56,14 @@ class ReportService {
    def springSecurityService
 
    void addPermission(Report report, String username, int permission) {
-      addPermission report, username, aclPermissionFactory.buildFromMask(permission)
+      addPermission report, username,
+           aclPermissionFactory.buildFromMask(permission)
    }
 
    @PreAuthorize("hasPermission(#report, admin)")
    @Transactional
-   void addPermission(Report report, String username, Permission permission) {
+   void addPermission(Report report, String username,
+                      Permission permission) {
       aclUtilService.addPermission report, username, permission
    }
 
@@ -72,18 +74,21 @@ class ReportService {
       report.save()
 
       // Grant the current principal administrative permission
-      addPermission report, springSecurityService.authentication.name, BasePermission.ADMINISTRATION
+      addPermission report, springSecurityService.authentication.name,
+                    BasePermission.ADMINISTRATION
 
       report
    }
 
-   @PreAuthorize("hasPermission(#id, 'com.testacl.Report', read) or hasPermission(#id, 'com.testacl.Report', admin)")
+   @PreAuthorize("hasPermission(#id, 'com.testacl.Report', read) or " +
+                 "hasPermission(#id, 'com.testacl.Report', admin)")
    Report get(long id) {
       Report.get id
    }
 
    @PreAuthorize("hasRole('ROLE_USER')")
-   @PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
+   @PostFilter("hasPermission(filterObject, read) or " +
+               "hasPermission(filterObject, admin)")
    List<Report> list(Map params) {
       Report.list params
    }
@@ -93,13 +98,15 @@ class ReportService {
    }
 
    @Transactional
-   @PreAuthorize("hasPermission(#report, write) or hasPermission(#report, admin)")
+   @PreAuthorize("hasPermission(#report, write) or " +
+                 "hasPermission(#report, admin)")
    void update(Report report, String name) {
       report.name = name
    }
 
    @Transactional
-   @PreAuthorize("hasPermission(#report, delete) or hasPermission(#report, admin)")
+   @PreAuthorize("hasPermission(#report, delete) or " +
+                 "hasPermission(#report, admin)")
    void delete(Report report) {
       report.delete()
 
@@ -112,9 +119,11 @@ class ReportService {
    void deletePermission(Report report, String username, Permission permission) {
       def acl = aclUtilService.readAcl(report)
 
-      // Remove all permissions associated with this particular recipient (string equality to KISS)
+      // Remove all permissions associated with this particular
+      // recipient (string equality to KISS)
       acl.entries.eachWithIndex { entry, i ->
-         if (entry.sid.equals(recipient) && entry.permission.equals(permission)) {
+         if (entry.sid.equals(recipient) &&
+               entry.permission.equals(permission)) {
             acl.deleteAce i
          }
       }
@@ -146,7 +155,7 @@ import static org.springframework.security.acls.domain.BasePermission.DELETE
 import static org.springframework.security.acls.domain.BasePermission.READ
 import static org.springframework.security.acls.domain.BasePermission.WRITE
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.authentication. UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 
@@ -199,7 +208,8 @@ class BootStrap {
          long id = it + 1
          def report = new Report(name: "report$id").save()
          reports << report
-         aclService.createAcl objectIdentityRetrievalStrategy.getObjectIdentity(report)
+         aclService.createAcl(
+               objectIdentityRetrievalStrategy.getObjectIdentity(report))
       }
 
       // grant user 1 admin on 11,12 and read on 1-67
@@ -314,9 +324,11 @@ class ReportController {
          return [reportInstance: report]
       }
 
-      reportService.addPermission report, params.recipient, params.int('permission')
+      reportService.addPermission(report, params.recipient,
+               params.int('permission'))
 
-      redirectShow "Permission $params.permission granted on Report $report.id to $params.recipient", report.id
+      redirectShow "Permission $params.permission granted on Report $report.id " +
+                   "to $params.recipient", report.id
    }
 
    private Report findInstance() {
@@ -365,8 +377,10 @@ class UrlMappings {
       "403"(controller: "errors", action: "error403")
       "404"(controller: "errors", action: "error404")
       "500"(controller: "errors", action: "error500")
-      "500"(controller: "errors", action: "error403", exception: AccessDeniedException)
-      "500"(controller: "errors", action: "error403", exception: NotFoundException)
+      "500"(controller: "errors", action: "error403",
+            exception: AccessDeniedException)
+      "500"(controller: "errors", action: "error403",
+            exception: NotFoundException)
    }
 }
 {code}
@@ -409,7 +423,8 @@ Add this to @grails-app/views/errors/error403.gsp@:
 
 <body>
 <h1>Access Denied</h1>
-<p>We're sorry, but you are not authorized to perform the requested operation.</p>
+<p>We're sorry, but you are not authorized
+   to perform the requested operation.</p>
 </body>
 </html>
 {code}
@@ -502,4 +517,3 @@ Verify that user1 doesn't have admin permission on report #13 by trying to editi
 Logout (by navigating to [http://localhost:8080/acltest/logout|http://localhost:8080/acltest/logout]) and login as user2/password2. You should only see the first five reports. Verify that you can edit #5 but not any of the others, and that you can't delete any.
 
 Finally. logout and login as admin/admin123. You should be able to view, edit, and delete all instances.
-

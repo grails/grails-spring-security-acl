@@ -21,7 +21,8 @@ class ReportService {
 
    static transactional = false
 
-   @PreAuthorize("hasPermission(#id, 'com.yourapp.Report', read) or hasPermission(#id, 'com.yourapp.Report', admin)")
+   @PreAuthorize("hasPermission(#id, 'com.yourapp.Report', read) or " +
+                 "hasPermission(#id, 'com.yourapp.Report', admin)")
    Report getReport(long id) {
       Report.get(id)
    }
@@ -35,7 +36,8 @@ class ReportService {
    }
 
    @PreAuthorize("hasRole('ROLE_USER')")
-   @PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
+   @PostFilter("hasPermission(filterObject, read) or " +
+               "hasPermission(filterObject, admin)")
    List getAllReports(params = [:]) {
       Report.list(params)
    }
@@ -46,7 +48,8 @@ class ReportService {
    }
 
    @Transactional
-   @PreAuthorize("hasPermission(#report, write) or hasPermission(#report, admin)")
+   @PreAuthorize("hasPermission(#report, write) or " +
+                 "hasPermission(#report, admin)")
    Report updateReport(Report report, params) {
       report.properties = params
       report.save()
@@ -54,7 +57,8 @@ class ReportService {
    }
 
    @Transactional
-   @PreAuthorize("hasPermission(#report, delete) or hasPermission(#report, admin)")
+   @PreAuthorize("hasPermission(#report, delete) or " +
+                 "hasPermission(#report, admin)")
    void deleteReport(Report report) {
       report.delete()
    }

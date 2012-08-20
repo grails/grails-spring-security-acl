@@ -17,8 +17,10 @@ class UrlMappings {
 
       "403"(controller: "errors", action: "error403")
       "500"(controller: "errors", action: "error500")
-      "500"(controller: "errors", action: "error403", exception: AccessDeniedException)
-      "500"(controller: "errors", action: "error403", exception: NotFoundException)
+      "500"(controller: "errors", action: "error403",
+            exception: AccessDeniedException)
+      "500"(controller: "errors", action: "error403",
+            exception: NotFoundException)
    }
 }
 {code}
@@ -52,7 +54,8 @@ and a @grails-app/views/errors/error403.gsp@ similar to this:
 
 <body>
 <h1>Access Denied</h1>
-<p>We're sorry, but you are not authorized to perform the requested operation.</p>
+<p>We're sorry, but you are not authorized to
+   perform the requested operation.</p>
 </body>
 </html>
 {code}
@@ -65,19 +68,19 @@ It's simple to adjust the @actionSubmit@ buttons and you'll need to change them 
 
 {code}
 <div class="buttons">
-    <g:form action='edit'>
-        <g:hiddenField name="id" value="${reportInstance?.id}" />
-        <span class="button">
-            <g:submitButton class="edit" name="Edit" />
-        </span>
-    </g:form>
-    <g:form action='delete'>
-        <g:hiddenField name="id" value="${reportInstance?.id}" />
-        <span class="button">
-            <g:submitButton class="delete" name="Delete"
-                            onclick="return confirm('Are you sure?');" />
-        </span>
-    </g:form>
+   <g:form action='edit'>
+      <g:hiddenField name="id" value="${reportInstance?.id}" />
+      <span class="button">
+         <g:submitButton class="edit" name="Edit" />
+      </span>
+   </g:form>
+   <g:form action='delete'>
+      <g:hiddenField name="id" value="${reportInstance?.id}" />
+      <span class="button">
+         <g:submitButton class="delete" name="Delete"
+                         onclick="return confirm('Are you sure?');" />
+      </span>
+   </g:form>
 </div>
 {code}
 
@@ -91,7 +94,9 @@ and convert the update button to a regular submit button:
 
 {code}
 <div class="buttons">
-    <span class="button"><g:submitButton class="save" name="Update" /></span>
+   <span class="button">
+      <g:submitButton class="save" name="Update" />
+   </span>
 </div>
 {code}
 
@@ -99,13 +104,12 @@ and move the delete button out of the form into its own form just below the main
 
 {code}
 <g:form action='delete'>
-    <g:hiddenField name="id" value="${reportInstance?.id}" />
-    <div class="buttons">
-        <span class="button">
-            <g:submitButton class="delete" name="Delete"
-                            onclick="return confirm('Are you sure?');" />
-        </span>
-    </div>
+   <g:hiddenField name="id" value="${reportInstance?.id}" />
+   <div class="buttons">
+      <span class="button">
+         <g:submitButton class="delete" name="Delete"
+                         onclick="return confirm('Are you sure?');" />
+      </span>
+   </div>
 </g:form>
 {code}
-
