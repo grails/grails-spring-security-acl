@@ -1,0 +1,7 @@
+/.settings/
+plugin.xml
+*.zip
+testapps.config.groovy
+target/
+*.log
+/docs

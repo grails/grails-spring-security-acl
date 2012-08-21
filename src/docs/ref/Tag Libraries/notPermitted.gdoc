@@ -1,0 +1,69 @@
+h1. notPermitted
+
+h2. Purpose
+
+Renders the body if the user is not granted the specified permission(s)
+
+h2. Examples
+
+Single String:
+{code}
+<sec:notPermitted className='com.foo.Report' id='${reportId}' permission='read'>
+
+the body content
+
+</sec:notPermitted>
+{code}
+
+Multiple String:
+{code}
+<sec:notPermitted className='com.foo.Report' id='${reportId}' permission='read,write'>
+
+the body content
+
+</sec:notPermitted>
+{code}
+
+Single Permission:
+{code}
+<%@ page import="org.springframework.security.acls.domain.BasePermission" %>
+
+<sec:notPermitted className='com.foo.Report' id='${reportId}' permission='${BasePermission.READ}'>
+
+the body content
+
+</sec:notPermitted>
+{code}
+
+List of Permission:
+{code}
+<%@ page import="org.springframework.security.acls.domain.BasePermission" %>
+
+<sec:notPermitted className='com.foo.Report' id='${reportId}' permission='${[BasePermission.WRITE,BasePermission.READ]}'>
+
+the body content
+
+</sec:notPermitted>
+{code}
+
+Single mask int:
+{code}
+<sec:notPermitted className='com.foo.Report' id='${reportId}' permission='${1}'>
+
+the body content
+
+</sec:notPermitted>
+{code}
+
+Multiple mask int:
+{code}
+<sec:notPermitted className='com.foo.Report' id='${reportId}' permission='2,1'>
+
+the body content
+
+</sec:notPermitted>
+{code}
+
+h2. Description
+
+Renders the body if the user does not have grants for the specified permissions. Permissions are specified in the 'permission' attribute and can be a single Permission, an array of Permission, an int/Integer (which is assumed to be a mask), a String (which can be a single name, or a comma-delimited list of names, or a comma-delimited list of masks), or a List of any of these.

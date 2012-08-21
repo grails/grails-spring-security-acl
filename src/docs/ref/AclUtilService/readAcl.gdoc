@@ -1,0 +1,27 @@
+h1. readAcl
+
+h2. Purpose
+
+Retrieves the ACL for a domain class instance.
+
+h2. Examples
+
+{code:java}
+def acl = aclUtilService.readAcl(reportInstance)
+
+def acl = aclUtilService.readAcl(Report, 42)
+{code}
+
+h4. Description
+
+{code:java}
+Acl readAcl(domainObject)
+
+Acl readAcl(Class<?> domainClass, id)
+{code}
+
+h4. Parameters
+
+* @domainClass@ - the domain class, used when specifying the class and id
+* @id@ - the instance id, used when specifying the class and id
+* @domainObject@ - the domain class instance, used when the instance is available
