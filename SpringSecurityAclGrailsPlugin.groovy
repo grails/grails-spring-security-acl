@@ -76,7 +76,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl
  */
 class SpringSecurityAclGrailsPlugin {
 
-	String version = '1.1'
+	String version = '1.1.1'
 	String grailsVersion = '1.3 > *'
 	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
