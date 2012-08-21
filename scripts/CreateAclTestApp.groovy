@@ -68,7 +68,7 @@ private void init(String name, config) {
 	projectDir = config.projectDir
 	appName = 'spring-security-acl-test-' + name
 	testprojectRoot = "$projectDir/$appName"
-	dotGrails = config.dotGrails
+	dotGrails = config.dotGrails + '/' + grailsVersion
 }
 
 private void createApp() {
@@ -78,35 +78,32 @@ private void createApp() {
 	deleteDir testprojectRoot
 	deleteDir "$dotGrails/projects/$appName"
 
-	callGrails(grailsHome, projectDir, 'dev', 'create-app') {
-		ant.arg value: appName
-	}
+	callGrails grailsHome, projectDir, 'dev', 'create-app', [appName]
 }
 
 private void installPlugins() {
 
-	// install plugins in local dir to make optional STS setup easier
-	// also configure the functional tests to run in order
-	new File("$testprojectRoot/grails-app/conf/BuildConfig.groovy").withWriterAppend {
-		it.writeLine 'grails.project.plugins.dir = "plugins"'
-		it.writeLine 'grails.testing.patterns = ["User1Functional", "User2Functional", "AdminFunctional"]'
-	}
+	File buildConfig = new File(testprojectRoot, 'grails-app/conf/BuildConfig.groovy')
+	String contents = buildConfig.text
 
-	ant.mkdir dir: "${testprojectRoot}/plugins"
-	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: "functional-test ${functionalTestPluginVersion}"
-	}
-	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: pluginZip.absolutePath
-	}
+	contents = contents.replace('grails.project.class.dir = "target/classes"', "grails.project.work.dir = 'target'")
+	contents = contents.replace('grails.project.test.class.dir = "target/test-classes"', '')
+	contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
+
+	// configure the functional tests to run in order
+	contents += '\ngrails.testing.patterns = ["User1Functional", "User2Functional", "AdminFunctional"]\n'
+
+	buildConfig.withWriter { it.writeLine contents }
+
+	callGrails grailsHome, testprojectRoot, 'dev', 'install-plugin', ["functional-test ${functionalTestPluginVersion}"]
+
+	callGrails grailsHome, testprojectRoot, 'dev', 'install-plugin', [pluginZip.absolutePath]
+
+	callGrails grailsHome, testprojectRoot, 'dev', 'compile'
 }
 
 private void runQuickstart() {
-	callGrails(grailsHome, testprojectRoot, 'dev', 's2-quickstart') {
-		ant.arg value: 'com.testacl'
-		ant.arg value: 'User'
-		ant.arg value: 'Role'
-	}
+	callGrails grailsHome, testprojectRoot, 'dev', 's2-quickstart', ['com.testacl', 'User', 'Role']
 }
 
 private void createProjectFiles() {
@@ -152,12 +149,26 @@ private void error(String message) {
 	exit 1
 }
 
-private void callGrails(String grailsHome, String dir, String env, String action, extraArgs = null) {
-	ant.exec(executable: "${grailsHome}/bin/grails", dir: dir, failonerror: 'true') {
+private void callGrails(String grailsHome, String dir, String env, String action, List extraArgs = null) {
+
+	String resultproperty = 'exitCode' + System.currentTimeMillis()
+	String outputproperty = 'execOutput' + System.currentTimeMillis()
+
+	println "Running 'grails $env $action ${extraArgs?.join(' ') ?: ''}'"
+
+	ant.exec(executable: "${grailsHome}/bin/grails", dir: dir, failonerror: false,
+				resultproperty: resultproperty, outputproperty: outputproperty) {
 		ant.env key: 'GRAILS_HOME', value: grailsHome
 		ant.arg value: env
 		ant.arg value: action
-		extraArgs?.call()
+		extraArgs.each { ant.arg value: it }
+	}
+
+	println ant.project.getProperty(outputproperty)
+
+	int exitCode = ant.project.getProperty(resultproperty) as Integer
+	if (exitCode) {
+		exit exitCode
 	}
 }
 

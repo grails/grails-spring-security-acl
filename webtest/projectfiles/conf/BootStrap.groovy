@@ -18,7 +18,6 @@ class BootStrap {
 	def aclUtilService
 	def objectIdentityRetrievalStrategy
 	def sessionFactory
-	def springSecurityService
 
 	def init = { servletContext ->
 		createUsers()
@@ -28,7 +27,6 @@ class BootStrap {
 				AuthorityUtils.createAuthorityList('ROLE_IGNORED'))
 
 		grantPermissions()
-
 
 		sessionFactory.currentSession.flush()
 
@@ -42,13 +40,11 @@ class BootStrap {
 
 		3.times {
 			long id = it + 1
-			def user = new User(username: "user$id", enabled: true,
-				password: springSecurityService.encodePassword("password$id")).save()
+			def user = new User(username: "user$id", enabled: true, password: "password$id").save()
 			UserRole.create user, roleUser
 		}
 
-		def admin = new User(username: 'admin', enabled: true,
-			password: springSecurityService.encodePassword('admin123')).save()
+		def admin = new User(username: 'admin', enabled: true, password: 'admin123').save()
 
 		UserRole.create admin, roleUser
 		UserRole.create admin, roleAdmin, true
