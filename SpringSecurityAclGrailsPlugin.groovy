@@ -93,6 +93,11 @@ class SpringSecurityAclGrailsPlugin {
 	String description = 'ACL support for the Spring Security plugin.'
 	String documentation = 'http://grails.org/plugin/spring-security-acl'
 
+	String license = 'APACHE'
+	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
+	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYACL']
+	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-acl']
+
 	def doWithSpring = {
 
 		def conf = SpringSecurityUtils.securityConfig
