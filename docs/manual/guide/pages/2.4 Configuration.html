@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2.4 Configuration 1.1.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/1.%20Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/3.%20Tutorial.html"><strong>3</strong><span>Tutorial</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/4.%20Sample%20Application.html"><strong>4</strong><span>Sample Application</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>ACL support for the Spring Security plugin.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/1.%20Introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/3.%20Tutorial.html"><strong>3</strong><span>Tutorial</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2.4 Configuration - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Burt Beckwith</p>
+
+                    <p><strong>Version:</strong> 1.1.1</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="2.4 Configuration">2.4 Configuration</h2>
+Creating, editing, or deleting permissions requires an authenticated user. In most cases  if the authenticated user is the owner of the ACL then access is allowed, but granted roles also affect whether access is allowed. The default required role is <code>ROLE_ADMIN</code> for all actions, but this can be configured in <code>grails-app/conf/Config.groovy</code>. This table summarizes the attribute names and the corresponding actions that are allowed for it:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute</strong></th><th><strong class="bold">Affected methods</strong></th></tr><tr class="table-odd"><td><code>grails.plugins.springsecurity. acl.authority. modifyAuditingDetails</code></td><td><code>AuditableAcl.updateAuditing()</code></td></tr><tr class="table-even"><td><code>grails.plugins.springsecurity. acl.authority.changeOwnership</code></td><td><code>OwnershipAcl.setOwner()</code></td></tr><tr class="table-odd"><td><code>grails.plugins.springsecurity. acl.authority. changeAclDetails</code></td><td><code>MutableAcl.deleteAce()</code>, <code>MutableAcl.insertAce()</code>, <code>MutableAcl.setEntriesInheriting()</code>, <code>MutableAcl.setParent()</code>, <code>MutableAcl.updateAce()</code></td></tr></table><p class="paragraph"/>You can leave the attributes set to <code>ROLE_ADMIN</code> or change them to have separate values, e.g.<p class="paragraph"/><div class="code"><pre>grails.plugins.springsecurity.acl.authority.
+        modifyAuditingDetails = 'ROLE_ACL_MODIFY_AUDITING'<p class="paragraph"/>grails.plugins.springsecurity.acl.authority.
+        changeOwnership = 'ROLE_ACL_CHANGE_OWNERSHIP'<p class="paragraph"/>grails.plugins.springsecurity.acl.authority.
+        changeAclDetails = 'ROLE_ACL_CHANGE_DETAILS'</pre></div><p class="paragraph"/><h4>Run-As Authentication Replacement</h4><p class="paragraph"/>There are also two options to configure <a href="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/runas.html" target="blank">Run-As Authentication Replacement</a>:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td><code>grails.plugins.springsecurity. useRunAs</code></td><td>change to <code>true</code> to enable; defaults to <code>false</code></td></tr><tr class="table-even"><td><code>grails.plugins.springsecurity. runAs.key</code></td><td>a shared key between the two standard implementation classes, used to verify that a third party hasn't created a token for the user; should be changed from its default value</td></tr></table><p class="paragraph"/>Example:<p class="paragraph"/><div class="code"><pre>grails.plugins.springsecurity.useRunAs = <span class="java&#45;keyword">true</span>
+grails.plugins.springsecurity.runAs.key = 'your run&#45;as key'</pre></div>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/1.%20Introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/3.%20Tutorial.html"><strong>3</strong><span>Tutorial</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">AclUtilService</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/addPermission.html">addPermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/changeOwner.html">changeOwner</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/deleteAcl.html">deleteAcl</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/deletePermission.html">deletePermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/hasPermission.html">hasPermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/readAcl.html">readAcl</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Scripts</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../../ref/Scripts/s2-create-acl-domains.html">s2-create-acl-domains</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tag Libraries</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../../ref/Tag%20Libraries/notPermitted.html">notPermitted</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tag%20Libraries/permitted.html">permitted</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-16219500-1']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</body>
+</html>
