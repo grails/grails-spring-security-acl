@@ -108,7 +108,7 @@ class SpringSecurityAclGrailsPlugin {
 			return
 		}
 
-		log.info '\nConfiguring Spring Security ACL ...'
+		log.info 'Configuring Spring Security ACL ...'
 
 		if (conf.useRunAs) {
 			SpringSecurityUtils.registerProvider 'runAsAuthenticationProvider'
@@ -133,7 +133,7 @@ class SpringSecurityAclGrailsPlugin {
 		configureSecurityMetadataSource.delegate = delegate
 		configureSecurityMetadataSource conf, voterConfig, application
 
-		log.info '... finished configuring Spring Security ACL\n'
+		log.info '... finished configuring Spring Security ACL'
 	}
 
 	def doWithApplicationContext = { ctx ->
