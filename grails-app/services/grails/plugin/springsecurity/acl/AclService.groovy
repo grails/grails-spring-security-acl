@@ -148,9 +148,14 @@ class AclService implements MutableAclService {
 		// Clear the cache
 		aclCache.evictFromCache objectIdentity
 	}
-
+	
 	protected void deleteEntries(AclObjectIdentity oid) {
 		AclEntry.where { aclObjectIdentity == oid }.deleteAll()
+	}
+
+	protected void deleteEntries(entries) {
+		log.debug "Deleting entries: $entries"
+		entries*.delete()
 	}
 
 	/**
@@ -161,12 +166,30 @@ class AclService implements MutableAclService {
 	@Transactional
 	MutableAcl updateAcl(MutableAcl acl) throws NotFoundException {
 		Assert.notNull acl.id, "Object Identity doesn't provide an identifier"
+		
+		def aclObjectIdentity = retrieveObjectIdentity(acl.objectIdentity)
+		
+		def existingAces = AclEntry.findAllByAclObjectIdentity(aclObjectIdentity)
+		def toDelete = existingAces.findAll { ace ->
+			log.trace "Checking ace for delete: $ace"
+			!acl.entries.find { entry ->
+				log.trace "Checking entry for delete: $entry"
+				entry.permission.mask == ace.mask && entry.sid == ace.sid.sid
+			}
+		}
+		def toCreate = acl.entries.findAll { entry ->
+			log.trace "Checking entry for create: $entry"
+			!existingAces.find { ace ->
+				log.trace "Checking ace for create: $ace"
+				entry.permission.mask == ace.mask && entry.sid == ace.sid.sid
+			}
+		}
 
 		// Delete this ACL's ACEs in the acl_entry table
-		deleteEntries retrieveObjectIdentity(acl.objectIdentity)
+		deleteEntries toDelete
 
 		// Create this ACL's ACEs in the acl_entry table
-		createEntries acl
+		createEntries acl, toCreate
 
 		// Change the mutable columns in acl_object_identity
 		updateObjectIdentity acl
@@ -177,9 +200,11 @@ class AclService implements MutableAclService {
 		return readAclById(acl.objectIdentity)
 	}
 
-	protected void createEntries(MutableAcl acl) {
+	protected void createEntries(MutableAcl acl, List<AuditableAccessControlEntry> entries = null) {
+		entries = entries ?: acl.entries
 		int i = 0
-		for (AuditableAccessControlEntry entry in acl.entries) {
+
+		for (AuditableAccessControlEntry entry in entries) {
 			Assert.isInstanceOf AccessControlEntryImpl, entry, 'Unknown ACE class'
 			save new AclEntry(
 					aclObjectIdentity: AclObjectIdentity.get(acl.id),
