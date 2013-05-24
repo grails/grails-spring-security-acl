@@ -14,8 +14,12 @@
  */
 package org.grails.plugins.springsecurity.service.acl
 
+import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclEntry
+import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclObjectIdentity
+import org.springframework.security.acls.domain.AccessControlEntryImpl
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.PrincipalSid
+import org.springframework.security.acls.model.AccessControlEntry
 import org.springframework.security.acls.model.Acl
 import org.springframework.security.acls.model.NotFoundException
 import org.springframework.security.acls.model.ObjectIdentity
@@ -66,6 +70,153 @@ class AclUtilService {
 		ObjectIdentity oid = objectIdentityRetrievalStrategy.getObjectIdentity(domainObject)
 		addPermission oid, recipient, permission
 	}
+
+    /**
+     * Test to see if an arbitrary domainObject has a permission for the recipient
+     * This is different from hasPermission() in that hasPermission() will only
+     * test permissions against the currently authenticated entity.
+     *
+     * @param domainObject
+     * @param recipient
+     * @param permission
+     * @return false - returns false if the ACL on the domain does not contain the permission
+     */
+    boolean checkPermission(domainObject, recipient, Permission permission){
+        ObjectIdentity oid = objectIdentityRetrievalStrategy.getObjectIdentity(domainObject)
+
+        Sid sid = createSid(recipient)
+        def acl = null
+
+        try {
+            acl = aclService.readAclById(oid, [sid])
+        }
+        catch (NotFoundException e) {
+            log.info("checkPermission did not find ACL for domain : " + domainObject)
+        }
+
+        if (acl == null)
+            return false
+
+        def entryList = acl.entries
+        for (int i=0; i < entryList.size(); i++){
+
+            if ((entryList[i].sid == sid) && (permission.mask == entryList[i].permission.mask))
+                return true;
+
+            log.info(entryList[i])
+        }
+
+        return false
+    }
+
+
+    /**
+     * This method counts the total number of domain objects which has permissions
+     * matching @permission
+     *
+     * @domainObjectClass - the class of domain object to test
+     * @roles - List of Authority instances
+     * @permission - the permission to test for
+     * @return Integer - total count of objects with the specified permission.
+     */
+    Integer countWithPermission(domainObjectClass, roles, Permission permission){
+
+        //FIXME: This method assumes all permissions are GrantedAuthority permissions (role-based).
+        //       Add support for Principal permissions
+
+        def sidList = []
+
+        roles.each { role->
+
+            GrantedAuthoritySid sid = createSid(role.authority)
+            sidList.add(sid.grantedAuthority)
+        }
+
+        //count the number of aclEntries for a specific class which has matching permissions
+        //for the sid
+
+        def aclEntries = AclEntry.executeQuery (
+                "SELECT COUNT(DISTINCT id) FROM AclEntry " +
+                "WHERE aclObjectIdentity.aclClass.className = :className " +
+                 " AND mask = :permission " +
+                 " AND granting = true " +
+                 " AND sid.sid IN :sidList",
+                [className:  domainObjectClass, permission: permission.mask, sidList: sidList]
+        )
+
+        def retVal = aclEntries.size() > 0 ? aclEntries[0] : 0
+        return retVal
+    }
+
+
+    /**
+     * This method counts the total number of domain objects which has any of the permissions
+     * listed in @permissions
+     *
+     * @domainObjectClass - the class of domain object to test
+     * @roles - List of Authority objects
+     * @permissions - List of permissions to test
+     * @return Integer - total count of objects with the specified permission.
+     */
+    Integer countWithPermissionList(domainObjectClass, roles, List<Permission> permissions){
+
+        //FIXME: This method assumes all permissions are GrantedAuthority permissions (role-based).
+        //       Add support for Principal permissions
+
+        def sidList = [], permissionList = []
+
+        permissions.each { permission ->
+            permissionList.add(permission.mask)
+        }
+
+        roles.each { role->
+
+            GrantedAuthoritySid sid = createSid(role.authority)
+            sidList.add(sid.grantedAuthority)
+        }
+
+        //count the number of aclEntries for a specific class which has matching permissions
+        //for the sid
+
+        def aclEntries = AclEntry.executeQuery (
+                "SELECT COUNT(DISTINCT id) FROM AclEntry " +
+                "WHERE aclObjectIdentity.aclClass.className = :className " +
+                 " AND mask IN :permissions " +
+                 " AND granting = true " +
+                 " AND sid.sid IN :sidList",
+                [className:  domainObjectClass, permissions: permissionList, sidList: sidList]
+        )
+
+        def retVal = aclEntries.size() > 0 ? aclEntries[0] : 0
+        return retVal
+    }
+
+    /**
+     * find all domain objects which have the given permission for the stated role(authority)
+     * It's important to note that this method will return a list of "ids". i.e you still
+     * need to perform a DomainObject.get(objectIdentities[x]) to get back your domain object
+     * of class @domainObjectClass
+     *
+     * @domainObjectClass - the class name of the domain object
+     * @role - the authority/role name of the grantedAuthority
+     * @permission - the specific permission we are checking for
+     */
+    def findWithPermission(domainObjectClass, role, Permission permission){
+
+        GrantedAuthoritySid sid = createSid(role)
+
+        def objectIdentities = AclEntry.executeQuery (
+                "SELECT aclObjectIdentity.objectId FROM AclEntry " +
+                "WHERE aclObjectIdentity.aclClass.className = :className " +
+                 " AND mask = :permission " +
+                 " AND granting = true " +
+                 " AND sid.sid = :sid",
+                [className:  domainObjectClass, permission: permission.mask, sid: sid.grantedAuthority]
+        )
+
+        return objectIdentities
+    }
+
 
 	/**
 	 * Grant a permission.
