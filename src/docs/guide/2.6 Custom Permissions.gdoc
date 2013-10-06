@@ -1,4 +1,4 @@
-By default there are 5 permissions available from the @org.springframework.security.acls.domain.BasePermission@ class: @READ@, @WRITE@, @CREATE@, @DELETE@, and @ADMINISTRATION@. You can also add your own permissions if these aren't sufficient. 
+By default there are 5 permissions available from the @org.springframework.security.acls.domain.BasePermission@ class: @READ@, @WRITE@, @CREATE@, @DELETE@, and @ADMINISTRATION@. You can also add your own permissions if these aren't sufficient.
 
 The easiest approach is to create a subclass of @org.springframework.security.acls.domain.BasePermission@ and add your new permissions there. This way you retain the default permissions and can use them if you need. For example, here's a subclass that adds a new @APPROVE@ permission:
 

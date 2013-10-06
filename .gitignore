@@ -1,7 +1,8 @@
-/.settings/
 plugin.xml
-*.zip
-testapps.config.groovy
-target/
+grails-spring-security-ldap-*.zip
+grails-spring-security-ldap-*.zip.sha1
 *.log
+.settings
+/target
 /docs
+/web-app
