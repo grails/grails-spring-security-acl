@@ -1,4 +1,4 @@
-package org.codehaus.groovy.grails.plugins.springsecurity.acl
+package grails.plugin.springsecurity.acl
 
 class AclEntry {
 

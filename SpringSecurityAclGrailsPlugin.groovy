@@ -14,30 +14,28 @@
  */
 
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.acl.ClassLoaderPerProxyBeanNameAutoProxyCreator
+import grails.plugin.springsecurity.acl.ProxyAwareParameterNameDiscoverer
+import grails.plugin.springsecurity.acl.access.GroovyAwareAclVoter
+import grails.plugin.springsecurity.acl.access.method.ProxyAwareDelegatingMethodSecurityMetadataSource
+import grails.plugin.springsecurity.acl.access.method.SecuredAnnotationSecurityMetadataSource as GrailsSecuredAnnotationSecurityMetadataSource
+import grails.plugin.springsecurity.acl.access.method.ServiceStaticMethodSecurityMetadataSource
+import grails.plugin.springsecurity.acl.annotation.AclVoter
+import grails.plugin.springsecurity.acl.annotation.AclVoters
+import grails.plugin.springsecurity.acl.domain.NullAclAuditLogger
+import grails.plugin.springsecurity.acl.jdbc.GormAclLookupStrategy
+import grails.plugin.springsecurity.acl.model.GormObjectIdentityRetrievalStrategy
 import grails.plugin.springsecurity.annotation.Secured as GrailsSecured
-import grails.plugins.springsecurity.acl.AclVoter
-import grails.plugins.springsecurity.acl.AclVoters
 import grails.util.GrailsNameUtils
 
 import java.lang.reflect.Method
 
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.ClassLoaderPerProxyBeanNameAutoProxyCreator
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.GormAclLookupStrategy
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.GormObjectIdentityRetrievalStrategy
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.GroovyAwareAclVoter
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.NullAclAuditLogger
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.ProxyAwareDelegatingMethodSecurityMetadataSource
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.ProxyAwareParameterNameDiscoverer
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.SecuredAnnotationSecurityMetadataSource as GrailsSecuredAnnotationSecurityMetadataSource
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.ServiceStaticMethodSecurityMetadataSource
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
-import org.springframework.core.ParameterNameDiscoverer
 import org.springframework.expression.spel.standard.SpelExpressionParser
 import org.springframework.security.access.annotation.Secured as SpringSecured
 import org.springframework.security.access.annotation.SecuredAnnotationSecurityMetadataSource as SpringSecuredAnnotationSecurityMetadataSource
-import org.springframework.security.access.PermissionCacheOptimizer
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
 import org.springframework.security.access.expression.method.ExpressionBasedAnnotationAttributeFactory
 import org.springframework.security.access.expression.method.ExpressionBasedPostInvocationAdvice
@@ -65,8 +63,6 @@ import org.springframework.security.acls.domain.DefaultPermissionFactory
 import org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy
 import org.springframework.security.acls.domain.EhCacheBasedAclCache
 import org.springframework.security.acls.domain.SidRetrievalStrategyImpl
-import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy
-import org.springframework.security.acls.model.SidRetrievalStrategy
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 

@@ -12,21 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test
+package grails.plugin.springsecurity.acl
 
-import grails.plugin.springsecurity.acl.annotation.AclVoter
-import grails.plugin.springsecurity.acl.annotation.AclVoters
+/**
+ * Abstract base class for the AclObjectIdentity domain class. The default implementation
+ * assumes a long objectId but custom implementations may wish to use other PK types.
+ *
+ * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
+ */
+abstract class AbstractAclObjectIdentity {
 
-// not packaged, for tests only
+	AclClass aclClass
+	AclObjectIdentity parent
+	AclSid owner
+	boolean entriesInheriting
 
-@AclVoters([
-	@AclVoter(name='aclReportWriteVoter',
-	          configAttribute='ACL_REPORT_WRITE',
-	          permissions=['ADMINISTRATION', 'WRITE']),
-	@AclVoter(name='aclReportDeleteVoter',
-	          configAttribute='ACL_REPORT_DELETE',
-	          permissions=['ADMINISTRATION', 'DELETE'])
-])
-class TestReport {
-	String name
+	static constraints = {
+		parent nullable: true
+		owner nullable: true
+	}
 }

@@ -12,21 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test
+package grails.plugin.springsecurity.acl
 
-import grails.plugin.springsecurity.acl.annotation.AclVoter
-import grails.plugin.springsecurity.acl.annotation.AclVoters
+/**
+ * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
+ */
+class TestGrailsAnnotatedServiceTests extends AbstractAclMappedServiceTests {
 
-// not packaged, for tests only
+	def testGrailsAnnotatedService
 
-@AclVoters([
-	@AclVoter(name='aclReportWriteVoter',
-	          configAttribute='ACL_REPORT_WRITE',
-	          permissions=['ADMINISTRATION', 'WRITE']),
-	@AclVoter(name='aclReportDeleteVoter',
-	          configAttribute='ACL_REPORT_DELETE',
-	          permissions=['ADMINISTRATION', 'DELETE'])
-])
-class TestReport {
-	String name
+	/**
+	 * {@inheritDoc}
+	 * @see junit.framework.TestCase#setUp()
+	 */
+	@Override
+	protected void setUp() {
+		super.setUp()
+		service = testGrailsAnnotatedService
+	}
 }

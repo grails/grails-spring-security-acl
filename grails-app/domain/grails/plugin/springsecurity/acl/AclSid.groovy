@@ -12,21 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test
+package grails.plugin.springsecurity.acl
 
-import grails.plugin.springsecurity.acl.annotation.AclVoter
-import grails.plugin.springsecurity.acl.annotation.AclVoters
+/**
+ * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
+ */
+class AclSid {
 
-// not packaged, for tests only
+	String sid
+	boolean principal
 
-@AclVoters([
-	@AclVoter(name='aclReportWriteVoter',
-	          configAttribute='ACL_REPORT_WRITE',
-	          permissions=['ADMINISTRATION', 'WRITE']),
-	@AclVoter(name='aclReportDeleteVoter',
-	          configAttribute='ACL_REPORT_DELETE',
-	          permissions=['ADMINISTRATION', 'DELETE'])
-])
-class TestReport {
-	String name
+	@Override
+	String toString() {
+		"AclSid id $id, sid $sid, principal $principal"
+	}
+
+	static mapping = {
+		version false
+	}
+
+	static constraints = {
+		principal unique: 'sid'
+		sid blank: false, size: 1..255
+	}
 }
