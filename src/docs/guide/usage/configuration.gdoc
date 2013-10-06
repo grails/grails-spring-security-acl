@@ -22,7 +22,7 @@ grails.plugin.springsecurity.acl.authority.
 
 h4. Run-As Authentication Replacement
 
-There are also two options to configure [Run-As Authentication Replacement|http://static.springsource.org/spring-security/site/docs/3.0.x/reference/runas.html]:
+There are also two options to configure [Run-As Authentication Replacement|http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/runas.html]:
 
 {table}
 *Attribute* | *Meaning*

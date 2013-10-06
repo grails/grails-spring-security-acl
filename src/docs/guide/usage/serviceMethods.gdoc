@@ -1,12 +1,12 @@
 There are two primary use cases for ACL security: determining whether a user is allowed to perform an action on an instance before the action is invoked, and restricting access to single or multiple instances after methods are invoked (this is typically implemented by collection filtering). You can call @aclUtilService.hasPermission()@ explicitly, but this tends to clutter your code with security logic that often has little to do with business logic. Instead, Spring Security provides some convenient annotations that are used to wrap your method calls in access checks.
 
 There are four annotations:
-* [@PreAuthorize|http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/prepost/PreAuthorize.html]
-* [@PreFilter|http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/prepost/PreFilter.html]
-* [@PostAuthorize|http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html]
-* [@PostFilter|http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/prepost/PostFilter.html]
+* [@PreAuthorize|http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PreAuthorize.html]
+* [@PreFilter|http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PreFilter.html]
+* [@PostAuthorize|http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html]
+* [@PostFilter|http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostFilter.html]
 
-The annotations use security-specific Spring expression language (SpEL) expressions - see [the documentation|http://static.springsource.org/spring-security/site/docs/3.0.x/reference/el-access.html] for the available standard and method expressions.
+The annotations use security-specific Spring expression language (SpEL) expressions - see [the documentation|http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/el-access.html] for the available standard and method expressions.
 
 Here's an example service that manages a @Report@ domain class and uses these annotations and expressions:
 
@@ -18,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional
 import com.yourapp.Report
 
 class ReportService {
-
-   static transactional = false
 
    @PreAuthorize("hasPermission(#id, 'com.yourapp.Report', read) or " +
                  "hasPermission(#id, 'com.yourapp.Report', admin)")

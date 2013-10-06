@@ -48,8 +48,6 @@ import org.springframework.transaction.annotation.Transactional
 
 class ReportService {
 
-   static transactional = false
-
    def aclPermissionFactory
    def aclService
    def aclUtilService
@@ -260,38 +258,38 @@ class ReportController {
 
    def reportService
 
-   def list = {
+   def list() {
       params.max = Math.min(params.max ? params.int('max') : 10, 100)
       [reportInstanceList: reportService.list(params),
        reportInstanceTotal: reportService.count()]
    }
 
-   def create = {
+   def create() {
       [reportInstance: new Report(params)]
    }
 
-   def save = {
+   def save() {
       def report = reportService.create(params.name)
       if (!renderWithErrors('create', report)) {
          redirectShow "Report $report.id created", report.id
       }
    }
 
-   def show = {
+   def show() {
       def report = findInstance()
       if (!report) return
 
       [reportInstance: report]
    }
 
-   def edit = {
+   def edit() {
       def report = findInstance()
       if (!report) return
 
       [reportInstance: report]
    }
 
-   def update = {
+   def update() {
       def report = findInstance()
       if (!report) return
 
@@ -301,7 +299,7 @@ class ReportController {
       }
    }
 
-   def delete = {
+   def delete() {
       def report = findInstance()
       if (!report) return
 
@@ -315,7 +313,7 @@ class ReportController {
       }
    }
 
-   def grant = {
+   def grant() {
 
       def report = findInstance()
       if (!report) return
@@ -400,11 +398,11 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured(['permitAll'])
 class ErrorsController {
 
-   def error403 = {}
+   def error403() {}
 
-   def error404 = {}
+   def error404() {}
 
-   def error500 = {
+   def error500() {
       render view: '/error'
    }
 }
