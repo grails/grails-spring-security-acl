@@ -102,8 +102,7 @@ class GormAclLookupStrategy implements LookupStrategy {
 			// Is it time to load from JDBC the currentBatchToLoad?
 			if (currentBatchToLoad.size() == batchSize || (i + 1) == objects.size()) {
 				if (currentBatchToLoad.size() > 0) {
-					Map<ObjectIdentity, Acl> loadedBatch = lookupObjectIdentities(
-							currentBatchToLoad, sids)
+					Map<ObjectIdentity, Acl> loadedBatch = lookupObjectIdentities(currentBatchToLoad, sids)
 					// Add loaded batch (all elements 100% initialized) to results
 					result.putAll loadedBatch
 					// Add the loaded batch to the cache
@@ -157,11 +156,12 @@ class GormAclLookupStrategy implements LookupStrategy {
 
 		List<AclEntry> entries
 		if (aclObjectIdentities) {
-			entries = AclEntry.executeQuery(
-					"FROM $AclEntry.name " +
-					"WHERE aclObjectIdentity IN (:aclObjectIdentities) " +
-					"ORDER BY aceOrder ASC",
-					[aclObjectIdentities: aclObjectIdentities])
+			entries = AclEntry.withCriteria {
+				aclObjectIdentity {
+					'in' 'id', aclObjectIdentities*.id
+				}
+				order 'aceOrder', 'asc'
+			}
 		}
 
 		def map = [:]
@@ -211,8 +211,8 @@ class GormAclLookupStrategy implements LookupStrategy {
 
 		List<AclObjectIdentity> parents = []
 
-      aclObjectIdentityMap.each { aclObjectIdentity, aclEntries ->
-   		createAcl acls, aclObjectIdentity, aclEntries
+		aclObjectIdentityMap.each { aclObjectIdentity, aclEntries ->
+			createAcl acls, aclObjectIdentity, aclEntries
 
 			if (aclObjectIdentity.parent) {
 				Serializable parentId = aclObjectIdentity.parent.id

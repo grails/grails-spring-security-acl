@@ -150,9 +150,7 @@ class AclService implements MutableAclService {
 	}
 
 	protected void deleteEntries(AclObjectIdentity oid) {
-		AclEntry.executeUpdate(
-				"DELETE FROM AclEntry ae " +
-				"WHERE ae.aclObjectIdentity = :oid", [oid: oid])
+		AclEntry.where { aclObjectIdentity == oid }.deleteAll()
 	}
 
 	/**
@@ -225,13 +223,15 @@ class AclService implements MutableAclService {
 	 * @see org.springframework.security.acls.model.AclService#findChildren(
 	 * 	org.springframework.security.acls.model.ObjectIdentity)
 	 */
-	List<ObjectIdentity> findChildren(ObjectIdentity parent) {
-		def children = AclObjectIdentity.executeQuery(
-				"FROM AclObjectIdentity " +
-				"WHERE parent.objectId = :objectId " +
-				"  AND parent.aclClass.className = :className",
-				[objectId: parent.identifier,
-				 className: parent.type])
+	List<ObjectIdentity> findChildren(ObjectIdentity parentOid) {
+		def children = AclObjectIdentity.withCriteria {
+			parent {
+				eq 'objectId', parentOid.identifier
+				aclClass {
+					eq 'className', parentOid.type
+				}
+			}
+		}
 
 		if (!children) {
 			return null
@@ -297,12 +297,13 @@ class AclService implements MutableAclService {
 	}
 
 	protected AclObjectIdentity retrieveObjectIdentity(ObjectIdentity oid) {
-		return AclObjectIdentity.executeQuery(
-				"FROM AclObjectIdentity " +
-				"WHERE aclClass.className = :className " +
-				"  AND objectId = :objectId",
-				[className: oid.type,
-				 objectId: oid.identifier])[0]
+		AclObjectIdentity.withCriteria {
+			eq 'objectId', oid.identifier
+			aclClass {
+				eq 'className', oid.type
+			}
+			maxResults 1
+		}[0]
 	}
 
 	protected save(bean) {
