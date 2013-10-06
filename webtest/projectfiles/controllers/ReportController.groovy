@@ -1,14 +1,14 @@
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclClass
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclEntry
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclObjectIdentity
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.AclSid
+import grails.plugin.springsecurity.acl.AclClass
+import grails.plugin.springsecurity.acl.AclEntry
+import grails.plugin.springsecurity.acl.AclObjectIdentity
+import grails.plugin.springsecurity.acl.AclSid
 
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Permission
 
 import com.testacl.Report
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['ROLE_USER'])
 class ReportController {
@@ -17,38 +17,38 @@ class ReportController {
 
 	def reportService
 
-	def list = {
+	def list() {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		[reportInstanceList: reportService.list(params),
 		 reportInstanceTotal: reportService.count()]
 	}
 
-	def create = {
+	def create() {
 		[reportInstance: new Report(params)]
 	}
 
-	def save = {
+	def save() {
 		def report = reportService.create(params.name)
 		if (!renderWithErrors('create', report)) {
 			redirectShow "Report $report.id created", report.id
 		}
 	}
 
-	def show = {
+	def show() {
 		def report = findInstance()
 		if (!report) return
 
 		[reportInstance: report]
 	}
 
-	def edit = {
+	def edit() {
 		def report = findInstance()
 		if (!report) return
 
 		[reportInstance: report]
 	}
 
-	def update = {
+	def update() {
 		def report = findInstance()
 		if (!report) return
 
@@ -58,21 +58,21 @@ class ReportController {
 		}
 	}
 
-	def delete = {
+	def delete() {
 		def report = findInstance()
 		if (!report) return
 
 		try {
 			reportService.delete report
 			flash.message = "Report $params.id deleted"
-			redirect action: list
+			redirect action: 'list'
 		}
 		catch (DataIntegrityViolationException e) {
 			redirectShow "Report $params.id could not be deleted", params.id
 		}
 	}
 
-	def grant = {
+	def grant() {
 
 		def report = findInstance()
 		if (!report) return
@@ -86,7 +86,7 @@ class ReportController {
 		redirectShow "Permission $params.permission granted on Report $report.id to $params.recipient", report.id
 	}
 
-	def dump = {
+	def dump() {
 
 		def html = new StringBuilder()
 
@@ -117,14 +117,14 @@ class ReportController {
 		def report = reportService.get(params.long('id'))
 		if (!report) {
 			flash.message = "Report not found with id $params.id"
-			redirect action: list
+			redirect action: 'list'
 		}
 		report
 	}
 
 	private void redirectShow(message, id) {
 		flash.message = message
-		redirect action: show, id: id
+		redirect action: 'show', id: id
 	}
 
 	private boolean renderWithErrors(String view, Report report) {

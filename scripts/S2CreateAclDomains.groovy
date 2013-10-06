@@ -1,4 +1,4 @@
-/* Copyright 2009-2012 SpringSource.
+/* Copyright 2009-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ target(s2CreateAclDomains: 'Creates ACL Domain classes for Spring Security ACL p
 	depends(checkVersion, configureProxy, classpath)
 
 	String appDir = "$basedir/grails-app"
-	String destFolder = "$appDir/domain/org/codehaus/groovy/grails/plugins/springsecurity/acl"
+	String destFolder = "$appDir/domain/grails/plugin/springsecurity/acl"
 	String templateDir = "$springSecurityAclPluginDir/src/templates"
 
 	ant.mkdir dir: destFolder

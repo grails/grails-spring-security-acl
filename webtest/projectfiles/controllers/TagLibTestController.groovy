@@ -1,4 +1,4 @@
 class TagLibTestController {
 
-	def test = {}
+	def test() {}
 }

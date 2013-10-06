@@ -18,11 +18,11 @@ class User1FunctionalTests extends AbstractSecurityWebTest {
 
 	private void viewAll() {
 		for (int i = 1; i <= 67; i++) {
-			get "/report/show/$i" 
+			get "/report/show/$i"
 			assertContentContains "report$i"
 		}
 		for (int i = 68; i <= 100; i++) {
-			get "/report/show/$i" 
+			get "/report/show/$i"
 			assertContentContains 'Access Denied'
 		}
 	}
