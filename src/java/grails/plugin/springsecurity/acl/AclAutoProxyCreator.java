@@ -14,38 +14,82 @@
  */
 package grails.plugin.springsecurity.acl;
 
-import java.util.Arrays;
+import grails.util.GrailsNameUtils;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.grails.commons.GrailsClass;
+import org.codehaus.groovy.grails.commons.GrailsClassUtils;
+import org.codehaus.groovy.grails.commons.ServiceArtefactHandler;
 import org.codehaus.groovy.grails.compiler.GrailsClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.TargetSource;
-import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
+import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreFilter;
 
 /**
- * Borrowed from https://github.com/alkemist/grails-aop-reloading-fix/blob/master/src/groovy/grails/plugin/aopreloadingfix/ClassLoaderPerProxyGroovyAwareAspectJAwareAdvisorAutoProxyCreator.groovy
+ * Based on https://github.com/alkemist/grails-aop-reloading-fix/blob/master/src/groovy/grails/plugin/aopreloadingfix/ClassLoaderPerProxyGroovyAwareAspectJAwareAdvisorAutoProxyCreator.groovy
+ * and https://github.com/grails-plugins/grails-spring-security-acl/pull/8
  *
  * @author Luke Daley
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
+ * @author Predrag Knezevic
  */
-public class AclAutoProxyCreator extends BeanNameAutoProxyCreator {
+public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements InitializingBean {
 
 	private static final long serialVersionUID = 1;
 
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
+	protected GrailsApplication grailsApplication;
 	protected ClassLoader baseLoader;
-	protected Collection<String> beanNames;
+	protected Collection<String> serviceBeanNames = new ArrayList<String>();
+
+	@SuppressWarnings("unchecked")
+	protected final Class<? extends Annotation>[] ANNOTATIONS = new Class[] {
+		grails.plugin.springsecurity.annotation.Secured.class,
+		org.springframework.security.access.annotation.Secured.class, 
+		PreAuthorize.class,
+		PreFilter.class, 
+		PostAuthorize.class, 
+		PostFilter.class};
 
 	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
-		super.setBeanClassLoader(classLoader);
-		baseLoader = classLoader;
+	protected Object[] getAdvicesAndAdvisorsForBean(final Class<?> beanClass, final String beanName, final TargetSource customTargetSource) throws BeansException {
+		if (serviceBeanNames.contains(beanName) || shouldProxy(beanClass, beanName)) {
+			return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
+		}
+		return DO_NOT_PROXY;
+	}
+
+	protected boolean beanIsAnnotated(final Class<?> c) {
+		for (Class<? extends Annotation> annotation: ANNOTATIONS) {
+			if (c.isAnnotationPresent(annotation)) {
+				return true;
+			}
+
+			for (Method method : c.getMethods()) {
+				if (method.isAnnotationPresent(annotation)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
-	protected Object createProxy(Class<?> beanClass, String beanName, Object[] specificInterceptors, TargetSource targetSource) {
-		setProxyClassLoader(new GrailsClassLoader(baseLoader, null, null));
-		Object proxy = super.createProxy(beanClass, beanName, specificInterceptors, targetSource);
-		setProxyClassLoader(baseLoader);
-		return proxy;
+	protected boolean shouldProxyTargetClass(Class<?> beanClass, String beanName) {
+		return serviceBeanNames.contains(beanName) || super.shouldProxyTargetClass(beanClass, beanName);
 	}
 
 	@Override
@@ -53,14 +97,46 @@ public class AclAutoProxyCreator extends BeanNameAutoProxyCreator {
 		return beanClass.hashCode() + "_" + beanName;
 	}
 
-	@Override
-	protected boolean shouldProxyTargetClass(Class<?> beanClass, String beanName) {
-		return beanNames.contains(beanName);
+	protected boolean shouldProxy(final Class<?> c, final String beanName) {
+		boolean hasSpringSecurityACL = GrailsClassUtils.isStaticProperty(c, "springSecurityACL");
+		if (hasSpringSecurityACL || beanIsAnnotated(c)) {
+			if (log.isDebugEnabled()) log.debug("Secure '{0}' instances of {1}", new Object[] { beanName, c.getName() });
+			return true;
+		}
+		return false; 
 	}
 
 	@Override
-	public void setBeanNames(String[] names) {
-		super.setBeanNames(names);
-		beanNames = Arrays.asList(names);
+	protected Object createProxy(Class<?> beanClass, String beanName, Object[] specificInterceptors, TargetSource targetSource) {
+		try {
+			setProxyClassLoader(new GrailsClassLoader(baseLoader, null, null));
+			return super.createProxy(beanClass, beanName, specificInterceptors, targetSource);
+		}
+		finally {
+			setProxyClassLoader(baseLoader);
+		}
+	}
+
+	@Override
+	public void setBeanClassLoader(final ClassLoader classLoader) {
+		super.setBeanClassLoader(classLoader);
+		baseLoader = classLoader;
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		for (GrailsClass serviceClass : grailsApplication.getArtefacts(ServiceArtefactHandler.TYPE)) {
+			String beanName = GrailsNameUtils.getPropertyNameRepresentation(serviceClass.getClazz().getName());
+			if (shouldProxy(serviceClass.getClazz(), beanName)) {
+				serviceBeanNames.add(beanName);
+			}
+		}
+	}
+
+	/**
+	 * Dependency injection for the application.
+	 * @param application the application
+	 */
+	public void setGrailsApplication(GrailsApplication application) {
+		grailsApplication = application;
 	}
 }

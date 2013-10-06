@@ -18,24 +18,17 @@ import grails.plugin.springsecurity.acl.AclAutoProxyCreator
 import grails.plugin.springsecurity.acl.ProxyAwareParameterNameDiscoverer
 import grails.plugin.springsecurity.acl.access.GroovyAwareAclVoter
 import grails.plugin.springsecurity.acl.access.method.ProxyAwareDelegatingMethodSecurityMetadataSource
-import grails.plugin.springsecurity.acl.access.method.SecuredAnnotationSecurityMetadataSource as GrailsSecuredAnnotationSecurityMetadataSource
 import grails.plugin.springsecurity.acl.access.method.ServiceStaticMethodSecurityMetadataSource
 import grails.plugin.springsecurity.acl.annotation.AclVoter
 import grails.plugin.springsecurity.acl.annotation.AclVoters
 import grails.plugin.springsecurity.acl.domain.NullAclAuditLogger
 import grails.plugin.springsecurity.acl.jdbc.GormAclLookupStrategy
 import grails.plugin.springsecurity.acl.model.GormObjectIdentityRetrievalStrategy
-import grails.plugin.springsecurity.annotation.Secured as GrailsSecured
-import grails.util.GrailsNameUtils
-
-import java.lang.reflect.Method
 
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 import org.springframework.expression.spel.standard.SpelExpressionParser
-import org.springframework.security.access.annotation.Secured as SpringSecured
-import org.springframework.security.access.annotation.SecuredAnnotationSecurityMetadataSource as SpringSecuredAnnotationSecurityMetadataSource
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
 import org.springframework.security.access.expression.method.ExpressionBasedAnnotationAttributeFactory
 import org.springframework.security.access.expression.method.ExpressionBasedPostInvocationAdvice
@@ -44,11 +37,7 @@ import org.springframework.security.access.intercept.AfterInvocationProviderMana
 import org.springframework.security.access.intercept.RunAsImplAuthenticationProvider
 import org.springframework.security.access.intercept.RunAsManagerImpl
 import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor
-import org.springframework.security.access.prepost.PostAuthorize
-import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PostInvocationAdviceProvider
-import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.access.prepost.PreFilter
 import org.springframework.security.access.prepost.PreInvocationAuthorizationAdviceVoter
 import org.springframework.security.access.prepost.PrePostAnnotationSecurityMetadataSource
 import org.springframework.security.access.vote.AffirmativeBased
@@ -129,9 +118,9 @@ class SpringSecurityAclGrailsPlugin {
 		configureExpressionBeans.delegate = delegate
 		configureExpressionBeans conf
 
-		// secured services
-		configureSecuredServices.delegate = delegate
-		configureSecuredServices conf, application
+		// secured beans
+		configureSecuredBeans.delegate = delegate
+		configureSecuredBeans conf, application
 
 		// MetadataSource
 		configureSecurityMetadataSource.delegate = delegate
@@ -224,7 +213,7 @@ class SpringSecurityAclGrailsPlugin {
 		}
 	}
 
-	private configureSecuredServices = { conf, application ->
+	private configureSecuredBeans = { conf, application ->
 
 		debug 'configuring secured services'
 
@@ -238,45 +227,11 @@ class SpringSecurityAclGrailsPlugin {
 			}
 		}
 
-		def serviceNames = []
-		for (serviceClass in application.serviceClasses) {
-			boolean hasSpringSecurityACL = GCU.isStaticProperty(serviceClass.clazz, 'springSecurityACL')
-			if (hasSpringSecurityACL || serviceIsAnnotated(serviceClass.clazz)) {
-				serviceNames << GrailsNameUtils.getPropertyNameRepresentation(serviceClass.clazz.name)
-			}
+		securedBeansInterceptor(AclAutoProxyCreator) {
+			grailsApplication = ref('grailsApplication')
+			interceptorNames = ['methodSecurityInterceptor']
+			proxyTargetClass = true
 		}
-
-		if (serviceNames) {
-			securedServicesInterceptor(AclAutoProxyCreator) {
-				proxyTargetClass = true
-				beanNames = serviceNames
-				interceptorNames = ['methodSecurityInterceptor']
-			}
-		}
-	}
-
-	private boolean serviceIsAnnotated(Class clazz) {
-		for (annotation in [GrailsSecured, SpringSecured, PreAuthorize,
-		                    PreFilter, PostAuthorize, PostFilter]) {
-			if (serviceIsAnnotated(clazz, annotation)) {
-				return true
-			}
-		}
-		false
-	}
-
-	private boolean serviceIsAnnotated(Class clazz, Class annotation) {
-		if (clazz.isAnnotationPresent(annotation)) {
-			return true
-		}
-
-		for (Method method in clazz.methods) {
-			if (method.isAnnotationPresent(annotation)) {
-				return true
-			}
-		}
-
-		false
 	}
 
 	private configureSecurityMetadataSource = { conf, voterConfig, application ->
@@ -343,10 +298,10 @@ class SpringSecurityAclGrailsPlugin {
 		}
 
 		prePostAnnotationSecurityMetadataSource(PrePostAnnotationSecurityMetadataSource, ref('annotationInvocationFactory'))
-		grailsSecuredAnnotationSecurityMetadataSource(GrailsSecuredAnnotationSecurityMetadataSource) {
+		grailsSecuredAnnotationSecurityMetadataSource(grails.plugin.springsecurity.acl.access.method.SecuredAnnotationSecurityMetadataSource) {
 			serviceClassNames = application.serviceClasses*.clazz.name
 		}
-		springSecuredAnnotationSecurityMetadataSource(SpringSecuredAnnotationSecurityMetadataSource)
+		springSecuredAnnotationSecurityMetadataSource(org.springframework.security.access.annotation.SecuredAnnotationSecurityMetadataSource)
 
 		def metadataSources = [
 			ref('prePostAnnotationSecurityMetadataSource'),

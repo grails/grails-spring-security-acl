@@ -16,9 +16,12 @@ package test
 
 import test.TestReport as Report
 
+import org.springframework.transaction.annotation.Transactional
+
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@Transactional
 class TestStaticConfiguredService {
 
 	static springSecurityACL = [
