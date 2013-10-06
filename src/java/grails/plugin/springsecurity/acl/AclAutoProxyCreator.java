@@ -27,7 +27,7 @@ import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
  * @author Luke Daley
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-public class ClassLoaderPerProxyBeanNameAutoProxyCreator extends BeanNameAutoProxyCreator {
+public class AclAutoProxyCreator extends BeanNameAutoProxyCreator {
 
 	private static final long serialVersionUID = 1;
 

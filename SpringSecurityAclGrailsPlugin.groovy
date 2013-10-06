@@ -14,7 +14,7 @@
  */
 
 import grails.plugin.springsecurity.SpringSecurityUtils
-import grails.plugin.springsecurity.acl.ClassLoaderPerProxyBeanNameAutoProxyCreator
+import grails.plugin.springsecurity.acl.AclAutoProxyCreator
 import grails.plugin.springsecurity.acl.ProxyAwareParameterNameDiscoverer
 import grails.plugin.springsecurity.acl.access.GroovyAwareAclVoter
 import grails.plugin.springsecurity.acl.access.method.ProxyAwareDelegatingMethodSecurityMetadataSource
@@ -247,7 +247,7 @@ class SpringSecurityAclGrailsPlugin {
 		}
 
 		if (serviceNames) {
-			securedServicesInterceptor(ClassLoaderPerProxyBeanNameAutoProxyCreator) {
+			securedServicesInterceptor(AclAutoProxyCreator) {
 				proxyTargetClass = true
 				beanNames = serviceNames
 				interceptorNames = ['methodSecurityInterceptor']
