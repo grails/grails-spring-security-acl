@@ -31,8 +31,8 @@ public class ClassLoaderPerProxyBeanNameAutoProxyCreator extends BeanNameAutoPro
 
 	private static final long serialVersionUID = 1;
 
-	private ClassLoader baseLoader;
-	private Collection<String> beanNames;
+	protected ClassLoader baseLoader;
+	protected Collection<String> beanNames;
 
 	@Override
 	public void setBeanClassLoader(ClassLoader classLoader) {

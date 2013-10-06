@@ -33,7 +33,7 @@ import org.springframework.security.core.Authentication;
  */
 public class GroovyAwareAclVoter implements AccessDecisionVoter<MethodInvocation> {
 
-	private static final List<String> NON_SECURABLE_METHODS = new ArrayList<String>(Arrays.asList(
+	protected static final List<String> NON_SECURABLE_METHODS = new ArrayList<String>(Arrays.asList(
 			"invokeMethod", "getMetaClass", "setMetaClass", "getProperty", "setProperty",
 			"isTransactional", "getTransactional", "setTransactional"));
 	static {

@@ -35,7 +35,7 @@ import org.springframework.security.access.method.AbstractFallbackMethodSecurity
  */
 public class SecuredAnnotationSecurityMetadataSource extends AbstractFallbackMethodSecurityMetadataSource {
 
-	private Collection<String> serviceClassNames;
+	protected Collection<String> serviceClassNames;
 
 	/**
 	 * {@inheritDoc}

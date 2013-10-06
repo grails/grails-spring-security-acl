@@ -48,10 +48,10 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
        extends AbstractMethodSecurityMetadataSource
        implements InitializingBean {
 
-	private final static List<ConfigAttribute> NULL_CONFIG_ATTRIBUTE = Collections.emptyList();
+	protected final static List<ConfigAttribute> NULL_CONFIG_ATTRIBUTE = Collections.emptyList();
 
-	private List<MethodSecurityMetadataSource> methodSecurityMetadataSources;
-	private final Map<DefaultCacheKey, Collection<ConfigAttribute>> cache =
+	protected List<MethodSecurityMetadataSource> methodSecurityMetadataSources;
+	protected final Map<DefaultCacheKey, Collection<ConfigAttribute>> cache =
 		new HashMap<DefaultCacheKey, Collection<ConfigAttribute>>();
 
 	/**
@@ -132,9 +132,9 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 		Assert.notEmpty(methodSecurityMetadataSources, "A list of MethodSecurityMetadataSources is required");
 	}
 
-	private static class DefaultCacheKey {
-		private final Method method;
-		private final Class<?> targetClass;
+	static class DefaultCacheKey {
+		protected final Method method;
+		protected final Class<?> targetClass;
 
 		DefaultCacheKey(final Method m, final Class<?> target) {
 			method = m;

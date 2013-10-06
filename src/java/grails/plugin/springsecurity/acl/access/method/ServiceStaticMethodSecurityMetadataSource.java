@@ -34,9 +34,9 @@ import org.springframework.security.access.method.AbstractFallbackMethodSecurity
  */
 public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackMethodSecurityMetadataSource {
 
-	private final Map<String, Map<String, List<ConfigAttribute>>> methodConfigs =
+	protected final Map<String, Map<String, List<ConfigAttribute>>> methodConfigs =
 		new HashMap<String, Map<String,List<ConfigAttribute>>>();
-	private final Map<String, List<ConfigAttribute>> classConfigs =
+	protected final Map<String, List<ConfigAttribute>> classConfigs =
 		new HashMap<String, List<ConfigAttribute>>();
 
 	/**
@@ -96,7 +96,7 @@ public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackM
 		}
 	}
 
-	private void populateMap(final Map<String, List<ConfigAttribute>> dest,
+	protected void populateMap(final Map<String, List<ConfigAttribute>> dest,
 			final Map<String, List<String>> source) {
 
 		for (Map.Entry<String, List<String>> entry : source.entrySet()) {
