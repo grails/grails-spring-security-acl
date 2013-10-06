@@ -43,9 +43,11 @@ class GormAclLookupStrategy implements LookupStrategy {
 
 	protected Field aceAclField
 
+	protected /*HibernateProxyHandler*/ hibernateProxyHandler
+
 	GormAclLookupStrategy() {
-		aceAclField = ReflectionUtils.findField(AccessControlEntryImpl, 'acl')
-		aceAclField.accessible = true
+		findAceAclField()
+		createHibernateProxyHandler()
 	}
 
 	/** Dependency injection for aclAuthorizationStrategy. */
@@ -124,7 +126,7 @@ class GormAclLookupStrategy implements LookupStrategy {
 
 		Map<Serializable, Acl> acls = [:] // contains Acls with StubAclParents
 
-		def aclObjectIdentities = AclObjectIdentity.withCriteria {
+		List<AclObjectIdentity> aclObjectIdentities = AclObjectIdentity.withCriteria {
 			createAlias 'aclClass', 'ac'
 			or {
 				for (ObjectIdentity objectIdentity in objectIdentities) {
@@ -136,6 +138,8 @@ class GormAclLookupStrategy implements LookupStrategy {
 			}
 			order 'objectId', 'asc'
 		}
+
+		unwrapProxies aclObjectIdentities
 
 		Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap = findAcls(aclObjectIdentities)
 
@@ -152,6 +156,15 @@ class GormAclLookupStrategy implements LookupStrategy {
 		}
 
 		return result
+	}
+
+	protected void unwrapProxies(List<AclObjectIdentity> aclObjectIdentities) {
+		if (!hibernateProxyHandler) {
+			return
+		}
+		for (ListIterator<AclObjectIdentity> iter = aclObjectIdentities.listIterator(); iter.hasNext(); ) {
+			iter.set hibernateProxyHandler.unwrapIfProxy(iter.next())
+		}
 	}
 
 	protected Map<AclObjectIdentity, List<AclEntry>> findAcls(
@@ -303,5 +316,18 @@ class GormAclLookupStrategy implements LookupStrategy {
 		if (parents) {
 			lookupParents acls, parents, sids
 		}
+	}
+
+	protected void findAceAclField() {
+		aceAclField = ReflectionUtils.findField(AccessControlEntryImpl, 'acl')
+		aceAclField.accessible = true
+	}
+
+	protected void createHibernateProxyHandler() {
+		try {
+			Class<?> c = lookupClass('org.codehaus.groovy.grails.orm.hibernate.proxy.HibernateProxyHandler')
+			hibernateProxyHandler = c.newInstance()
+		}
+		catch (ignored) {}
 	}
 }
