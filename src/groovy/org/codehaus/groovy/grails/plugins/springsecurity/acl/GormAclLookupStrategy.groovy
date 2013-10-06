@@ -111,17 +111,20 @@ class GormAclLookupStrategy implements LookupStrategy {
 
 		Map<Serializable, Acl> acls = [:] // contains Acls with StubAclParents
 
-		def hql = new StringBuilder("FROM $AclObjectIdentity.name WHERE 1=0 ")
-		def params = [:]
-		for (ObjectIdentity objectIdentity in objectIdentities) {
-			hql.append ' OR (objectId = :objectId AND aclClass.className = :className) '
-			params.objectId = objectIdentity.identifier
-			params.className = objectIdentity.type
-		}
-		hql.append ' ORDER BY objectId ASC'
-
-		def aclObjectIdentities = AclObjectIdentity.executeQuery(hql.toString(), params)
-		Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap = findAcls(aclObjectIdentities)
+        def aclObjectIdentities = AclObjectIdentity.withCriteria {
+            for (ObjectIdentity objectIdentity in objectIdentities) {
+                or {
+                    eq('objectId', objectIdentity.identifier)
+                    aclClass {
+                        eq('className', objectIdentity.type)
+                    }
+                }
+            }
+            join 'aclClass'
+            order('objectId', 'asc')
+        }
+        
+        Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap = findAcls(aclObjectIdentities)
 
 		List<AclObjectIdentity> parents = convertEntries(aclObjectIdentityMap, acls, sids)
 		if (parents) {
@@ -141,13 +144,12 @@ class GormAclLookupStrategy implements LookupStrategy {
 	protected Map<AclObjectIdentity, List<AclEntry>> findAcls(
 			List<AclObjectIdentity> aclObjectIdentities) {
 
-		List<AclEntry> entries
+		List<AclEntry> entries = []
 		if (aclObjectIdentities) {
-			entries = AclEntry.executeQuery(
-					"FROM $AclEntry.name " +
-					"WHERE aclObjectIdentity IN (:aclObjectIdentities) " +
-					"ORDER BY aceOrder ASC",
-					[aclObjectIdentities: aclObjectIdentities])
+			entries = AclEntry.withCriteria {
+                'in'('aclObjectIdentity', aclObjectIdentities)
+                order('aceOrder', 'asc')
+			}
 		}
 
 		def map = [:]
