@@ -14,8 +14,8 @@
  */
 package grails.plugin.springsecurity.acl
 
-import org.apache.log4j.Level
-import org.apache.log4j.Logger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.security.acls.domain.AccessControlEntryImpl
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.ObjectIdentityImpl
@@ -44,7 +44,7 @@ import org.springframework.util.Assert
  */
 class AclService implements MutableAclService {
 
-	private final Logger log = Logger.getLogger(getClass())
+	protected final Logger log = LoggerFactory.getLogger(getClass())
 
 	/** Dependency injection for aclLookupStrategy. */
 	def aclLookupStrategy
@@ -308,7 +308,7 @@ class AclService implements MutableAclService {
 	protected save(bean) {
 		bean.validate()
 		if (bean.hasErrors()) {
-			if (log.isEnabledFor(Level.WARN)) {
+			if (log.isWarnEnabled()) {
 				def message = new StringBuilder(
 						"problem creating ${bean.getClass().simpleName}: $bean")
 				def locale = Locale.getDefault()
