@@ -30,7 +30,7 @@ These depend on an @ErrorsController@:
 {code}
 package com.yourcompany.yourapp
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['permitAll'])
 class ErrorsController {

@@ -21,8 +21,6 @@ import test.TestReport as Report
  */
 class TestStaticConfiguredService {
 
-	static transactional = true
-
 	static springSecurityACL = [
 		getReportName: ['ROLE_USER', 'ROLE_ADMIN'],
 		getAllReports: ['ROLE_USER', 'AFTER_ACL_COLLECTION_READ'],

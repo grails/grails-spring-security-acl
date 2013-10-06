@@ -14,7 +14,7 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.acl;
 
-import grails.plugins.springsecurity.Secured;
+import grails.plugin.springsecurity.annotation.Secured;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -34,7 +34,7 @@ import org.springframework.security.access.method.AbstractFallbackMethodSecurity
  */
 public class SecuredAnnotationSecurityMetadataSource extends AbstractFallbackMethodSecurityMetadataSource {
 
-	private Collection<String> _serviceClassNames;
+	private Collection<String> serviceClassNames;
 
 	/**
 	 * {@inheritDoc}
@@ -92,7 +92,7 @@ public class SecuredAnnotationSecurityMetadataSource extends AbstractFallbackMet
 	}
 
 	protected boolean isService(final Class<?> clazz) {
-		for (String name : _serviceClassNames) {
+		for (String name : serviceClassNames) {
 			if (name.equals(clazz.getName())) {
 				return true;
 			}
@@ -102,9 +102,9 @@ public class SecuredAnnotationSecurityMetadataSource extends AbstractFallbackMet
 
 	/**
 	 * Dependency injection for current service class names.
-	 * @param serviceClassNames  the names
+	 * @param names the names
 	 */
-	public void setServiceClassNames(final Collection<String> serviceClassNames) {
-		_serviceClassNames = serviceClassNames;
+	public void setServiceClassNames(final Collection<String> names) {
+		serviceClassNames = names;
 	}
 }

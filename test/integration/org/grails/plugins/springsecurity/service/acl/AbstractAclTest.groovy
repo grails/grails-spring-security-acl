@@ -16,7 +16,7 @@ package org.grails.plugins.springsecurity.service.acl
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.GrantedAuthorityImpl
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 
 import test.TestReport as Report
@@ -70,7 +70,7 @@ abstract class AbstractAclTest extends GroovyTestCase {
 
 	protected Authentication createAuth(String username, String role) {
 		new UsernamePasswordAuthenticationToken(
-				username, 'password', [new GrantedAuthorityImpl(role)])
+				username, 'password', [new SimpleGrantedAuthority(role)])
 	}
 
 	protected createAdminAuth() {

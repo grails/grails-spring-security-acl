@@ -14,8 +14,7 @@
  */
 package test
 
-
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
@@ -23,7 +22,7 @@ import grails.plugins.springsecurity.Secured
 @Secured(['ROLE_ADMIN'])
 class TestClassAnnotatedService {
 
-	static transactional = true
+	static transactional = false
 
 	void notAnnotated() {}
 

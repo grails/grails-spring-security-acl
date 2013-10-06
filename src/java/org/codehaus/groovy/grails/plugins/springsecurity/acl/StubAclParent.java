@@ -32,14 +32,14 @@ public class StubAclParent implements Acl {
 
 	private static final long serialVersionUID = 1;
 
-	private final Long _id;
+	private final Long id;
 
 	/**
 	 * Constructor.
 	 * @param id  the id
 	 */
 	public StubAclParent(final Long id) {
-		_id = id;
+		this.id = id;
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class StubAclParent implements Acl {
 	 * @return  the id
 	 */
 	public Long getId() {
-		return _id;
+		return id;
 	}
 
 	/**

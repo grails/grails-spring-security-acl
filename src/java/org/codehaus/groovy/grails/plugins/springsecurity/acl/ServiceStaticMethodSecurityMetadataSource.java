@@ -32,9 +32,9 @@ import org.springframework.security.access.method.AbstractFallbackMethodSecurity
  */
 public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackMethodSecurityMetadataSource {
 
-	private final Map<String, Map<String, List<ConfigAttribute>>> _methodConfigs =
+	private final Map<String, Map<String, List<ConfigAttribute>>> methodConfigs =
 		new HashMap<String, Map<String,List<ConfigAttribute>>>();
-	private final Map<String, List<ConfigAttribute>> _classConfigs =
+	private final Map<String, List<ConfigAttribute>> classConfigs =
 		new HashMap<String, List<ConfigAttribute>>();
 
 	/**
@@ -44,7 +44,7 @@ public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackM
 	 */
 	@Override
 	protected Collection<ConfigAttribute> findAttributes(final Class<?> clazz) {
-		return _classConfigs.get(ProxyUtils.unproxy(clazz).getName());
+		return classConfigs.get(ProxyUtils.unproxy(clazz).getName());
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackM
 	protected Collection<ConfigAttribute> findAttributes(final Method method, final Class<?> targetClass) {
 		Class<?> actualClass = ProxyUtils.unproxy(targetClass);
 		Method actualMethod = ProxyUtils.unproxy(method);
-		Map<String, List<ConfigAttribute>> configs = _methodConfigs.get(actualClass.getName());
+		Map<String, List<ConfigAttribute>> configs = methodConfigs.get(actualClass.getName());
 		return configs == null ? null : configs.get(actualMethod.getName());
 	}
 
@@ -78,7 +78,7 @@ public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackM
 			return;
 		}
 
-		populateMap(_classConfigs, classConfigNames);
+		populateMap(classConfigs, classConfigNames);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackM
 		for (Map.Entry<String, Map<String, List<String>>> entry : methodConfigNames.entrySet()) {
 			Map<String, List<ConfigAttribute>> configs = new HashMap<String, List<ConfigAttribute>>();
 			populateMap(configs, entry.getValue());
-			_methodConfigs.put(entry.getKey(), configs);
+			methodConfigs.put(entry.getKey(), configs);
 		}
 	}
 

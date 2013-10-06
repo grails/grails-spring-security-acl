@@ -48,8 +48,8 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 
 	private final static List<ConfigAttribute> NULL_CONFIG_ATTRIBUTE = Collections.emptyList();
 
-	private List<MethodSecurityMetadataSource> _methodSecurityMetadataSources;
-	private final Map<DefaultCacheKey, Collection<ConfigAttribute>> _cache =
+	private List<MethodSecurityMetadataSource> methodSecurityMetadataSources;
+	private final Map<DefaultCacheKey, Collection<ConfigAttribute>> cache =
 		new HashMap<DefaultCacheKey, Collection<ConfigAttribute>>();
 
 	/**
@@ -63,8 +63,8 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 		Class<?> targetClass = ProxyUtils.unproxy(tc);
 
 		DefaultCacheKey cacheKey = new DefaultCacheKey(method, targetClass);
-		synchronized (_cache) {
-			Collection<ConfigAttribute> cached = _cache.get(cacheKey);
+		synchronized (cache) {
+			Collection<ConfigAttribute> cached = cache.get(cacheKey);
 			// Check for canonical value indicating there is no config attribute,
 			if (cached == NULL_CONFIG_ATTRIBUTE) {
 				return null;
@@ -76,7 +76,7 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 
 			// No cached value, so query the sources to find a result
 			Collection<ConfigAttribute> attributes = null;
-			for (MethodSecurityMetadataSource s : _methodSecurityMetadataSources) {
+			for (MethodSecurityMetadataSource s : methodSecurityMetadataSources) {
 				attributes = s.getAttributes(method, targetClass);
 				if (attributes != null && !attributes.isEmpty()) {
 					break;
@@ -85,7 +85,7 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 
 			// Put it in the cache.
 			if (attributes == null) {
-				_cache.put(cacheKey, NULL_CONFIG_ATTRIBUTE);
+				cache.put(cacheKey, NULL_CONFIG_ATTRIBUTE);
 				return null;
 			}
 
@@ -93,7 +93,7 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 				logger.debug("Adding security method [" + cacheKey + "] with attributes " + attributes);
 			}
 
-			_cache.put(cacheKey, attributes);
+			cache.put(cacheKey, attributes);
 
 			return attributes;
 		}
@@ -105,7 +105,7 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 	 */
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
 		Set<ConfigAttribute> set = new HashSet<ConfigAttribute>();
-		for (MethodSecurityMetadataSource s : _methodSecurityMetadataSources) {
+		for (MethodSecurityMetadataSource s : methodSecurityMetadataSources) {
 			Collection<ConfigAttribute> attrs = s.getAllConfigAttributes();
 			if (attrs != null) {
 				set.addAll(attrs);
@@ -119,7 +119,7 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 	 * @param sources  the sources
 	 */
 	public void setMethodSecurityMetadataSources(final List<MethodSecurityMetadataSource> sources) {
-		_methodSecurityMetadataSources = sources;
+		methodSecurityMetadataSources = sources;
 	}
 
 	/**
@@ -127,16 +127,16 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() {
-		Assert.notEmpty(_methodSecurityMetadataSources, "A list of MethodSecurityMetadataSources is required");
+		Assert.notEmpty(methodSecurityMetadataSources, "A list of MethodSecurityMetadataSources is required");
 	}
 
 	private static class DefaultCacheKey {
-		private final Method _method;
-		private final Class<?> _targetClass;
+		private final Method method;
+		private final Class<?> targetClass;
 
-		DefaultCacheKey(final Method method, final Class<?> targetClass) {
-			_method = method;
-			_targetClass = targetClass;
+		DefaultCacheKey(final Method m, final Class<?> target) {
+			method = m;
+			targetClass = target;
 		}
 
 		@Override
@@ -148,18 +148,18 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 				return false;
 			}
 			DefaultCacheKey otherKey = (DefaultCacheKey) other;
-			return (_method.equals(otherKey._method) &&
-					ObjectUtils.nullSafeEquals(_targetClass, otherKey._targetClass));
+			return (method.equals(otherKey.method) &&
+					ObjectUtils.nullSafeEquals(targetClass, otherKey.targetClass));
 		}
 
 		@Override
 		public int hashCode() {
-			return _method.hashCode() * 21 + (_targetClass != null ? _targetClass.hashCode() : 0);
+			return method.hashCode() * 21 + (targetClass != null ? targetClass.hashCode() : 0);
 		}
 
 		@Override
 		public String toString() {
-			return "CacheKey[" + (_targetClass == null ? "-" : _targetClass.getName()) + "; " + _method + "]";
+			return "CacheKey[" + (targetClass == null ? "-" : targetClass.getName()) + "; " + method + "]";
 		}
 	}
 }

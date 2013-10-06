@@ -23,8 +23,6 @@ import test.TestReport as Report
  */
 class TestSpringAnnotatedService {
 
-	static transactional = true
-
 	@Secured(['ROLE_USER', 'AFTER_ACL_READ'])
 	Report getReport(long id) {
 		Report.get id

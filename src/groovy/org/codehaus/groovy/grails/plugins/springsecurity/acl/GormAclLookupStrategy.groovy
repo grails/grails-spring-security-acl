@@ -14,6 +14,8 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.acl
 
+import java.lang.reflect.Field
+
 import org.springframework.security.acls.domain.AccessControlEntryImpl
 import org.springframework.security.acls.domain.AclImpl
 import org.springframework.security.acls.domain.GrantedAuthoritySid
@@ -26,6 +28,7 @@ import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
 import org.springframework.util.Assert
+import org.springframework.util.ReflectionUtils
 
 /**
  * GORM implementation of {@link LookupStrategy}. Ported from <code>BasicLookupStrategy</code>.
@@ -33,6 +36,13 @@ import org.springframework.util.Assert
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 class GormAclLookupStrategy implements LookupStrategy {
+
+	protected Field aceAclField
+
+	GormAclLookupStrategy() {
+		aceAclField = ReflectionUtils.findField(AccessControlEntryImpl, 'acl')
+		aceAclField.accessible = true
+	}
 
 	/** Dependency injection for aclAuthorizationStrategy. */
 	def aclAuthorizationStrategy
@@ -182,10 +192,11 @@ class GormAclLookupStrategy implements LookupStrategy {
 
 		List acesNew = []
 		for (AccessControlEntryImpl ace in inputAcl.@aces) {
-			ace.@acl = result
+			ReflectionUtils.setField aceAclField, ace, result
 			acesNew << ace
 		}
-		result.@aces = acesNew
+		result.@aces.clear()
+		result.@aces.addAll acesNew
 
 		return result
 	}

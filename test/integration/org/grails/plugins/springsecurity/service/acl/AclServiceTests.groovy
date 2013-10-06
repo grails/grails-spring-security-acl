@@ -32,7 +32,7 @@ import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
 import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.GrantedAuthorityImpl
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 
 import test.TestReport as Report
@@ -42,8 +42,7 @@ import test.TestReport as Report
  */
 class AclServiceTests extends GroovyTestCase {
 
-	private final Authentication auth = new TestingAuthenticationToken(
-			'ben', 'ignored', new GrantedAuthorityImpl('ROLE_ADMIN'))
+	private final Authentication auth = new TestingAuthenticationToken('ben', 'ignored', 'ROLE_ADMIN')
 
 	private final ObjectIdentity topParentOid = new ObjectIdentityImpl(Report, 100L)
 	private final ObjectIdentity middleParentOid = new ObjectIdentityImpl(Report, 101L)

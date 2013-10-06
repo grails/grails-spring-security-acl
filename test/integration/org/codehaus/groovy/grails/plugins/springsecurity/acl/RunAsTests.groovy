@@ -14,7 +14,8 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.acl
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
+
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder as SCH

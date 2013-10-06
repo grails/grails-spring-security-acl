@@ -31,7 +31,7 @@ import org.springframework.security.core.Authentication;
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-public class GroovyAwareAclVoter implements AccessDecisionVoter {
+public class GroovyAwareAclVoter implements AccessDecisionVoter<MethodInvocation> {
 
 	private static final List<String> NON_SECURABLE_METHODS = new ArrayList<String>(Arrays.asList(
 			"invokeMethod", "getMetaClass", "setMetaClass", "getProperty", "setProperty",
@@ -42,30 +42,16 @@ public class GroovyAwareAclVoter implements AccessDecisionVoter {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.AccessDecisionVoter#supports(org.springframework.security.access.ConfigAttribute)
-	 */
 	public boolean supports(final ConfigAttribute attribute) {
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.AccessDecisionVoter#supports(java.lang.Class)
-	 */
 	public boolean supports(final Class<?> clazz) {
 		return clazz.isAssignableFrom(MethodInvocation.class);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.AccessDecisionVoter#vote(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection)
-	 */
-	public int vote(final Authentication authentication, final Object object,
-			final Collection<ConfigAttribute> attributes) {
-
-		if (NON_SECURABLE_METHODS.contains(((MethodInvocation)object).getMethod().getName())) {
+	public int vote(final Authentication authentication, final MethodInvocation object, final Collection<ConfigAttribute> attributes) {
+		if (NON_SECURABLE_METHODS.contains(object.getMethod().getName())) {
 			return ACCESS_GRANTED;
 		}
 

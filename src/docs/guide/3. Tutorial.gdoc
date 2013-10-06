@@ -251,7 +251,7 @@ package com.testacl
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.acls.model.Permission
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['ROLE_USER'])
 class ReportController {
@@ -395,7 +395,7 @@ and add this code:
 {code}
 package com.testacl
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['permitAll'])
 class ErrorsController {

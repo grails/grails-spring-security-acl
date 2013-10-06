@@ -14,9 +14,11 @@
  */
 package test
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 class TestRunAsService {
+
+	static transactional = false
 
 	def testSecureService
 

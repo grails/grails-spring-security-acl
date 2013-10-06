@@ -12,17 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.lang.reflect.Method
 
-import grails.plugins.springsecurity.Secured as GrailsSecured
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.annotation.Secured as GrailsSecured
 import grails.plugins.springsecurity.acl.AclVoter
 import grails.plugins.springsecurity.acl.AclVoters
 import grails.util.GrailsNameUtils
 
-import org.apache.log4j.Logger
+import java.lang.reflect.Method
 
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.ClassLoaderPerProxyBeanNameAutoProxyCreator
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.GormAclLookupStrategy
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.GormObjectIdentityRetrievalStrategy
@@ -32,14 +31,13 @@ import org.codehaus.groovy.grails.plugins.springsecurity.acl.ProxyAwareDelegatin
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.ProxyAwareParameterNameDiscoverer
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.SecuredAnnotationSecurityMetadataSource as GrailsSecuredAnnotationSecurityMetadataSource
 import org.codehaus.groovy.grails.plugins.springsecurity.acl.ServiceStaticMethodSecurityMetadataSource
-
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
+import org.springframework.core.ParameterNameDiscoverer
 import org.springframework.expression.spel.standard.SpelExpressionParser
-import org.springframework.security.access.ConfigAttribute
-import org.springframework.security.access.SecurityConfig
 import org.springframework.security.access.annotation.Secured as SpringSecured
 import org.springframework.security.access.annotation.SecuredAnnotationSecurityMetadataSource as SpringSecuredAnnotationSecurityMetadataSource
+import org.springframework.security.access.PermissionCacheOptimizer
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
 import org.springframework.security.access.expression.method.ExpressionBasedAnnotationAttributeFactory
 import org.springframework.security.access.expression.method.ExpressionBasedPostInvocationAdvice
@@ -48,8 +46,6 @@ import org.springframework.security.access.intercept.AfterInvocationProviderMana
 import org.springframework.security.access.intercept.RunAsImplAuthenticationProvider
 import org.springframework.security.access.intercept.RunAsManagerImpl
 import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor
-import org.springframework.security.access.intercept.aopalliance.MethodSecurityMetadataSourceAdvisor
-import org.springframework.security.access.method.MapBasedMethodSecurityMetadataSource
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PostInvocationAdviceProvider
@@ -59,17 +55,20 @@ import org.springframework.security.access.prepost.PreInvocationAuthorizationAdv
 import org.springframework.security.access.prepost.PrePostAnnotationSecurityMetadataSource
 import org.springframework.security.access.vote.AffirmativeBased
 import org.springframework.security.acls.AclEntryVoter
+import org.springframework.security.acls.AclPermissionCacheOptimizer
 import org.springframework.security.acls.AclPermissionEvaluator
 import org.springframework.security.acls.afterinvocation.AclEntryAfterInvocationCollectionFilteringProvider
 import org.springframework.security.acls.afterinvocation.AclEntryAfterInvocationProvider
 import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.DefaultPermissionFactory
+import org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy
 import org.springframework.security.acls.domain.EhCacheBasedAclCache
 import org.springframework.security.acls.domain.SidRetrievalStrategyImpl
+import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy
+import org.springframework.security.acls.model.SidRetrievalStrategy
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
-import org.springframework.security.core.authority.GrantedAuthorityImpl
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
@@ -89,8 +88,8 @@ class SpringSecurityAclGrailsPlugin {
 
 	String author = 'Burt Beckwith'
 	String authorEmail = 'beckwithb@vmware.com'
-	String title = 'ACL support for the Spring Security plugin.'
-	String description = 'ACL support for the Spring Security plugin.'
+	String title = 'Spring Security ACL plugin'
+	String description = 'ACL support for the Spring Security plugin'
 	String documentation = 'http://grails.org/plugin/spring-security-acl'
 
 	String license = 'APACHE'
@@ -113,7 +112,11 @@ class SpringSecurityAclGrailsPlugin {
 			return
 		}
 
-		println '\nConfiguring Spring Security ACL ...'
+		boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
+
+		if (printStatusMessages) {
+			println '\nConfiguring Spring Security ACL ...'
+		}
 
 		if (conf.useRunAs) {
 			SpringSecurityUtils.registerProvider 'runAsAuthenticationProvider'
@@ -138,7 +141,9 @@ class SpringSecurityAclGrailsPlugin {
 		configureSecurityMetadataSource.delegate = delegate
 		configureSecurityMetadataSource conf, voterConfig, application
 
-		println '... finished configuring Spring Security ACL\n'
+		if (printStatusMessages) {
+			println '... finished configuring Spring Security ACL\n'
+		}
 	}
 
 	def doWithApplicationContext = { ctx ->
@@ -168,7 +173,9 @@ class SpringSecurityAclGrailsPlugin {
 			cacheManager = ref('aclCacheManager')
 			cacheName = 'aclCache'
 		}
-		aclCache(EhCacheBasedAclCache, ehcacheAclCache)
+		aclCache(EhCacheBasedAclCache, ref('ehcacheAclCache'), ref('aclPermissionGrantingStrategy'), ref('aclAuthorizationStrategy'))
+
+		aclPermissionGrantingStrategy(DefaultPermissionGrantingStrategy, ref('aclAuditLogger'))
 
 		aclAuthorizationStrategy(AclAuthorizationStrategyImpl,
 				AuthorityUtils.createAuthorityList(
@@ -207,11 +214,17 @@ class SpringSecurityAclGrailsPlugin {
 
 		expressionParser(SpelExpressionParser)
 
+		aclPermissionCacheOptimizer(AclPermissionCacheOptimizer, ref('aclService')) {
+			objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
+			sidRetrievalStrategy = ref('sidRetrievalStrategy')
+		}
+
 		expressionHandler(DefaultMethodSecurityExpressionHandler) {
 			parameterNameDiscoverer = ref('parameterNameDiscoverer')
-			permissionEvaluator = ref('permissionEvaluator')
+			permissionCacheOptimizer = ref('aclPermissionCacheOptimizer')
+			expressionParser = ref('expressionParser')
 			roleHierarchy = ref('roleHierarchy')
-			trustResolver = ref('authenticationTrustResolver')
+			permissionEvaluator = ref('permissionEvaluator')
 		}
 	}
 
@@ -276,10 +289,11 @@ class SpringSecurityAclGrailsPlugin {
 
 		groovyAwareAclVoter(GroovyAwareAclVoter)
 
-		def aclAccessDecisionManagerDecisionVoters = [ref('roleVoter'),
-		                                              ref('authenticatedVoter'),
-		                                              ref('preInvocationVoter'),
-		                                              ref('groovyAwareAclVoter')]
+		def aclAccessDecisionManagerDecisionVoters = [
+			ref('roleVoter'),
+			ref('authenticatedVoter'),
+			ref('preInvocationVoter'),
+			ref('groovyAwareAclVoter')]
 
 		voterConfig.each { beanName, voterData ->
 			"$beanName"(AclEntryVoter, ref('aclService'), voterData.configAttribute, voterData.permissions) {
@@ -338,24 +352,26 @@ class SpringSecurityAclGrailsPlugin {
 		}
 		springSecuredAnnotationSecurityMetadataSource(SpringSecuredAnnotationSecurityMetadataSource)
 
-		def metadataSources = [ref('prePostAnnotationSecurityMetadataSource'),
-		                       ref('springSecuredAnnotationSecurityMetadataSource'),
-		                       ref('serviceStaticMethodSecurityMetadataSource')]
+		def metadataSources = [
+			ref('prePostAnnotationSecurityMetadataSource'),
+			ref('springSecuredAnnotationSecurityMetadataSource'),
+			ref('serviceStaticMethodSecurityMetadataSource')]
 		aclSecurityMetadataSource(ProxyAwareDelegatingMethodSecurityMetadataSource) {
 			methodSecurityMetadataSources = metadataSources
 		}
 
-		postInvocationProvider(PostInvocationAdviceProvider, ref('postInvocationAdvice'))
-		afterInvocationManager(AfterInvocationProviderManager) {
-			providers = [ref('postInvocationProvider'),
-			             ref('afterAclRead'),
-			             ref('afterAclCollectionRead')]
+		aclPostInvocationProvider(PostInvocationAdviceProvider, ref('postInvocationAdvice'))
+		aclAfterInvocationManager(AfterInvocationProviderManager) {
+			providers = [
+				ref('aclPostInvocationProvider'),
+				ref('afterAclRead'),
+				ref('afterAclCollectionRead')]
 		}
 
 		methodSecurityInterceptor(MethodSecurityInterceptor) {
 			accessDecisionManager = ref('aclAccessDecisionManager')
 			authenticationManager = ref('authenticationManager')
-			afterInvocationManager = ref('afterInvocationManager')
+			afterInvocationManager = ref('aclAfterInvocationManager')
 			securityMetadataSource = ref('aclSecurityMetadataSource')
 			runAsManager = ref('runAsManager')
 			validateConfigAttributes = false
@@ -443,9 +459,10 @@ class SpringSecurityAclGrailsPlugin {
 				for (String permissionName in annotation.permissions()) {
 					permissions << BasePermission."$permissionName"
 				}
-				config[annotation.name()] = [configAttribute: annotation.configAttribute(),
-				                             domainObjectClass: dc.clazz,
-				                             permissions: permissions]
+				config[annotation.name()] = [
+					configAttribute: annotation.configAttribute(),
+					domainObjectClass: dc.clazz,
+					permissions: permissions]
 			}
 		}
 

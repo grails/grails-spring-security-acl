@@ -41,15 +41,14 @@ import org.springframework.util.Assert
  * GORM implementation of {@link org.springframework.security.acls.model.AclService} and {@link MutableAclService}.
  * Ported from <code>JdbcAclService</code> and <code>JdbcMutableAclService</code>.
  *
+ * Individual methods are @Transactional since NotFoundException
+ * is a runtime exception and will cause an unwanted transaction rollback
+ *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 class AclService implements MutableAclService {
 
 	private final Logger log = Logger.getLogger(getClass())
-
-	// individual methods are @Transactional since NotFoundException
-	// is a runtime exception and will cause an unwanted transaction rollback
-	static transactional = false
 
 	/** Dependency injection for aclLookupStrategy. */
 	def aclLookupStrategy

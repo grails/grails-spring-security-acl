@@ -14,7 +14,9 @@
  */
 package test
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
+
+import org.springframework.transaction.annotation.Transactional
 
 import test.TestReport as Report
 
@@ -23,13 +25,12 @@ import test.TestReport as Report
 */
 class TestGrailsAnnotatedService {
 
-	static transactional = true
-
 	@Secured(['ROLE_USER', 'AFTER_ACL_READ'])
 	Report getReport(long id) {
 		Report.get id
 	}
 
+	@Transactional
 	Report createReport(params) {
 		Report report = new Report(params)
 		report.save()
@@ -43,6 +44,7 @@ class TestGrailsAnnotatedService {
 	String getReportName(long id) { Report.get(id).name }
 
 	@Secured(['ACL_REPORT_WRITE'])
+	@Transactional
 	Report updateReport(Report report, params) {
 		report.properties = params
 		report.save()
