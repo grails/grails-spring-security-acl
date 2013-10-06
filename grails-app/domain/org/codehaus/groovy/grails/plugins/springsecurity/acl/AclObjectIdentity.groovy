@@ -20,8 +20,21 @@ import grails.plugins.springsecurity.acl.AbstractAclObjectIdentity
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 class AclObjectIdentity extends AbstractAclObjectIdentity {
-
-	Long objectId
+	
+	static {
+		println "PLUGIN -----------------> AclObjectIdentity"
+	}
+	
+	/* This change should be unnecessary because Spring Security ACL allows overriding
+	 * the Domain classes, but for some reason, my version of the domain classes are not
+	 * being called so I've had to override in the already forked plugin.
+	 *
+	 * I have tried many different approaches to getting my Domain class to be used:
+	 * • grails clean
+	 * • rm -rf ~/.grails
+	 * • removing forked plugin and using BuildConfig dependency
+	 */
+	String objectId
 
 	@Override
 	String toString() {
