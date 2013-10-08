@@ -4,9 +4,14 @@ bc.
 $ grails create-app acltest
 $ cd acltest
 
-Install the plugin:
-bc.
-$ grails install-plugin spring-security-acl
+Install the plugin by adding it to the plugins section in BuildConfig.groovy:
+
+{code}
+plugins {
+   ...
+   runtime ":spring-security-acl:2.0-RC1"
+}
+{code}
 
 This will install the [Spring Security Core|http://grails.org/plugin/spring-security-core] plugin, so you'll need to configure that by running the @s2-quickstart@ script:
 
