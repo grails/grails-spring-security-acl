@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.codehaus.groovy.grails.commons.ControllerArtefactHandler;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsClass;
 import org.codehaus.groovy.grails.commons.GrailsClassUtils;
@@ -98,6 +99,12 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 	}
 
 	protected boolean shouldProxy(final Class<?> c, final String beanName) {
+
+		if (grailsApplication.isArtefactOfType(ControllerArtefactHandler.TYPE, c)) {
+			// pre and post annotations don't make sense, and @Secured is handled by url checks
+			return false;
+		}
+
 		boolean hasSpringSecurityACL = GrailsClassUtils.isStaticProperty(c, "springSecurityACL");
 		if (hasSpringSecurityACL || beanIsAnnotated(c)) {
 			if (log.isDebugEnabled()) log.debug("Secure '{0}' instances of {1}", new Object[] { beanName, c.getName() });
