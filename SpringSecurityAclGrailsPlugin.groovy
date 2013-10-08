@@ -60,8 +60,8 @@ import org.springframework.security.core.authority.AuthorityUtils
  */
 class SpringSecurityAclGrailsPlugin {
 
-	String version = '1.1.1'
-	String grailsVersion = '1.3 > *'
+	String version = '2.0-RC1'
+	String grailsVersion = '2.0 > *'
 	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
 		'docs/**',
@@ -72,10 +72,10 @@ class SpringSecurityAclGrailsPlugin {
 	]
 
 	String author = 'Burt Beckwith'
-	String authorEmail = 'beckwithb@vmware.com'
+	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'Spring Security ACL plugin'
 	String description = 'ACL support for the Spring Security plugin'
-	String documentation = 'http://grails.org/plugin/spring-security-acl'
+	String documentation = 'http://grails-plugins.github.io/grails-spring-security-acl/'
 
 	String license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
