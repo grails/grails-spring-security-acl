@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3 Tutorial 2.0-RC1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction to the Spring Security ACL Plugin</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/tutorial.html"><strong>3</strong><span>Tutorial</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/sampleApp.html"><strong>4</strong><span>Sample Application</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>ACL support for the Spring Security plugin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/usage.html">&lt;&lt; <strong>2</strong><span>Usage</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/sampleApp.html"><strong>4</strong><span>Sample Application</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3 Tutorial - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Burt Beckwith</p>
+
+                    <p><strong>Version:</strong> 2.0-RC1</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="tutorial">3 Tutorial</h1>
+First create a test application:<p class="paragraph"/><pre class="bq"><code>
+$ grails create-app acltest
+$ cd acltest</code></pre><p class="paragraph"/>Install the plugin by adding it to the plugins section in BuildConfig.groovy:<p class="paragraph"/><div class="code"><pre>plugins &#123;
+   &#8230;
+   runtime ':spring&#45;security&#45;acl:2.0&#45;RC1'
+&#125;</pre></div><p class="paragraph"/>This will install the <a href="http://grails.org/plugin/spring-security-core" target="blank">Spring Security Core</a> plugin, so you'll need to configure that by running the <code>s2-quickstart</code> script:<p class="paragraph"/><pre class="bq"><code>
+$ grails s2-quickstart com.testacl User Role</code></pre><p class="paragraph"/>The ACL support uses domain classes but to allow customizing the domain classes (e.g. to enable Hibernate 2nd-level caching) there's a script that copies the domain classes into your application, <code>s2-create-acl-domains</code>. This script is run when the plugin is installed (otherwise the plugin code wouldn't compile) but you can run it again to re-create the domain classes:
+<pre class="bq"><code>
+$ grails s2-create-acl-domains</code></pre><p class="paragraph"/>Note that you cannot change the domain class names or packages since they're used by the plugin. The domain class mappings are configured to generate the same DDL as is required by the standard Spring Security JDBC implementation for portability.<p class="paragraph"/>We'll need a domain class to test with, so create a <code>Report</code> domain class:
+<pre class="bq"><code>
+$ grails create-domain-class com.testacl.Report</code></pre><p class="paragraph"/>and add a <code>name</code> property for testing:
+<div class="code"><pre><span class="java&#45;keyword">package</span> com.testacl<p class="paragraph"/>class Report &#123;
+   <span class="java&#45;object">String</span> name
+&#125;</pre></div><p class="paragraph"/>Next we'll create a service to test ACLs:
+<pre class="bq"><code>
+$ grails create-service com.testacl.Report</code></pre><p class="paragraph"/>and add some methods that work with <code>Report</code>s:
+<div class="code"><pre><span class="java&#45;keyword">package</span> com.testacl<p class="paragraph"/><span class="java&#45;keyword">import</span> org.springframework.security.access.prepost.PostFilter
+<span class="java&#45;keyword">import</span> org.springframework.security.access.prepost.PreAuthorize
+<span class="java&#45;keyword">import</span> org.springframework.security.acls.domain.BasePermission
+<span class="java&#45;keyword">import</span> org.springframework.security.acls.model.Permission
+<span class="java&#45;keyword">import</span> org.springframework.transaction.annotation.Transactional<p class="paragraph"/>class ReportService &#123;<p class="paragraph"/>   def aclPermissionFactory
+   def aclService
+   def aclUtilService
+   def springSecurityService<p class="paragraph"/>   void addPermission(Report report, <span class="java&#45;object">String</span> username, <span class="java&#45;object">int</span> permission) &#123;
+      addPermission report, username,
+           aclPermissionFactory.buildFromMask(permission)
+   &#125;<p class="paragraph"/>   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;report, admin)"</span>)
+   @Transactional
+   void addPermission(Report report, <span class="java&#45;object">String</span> username,
+                      Permission permission) &#123;
+      aclUtilService.addPermission report, username, permission
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasRole('ROLE_USER')"</span>)
+   Report create(<span class="java&#45;object">String</span> name) &#123;
+      Report report = <span class="java&#45;keyword">new</span> Report(name: name)
+      report.save()<p class="paragraph"/>      // Grant the current principal administrative permission
+      addPermission report, springSecurityService.authentication.name,
+                    BasePermission.ADMINISTRATION<p class="paragraph"/>      report
+   &#125;<p class="paragraph"/>   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;id, 'com.testacl.Report', read) or "</span> +
+                 <span class="java&#45;quote">"hasPermission(&#35;id, 'com.testacl.Report', admin)"</span>)
+   Report get(<span class="java&#45;object">long</span> id) &#123;
+      Report.get id
+   &#125;<p class="paragraph"/>   @PreAuthorize(<span class="java&#45;quote">"hasRole('ROLE_USER')"</span>)
+   @PostFilter(<span class="java&#45;quote">"hasPermission(filterObject, read) or "</span> +
+               <span class="java&#45;quote">"hasPermission(filterObject, admin)"</span>)
+   List&#60;Report&#62; list(Map params) &#123;
+      Report.list params
+   &#125;<p class="paragraph"/>   <span class="java&#45;object">int</span> count() &#123;
+      Report.count()
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;report, write) or "</span> +
+                 <span class="java&#45;quote">"hasPermission(&#35;report, admin)"</span>)
+   void update(Report report, <span class="java&#45;object">String</span> name) &#123;
+      report.name = name
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;report, delete) or "</span> +
+                 <span class="java&#45;quote">"hasPermission(&#35;report, admin)"</span>)
+   void delete(Report report) &#123;
+      report.delete()<p class="paragraph"/>      // Delete the ACL information as well
+      aclUtilService.deleteAcl report
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;report, admin)"</span>)
+   void deletePermission(Report report, <span class="java&#45;object">String</span> username, Permission permission) &#123;
+      def acl = aclUtilService.readAcl(report)<p class="paragraph"/>      // Remove all permissions associated with <span class="java&#45;keyword">this</span> particular
+      // recipient (string equality to KISS)
+      acl.entries.eachWithIndex &#123; entry, i &#45;&#62;
+         <span class="java&#45;keyword">if</span> (entry.sid.equals(recipient) &#38;&#38;
+               entry.permission.equals(permission)) &#123;
+            acl.deleteAce i
+         &#125;
+      &#125;<p class="paragraph"/>      aclService.updateAcl acl
+   &#125;
+&#125;</pre></div><p class="paragraph"/>The configuration specifies these rules:
+<ul class="star">
+<li><code>addPermission</code> requires that the authenticated user have admin permission on the report instance to grant a permission to someone else</li>
+<li><code>create</code> requires that the authenticated user have <code>ROLE_USER</code></li>
+<li><code>get</code> requires that the authenticated user have read or admin permission on the specified Report</li>
+<li><code>list</code> requires that the authenticated user have ROLE_USER and read or admin permission on each returned Report; instances that don't have granted permissions will be removed from the returned List</li>
+<li><code>count</code> has no restrictions</li>
+<li><code>update</code> requires that the authenticated user have write or admin permission on the report instance to edit it</li>
+<li><code>delete</code> requires that the authenticated user have delete or admin permission on the report instance to edit it</li>
+<li><code>deletePermission</code> requires that the authenticated user have admin permission on the report instance to delete a grant</li>
+</ul><p class="paragraph"/>To test this out we'll need some users; create those and their grants in BootStrap.groovy:
+<div class="code"><pre><span class="java&#45;keyword">import</span> com.testacl.Report
+<span class="java&#45;keyword">import</span> com.testacl.Role
+<span class="java&#45;keyword">import</span> com.testacl.User
+<span class="java&#45;keyword">import</span> com.testacl.UserRole<p class="paragraph"/><span class="java&#45;keyword">import</span> <span class="java&#45;keyword">static</span> org.springframework.security.acls.domain.BasePermission.ADMINISTRATION
+<span class="java&#45;keyword">import</span> <span class="java&#45;keyword">static</span> org.springframework.security.acls.domain.BasePermission.DELETE
+<span class="java&#45;keyword">import</span> <span class="java&#45;keyword">static</span> org.springframework.security.acls.domain.BasePermission.READ
+<span class="java&#45;keyword">import</span> <span class="java&#45;keyword">static</span> org.springframework.security.acls.domain.BasePermission.WRITE<p class="paragraph"/><span class="java&#45;keyword">import</span> org.springframework.security.authentication. UsernamePasswordAuthenticationToken
+<span class="java&#45;keyword">import</span> org.springframework.security.core.authority.AuthorityUtils
+<span class="java&#45;keyword">import</span> org.springframework.security.core.context.SecurityContextHolder as SCH<p class="paragraph"/>class BootStrap &#123;<p class="paragraph"/>   def aclService
+   def aclUtilService
+   def objectIdentityRetrievalStrategy
+   def sessionFactory<p class="paragraph"/>   def init = &#123; servletContext &#45;&#62;
+      createUsers()
+      loginAsAdmin()
+      grantPermissions()
+      sessionFactory.currentSession.flush()<p class="paragraph"/>      // logout
+      SCH.clearContext()
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">private</span> void loginAsAdmin() &#123;
+      // have to be authenticated as an admin to create ACLs
+      SCH.context.authentication = <span class="java&#45;keyword">new</span> UsernamePasswordAuthenticationToken(
+            'admin', 'admin123',
+            AuthorityUtils.createAuthorityList('ROLE_ADMIN'))
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">private</span> void createUsers() &#123;
+      def roleAdmin = <span class="java&#45;keyword">new</span> Role(authority: 'ROLE_ADMIN').save()
+      def roleUser = <span class="java&#45;keyword">new</span> Role(authority: 'ROLE_USER').save()<p class="paragraph"/>      3.times &#123;
+         <span class="java&#45;object">long</span> id = it + 1
+         def user = <span class="java&#45;keyword">new</span> User(username: <span class="java&#45;quote">"user$id"</span>, enabled: <span class="java&#45;keyword">true</span>,
+            password: <span class="java&#45;quote">"password$id"</span>).save()
+         UserRole.create user, roleUser
+      &#125;<p class="paragraph"/>      def admin = <span class="java&#45;keyword">new</span> User(username: 'admin', enabled: <span class="java&#45;keyword">true</span>,
+         password: 'admin123').save()<p class="paragraph"/>      UserRole.create admin, roleUser
+      UserRole.create admin, roleAdmin, <span class="java&#45;keyword">true</span>
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">private</span> void grantPermissions() &#123;
+      def reports = &#91;&#93;
+      100.times &#123;
+         <span class="java&#45;object">long</span> id = it + 1
+         def report = <span class="java&#45;keyword">new</span> Report(name: <span class="java&#45;quote">"report$id"</span>).save()
+         reports &#60;&#60; report
+         aclService.createAcl(
+               objectIdentityRetrievalStrategy.getObjectIdentity(report))
+      &#125;<p class="paragraph"/>      // grant user 1 admin on 11,12 and read on 1&#45;67
+      aclUtilService.addPermission reports&#91;10&#93;, 'user1', ADMINISTRATION
+      aclUtilService.addPermission reports&#91;11&#93;, 'user1', ADMINISTRATION
+      67.times &#123;
+         aclUtilService.addPermission reports&#91;it&#93;, 'user1', READ
+      &#125;<p class="paragraph"/>      // grant user 2 read on 1&#45;5, write on 5
+      5.times &#123;
+         aclUtilService.addPermission reports&#91;it&#93;, 'user2', READ
+      &#125;
+      aclUtilService.addPermission reports&#91;4&#93;, 'user2', WRITE<p class="paragraph"/>      // user 3 has no grants<p class="paragraph"/>      // grant admin admin on all
+      <span class="java&#45;keyword">for</span> (report in reports) &#123;
+         aclUtilService.addPermission report, 'admin', ADMINISTRATION
+      &#125;<p class="paragraph"/>      // grant user 1 ownership on 1,2 to allow the user to grant
+      aclUtilService.changeOwner reports&#91;0&#93;, 'user1'
+      aclUtilService.changeOwner reports&#91;1&#93;, 'user1'
+   &#125;
+&#125;</pre></div><p class="paragraph"/>And to have a UI to test with, let's create a <code>Report</code> controller and GSPs:
+<pre class="bq"><code>
+$ grails generate-all com.testacl.Report</code></pre><p class="paragraph"/>But to use the controller, it will have to be reworked to use <code>ReportService</code>. It's a good idea to put all create/edit/delete code in a transactional service, but in this case we need to move all database access to the service to ensure that appropriate access checks are made:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.testacl<p class="paragraph"/><span class="java&#45;keyword">import</span> org.springframework.dao.DataIntegrityViolationException
+<span class="java&#45;keyword">import</span> org.springframework.security.acls.model.Permission<p class="paragraph"/><span class="java&#45;keyword">import</span> grails.plugin.springsecurity.annotation.Secured<p class="paragraph"/>@Secured(&#91;'ROLE_USER'&#93;)
+class ReportController &#123;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> defaultAction = 'list'<p class="paragraph"/>   def reportService<p class="paragraph"/>   def list() &#123;
+      params.max = <span class="java&#45;object">Math</span>.min(params.max ? params.<span class="java&#45;object">int</span>('max') : 10, 100)
+      &#91;reportInstanceList: reportService.list(params),
+       reportInstanceTotal: reportService.count()&#93;
+   &#125;<p class="paragraph"/>   def create() &#123;
+      &#91;reportInstance: <span class="java&#45;keyword">new</span> Report(params)&#93;
+   &#125;<p class="paragraph"/>   def save() &#123;
+      def report = reportService.create(params.name)
+      <span class="java&#45;keyword">if</span> (!renderWithErrors('create', report)) &#123;
+         redirectShow <span class="java&#45;quote">"Report $report.id created"</span>, report.id
+      &#125;
+   &#125;<p class="paragraph"/>   def show() &#123;
+      def report = findInstance()
+      <span class="java&#45;keyword">if</span> (!report) <span class="java&#45;keyword">return</span><p class="paragraph"/>      &#91;reportInstance: report&#93;
+   &#125;<p class="paragraph"/>   def edit() &#123;
+      def report = findInstance()
+      <span class="java&#45;keyword">if</span> (!report) <span class="java&#45;keyword">return</span><p class="paragraph"/>      &#91;reportInstance: report&#93;
+   &#125;<p class="paragraph"/>   def update() &#123;
+      def report = findInstance()
+      <span class="java&#45;keyword">if</span> (!report) <span class="java&#45;keyword">return</span><p class="paragraph"/>      reportService.update report, params.name
+      <span class="java&#45;keyword">if</span> (!renderWithErrors('edit', report)) &#123;
+         redirectShow <span class="java&#45;quote">"Report $report.id updated"</span>, report.id
+      &#125;
+   &#125;<p class="paragraph"/>   def delete() &#123;
+      def report = findInstance()
+      <span class="java&#45;keyword">if</span> (!report) <span class="java&#45;keyword">return</span><p class="paragraph"/>      <span class="java&#45;keyword">try</span> &#123;
+         reportService.delete report
+         flash.message = <span class="java&#45;quote">"Report $params.id deleted"</span>
+         redirect action: list
+      &#125;
+      <span class="java&#45;keyword">catch</span> (DataIntegrityViolationException e) &#123;
+         redirectShow <span class="java&#45;quote">"Report $params.id could not be deleted"</span>, params.id
+      &#125;
+   &#125;<p class="paragraph"/>   def grant() &#123;<p class="paragraph"/>      def report = findInstance()
+      <span class="java&#45;keyword">if</span> (!report) <span class="java&#45;keyword">return</span><p class="paragraph"/>      <span class="java&#45;keyword">if</span> (!request.post) &#123;
+         <span class="java&#45;keyword">return</span> &#91;reportInstance: report&#93;
+      &#125;<p class="paragraph"/>      reportService.addPermission(report, params.recipient,
+               params.<span class="java&#45;object">int</span>('permission'))<p class="paragraph"/>      redirectShow <span class="java&#45;quote">"Permission $params.permission granted on Report $report.id "</span> +
+                   <span class="java&#45;quote">"to $params.recipient"</span>, report.id
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">private</span> Report findInstance() &#123;
+      def report = reportService.get(params.<span class="java&#45;object">long</span>('id'))
+      <span class="java&#45;keyword">if</span> (!report) &#123;
+         flash.message = <span class="java&#45;quote">"Report not found with id $params.id"</span>
+         redirect action: list
+      &#125;
+      report
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">private</span> void redirectShow(message, id) &#123;
+      flash.message = message
+      redirect action: show, id: id
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">private</span> <span class="java&#45;object">boolean</span> renderWithErrors(<span class="java&#45;object">String</span> view, Report report) &#123;
+      <span class="java&#45;keyword">if</span> (report.hasErrors()) &#123;
+         render view: view, model: &#91;reportInstance: report&#93;
+         <span class="java&#45;keyword">return</span> <span class="java&#45;keyword">true</span>
+      &#125;
+      <span class="java&#45;keyword">false</span>
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Note that the controller is annotated to require either <code>ROLE_USER</code> or <code>ROLE_ADMIN</code>. Since services have nothing to do with HTTP, when access is blocked you cannot be redirected to the login page as when you try to access a URL that requires an authentication. So you need to configure URLs with similar role requirements to give the user a chance to attempt a login before calling secured service methods.<p class="paragraph"/>Finally, we'll make a few adjustments so errors are handled gracefully.<p class="paragraph"/>First, edit <code>grails-app/conf/UrlMappings.groovy</code> and add some error code mappings:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> org.springframework.security.access.AccessDeniedException
+<span class="java&#45;keyword">import</span> org.springframework.security.acls.model.NotFoundException<p class="paragraph"/>class UrlMappings &#123;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> mappings = &#123;
+      <span class="java&#45;quote">"/$controller/$action?/$id?"</span>&#123;
+         constraints &#123;&#125;
+      &#125;<p class="paragraph"/>      <span class="java&#45;quote">"/"</span>(view:<span class="java&#45;quote">"/index"</span>)<p class="paragraph"/>      <span class="java&#45;quote">"403"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error403"</span>)
+      <span class="java&#45;quote">"404"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error404"</span>)
+      <span class="java&#45;quote">"500"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error500"</span>)
+      <span class="java&#45;quote">"500"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error403"</span>,
+            exception: AccessDeniedException)
+      <span class="java&#45;quote">"500"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error403"</span>,
+            exception: NotFoundException)
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Then create the <code>ErrorsController</code> that these reference:<p class="paragraph"/><pre class="bq"><code>
+$ grails create-controller com.testacl.Errors</code></pre><p class="paragraph"/>and add this code:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.testacl<p class="paragraph"/><span class="java&#45;keyword">import</span> grails.plugin.springsecurity.annotation.Secured<p class="paragraph"/>@Secured(&#91;'permitAll'&#93;)
+class ErrorsController &#123;<p class="paragraph"/>   def error403() &#123;&#125;<p class="paragraph"/>   def error404() &#123;&#125;<p class="paragraph"/>   def error500() &#123;
+      render view: '/error'
+   &#125;
+&#125;</pre></div><p class="paragraph"/>and create the GSPs:<p class="paragraph"/>Add this to <code>grails-app/views/errors/error403.gsp</code>:<p class="paragraph"/><div class="code"><pre>&#60;html&#62;
+&#60;head&#62;
+&#60;title&#62;Access denied!&#60;/title&#62;
+&#60;meta name='layout' content='main' /&#62;
+&#60;/head&#62;<p class="paragraph"/>&#60;body&#62;
+&#60;h1&#62;Access Denied&#60;/h1&#62;
+&#60;p&#62;We're sorry, but you are not authorized
+   to perform the requested operation.&#60;/p&#62;
+&#60;/body&#62;
+&#60;/html&#62;</pre></div><p class="paragraph"/>and this to <code>grails-app/views/errors/error404.gsp</code>:
+<div class="code"><pre>&#60;html&#62;
+&#60;head&#62;
+&#60;title&#62;Not Found&#60;/title&#62;
+&#60;meta name='layout' content='main' /&#62;
+&#60;/head&#62;<p class="paragraph"/>&#60;body&#62;
+&#60;h1&#62;Not Found&#60;/h1&#62;
+&#60;p&#62;We're sorry, but that page doesn't exist.&#60;/p&#62;
+&#60;/body&#62;
+&#60;/html&#62;</pre></div><p class="paragraph"/><h4>actionSubmit issues</h4><p class="paragraph"/>Grails has a convenient feature where it supports multiple submit actions per form. This is done by posting to the <code>index</code> action but with a special parameter that indicates which action to invoke. This is a problem in general for security since any URL rules for edit, delete, save, etc. will be bypassed. It's an even more significant issue with ACLs because of the way that the access denied exception interacts with the <code>actionSubmit</code> processing. If you don't make any adjustments for this, your users will see a blank page when they attempt to submit a form and the action is disallowed. The solution is to remove <code>actionSubmit</code> buttons and replace them with regular submit buttons. This requires one form per button, and without adjusting the CSS the buttons will look differently than if they were in-line <code>actionSubmit</code> buttons, but that is fixable with the appropriate CSS changes.<p class="paragraph"/>It's simple to adjust the <code>actionSubmit</code> buttons; in <code>grails-app/views/report/show.gsp</code>, replace the two actionSubmit buttons with these two forms (maintain the g:message tags; the strings are hard-coded here to reduce clutter):<p class="paragraph"/><div class="code"><pre>&#60;div class=<span class="java&#45;quote">"buttons"</span>&#62;
+    &#60;g:form action='edit'&#62;
+        &#60;g:hiddenField name=<span class="java&#45;quote">"id"</span> value=<span class="java&#45;quote">"$&#123;reportInstance?.id&#125;"</span> /&#62;
+        &#60;span class=<span class="java&#45;quote">"button"</span>&#62;
+            &#60;g:submitButton class=<span class="java&#45;quote">"edit"</span> name=<span class="java&#45;quote">"Edit"</span> /&#62;
+        &#60;/span&#62;
+    &#60;/g:form&#62;
+    &#60;g:form action='delete'&#62;
+        &#60;g:hiddenField name=<span class="java&#45;quote">"id"</span> value=<span class="java&#45;quote">"$&#123;reportInstance?.id&#125;"</span> /&#62;
+        &#60;span class=<span class="java&#45;quote">"button"</span>&#62;
+            &#60;g:submitButton class=<span class="java&#45;quote">"delete"</span> name=<span class="java&#45;quote">"Delete"</span>
+                            onclick=<span class="java&#45;quote">"<span class="java&#45;keyword">return</span> confirm('Are you sure?');"</span> /&#62;
+        &#60;/span&#62;
+    &#60;/g:form&#62;
+&#60;/div&#62;</pre></div><p class="paragraph"/>In <code>grails-app/views/report/edit.gsp</code>, change the <code>&#60;form&#62;</code> tag to<p class="paragraph"/><div class="code"><pre>&#60;g:form action='update'&#62;</pre></div><p class="paragraph"/>and convert the update button to a regular submit button:<p class="paragraph"/><div class="code"><pre>&#60;div class=<span class="java&#45;quote">"buttons"</span>&#62;
+    &#60;span class=<span class="java&#45;quote">"button"</span>&#62;&#60;g:submitButton class=<span class="java&#45;quote">"save"</span> name=<span class="java&#45;quote">"Update"</span> /&#62;&#60;/span&#62;
+&#60;/div&#62;</pre></div><p class="paragraph"/>and move the delete button out of the form into its own form just below the main form:<p class="paragraph"/><div class="code"><pre>&#60;g:form action='delete'&#62;
+    &#60;g:hiddenField name=<span class="java&#45;quote">"id"</span> value=<span class="java&#45;quote">"$&#123;reportInstance?.id&#125;"</span> /&#62;
+    &#60;div class=<span class="java&#45;quote">"buttons"</span>&#62;
+        &#60;span class=<span class="java&#45;quote">"button"</span>&#62;
+            &#60;g:submitButton class=<span class="java&#45;quote">"delete"</span> name=<span class="java&#45;quote">"Delete"</span>
+                            onclick=<span class="java&#45;quote">"<span class="java&#45;keyword">return</span> confirm('Are you sure?');"</span> /&#62;
+        &#60;/span&#62;
+    &#60;/div&#62;
+&#60;/g:form&#62;</pre></div><p class="paragraph"/><code>list.gsp</code> and <code>show.gsp</code> are fine as they are.<p class="paragraph"/><h4>Testing</h4><p class="paragraph"/>Now start the app:
+<pre class="bq"><code>
+$ grails run-app</code></pre><p class="paragraph"/>and open <a href="http://localhost:8080/acltest/report/list" target="blank">http://localhost:8080/acltest/report/list</a><p class="paragraph"/>Login as user1/password1 and you should see the first page of results. But if you click on page 7 or higher, you'll see that you can only see a subset of the <code>Report</code>s. This illustrates one issue with using ACLs to restrict view access to instances; you would have to add joins in your query to the ACL database tables to get an accurate count of the total number of visible instances.<p class="paragraph"/>Click on any of the report instance links (e.g. <a href="http://localhost:8080/acltest/report/show/63" target="blank">http://localhost:8080/acltest/report/show/63</a>) to verify that you can view the instance. You can test that you have no view access to the filtered instances by navigating to <a href="http://localhost:8080/acltest/report/show/83" target="blank">http://localhost:8080/acltest/report/show/83</a>.<p class="paragraph"/>Verify that user1 has admin permission on report #11 by editing it and deleting it.<p class="paragraph"/>Verify that user1 doesn't have admin permission on report #13 by trying to editing or delete it and you should see the error page when you submit the form.<p class="paragraph"/>Logout (by navigating to <a href="http://localhost:8080/acltest/logout" target="blank">http://localhost:8080/acltest/logout</a>) and login as user2/password2. You should only see the first five reports. Verify that you can edit #5 but not any of the others, and that you can't delete any.<p class="paragraph"/>Finally. logout and login as admin/admin123. You should be able to view, edit, and delete all instances.
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/usage.html">&lt;&lt; <strong>2</strong><span>Usage</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/sampleApp.html"><strong>4</strong><span>Sample Application</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">AclUtilService</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/addPermission.html">addPermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/changeOwner.html">changeOwner</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/deleteAcl.html">deleteAcl</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/deletePermission.html">deletePermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/hasPermission.html">hasPermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/readAcl.html">readAcl</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Scripts</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Scripts/s2-create-acl-domains.html">s2-create-acl-domains</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tag Libraries</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Tag%20Libraries/notPermitted.html">notPermitted</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tag%20Libraries/permitted.html">permitted</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-16219500-1']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</body>
+</html>
