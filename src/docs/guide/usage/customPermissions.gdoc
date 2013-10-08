@@ -1,6 +1,6 @@
-By default there are 5 permissions available from the @org.springframework.security.acls.domain.BasePermission@ class: @READ@, @WRITE@, @CREATE@, @DELETE@, and @ADMINISTRATION@. You can also add your own permissions if these aren't sufficient.
+By default there are 5 permissions available from the @org.springframework.security.acls.domain. BasePermission@ class: @READ@, @WRITE@, @CREATE@, @DELETE@, and @ADMINISTRATION@. You can also add your own permissions if these aren't sufficient.
 
-The easiest approach is to create a subclass of @org.springframework.security.acls.domain.BasePermission@ and add your new permissions there. This way you retain the default permissions and can use them if you need. For example, here's a subclass that adds a new @APPROVE@ permission:
+The easiest approach is to create a subclass of @BasePermission@ and add your new permissions there. This way you retain the default permissions and can use them if you need. For example, here's a subclass that adds a new @APPROVE@ permission:
 
 {code}
 package com.mycompany.myapp;
@@ -24,12 +24,12 @@ public class MyPermission extends BasePermission {
 
 It sets the mask value to 32 (1 << 5) since the values up to 16 are defined in the base class.
 
-To use your class instead of the default, specify it in with the @grails.plugin.springsecurity.acl.permissionClass@ attribute either as a Class or a String, for example
+To use your class instead of the default, specify it in with the @grails.plugin.springsecurity.acl. permissionClass@ attribute either as a Class or a String, for example
 
 {code}
 import com.mycompany.myapp.MyPermissions
 ...
-grails.plugin.springsecurity.acl.permissionClass = MyPermissions
+grails.plugin.springsecurity.acl. permissionClass = MyPermissions
 {code}
 
 or
@@ -38,7 +38,7 @@ or
 grails.plugin.springsecurity.acl.permissionClass = 'com.mycompany.myapp.MyPermissions'
 {code}
 
-You can also override the @aclPermissionFactory@ bean in @grails-app/conf/spring/resources.groovy@, keeping the @org.springframework.security.acls.domain.DefaultPermissionFactory@ class but passing your class as the constructor argument to keep it from defaulting to @BasePermission@, or do a more complex override to more fully reconfigure the behavior:
+You can also override the @aclPermissionFactory@ bean in @grails-app/conf/spring/resources.groovy@, keeping the @org.springframework.security.acls.domain. DefaultPermissionFactory@ class but passing your class as the constructor argument to keep it from defaulting to @BasePermission@, or do a more complex override to more fully reconfigure the behavior:
 
 {code}
 import org.springframework.security.acls.domain.DefaultPermissionFactory
