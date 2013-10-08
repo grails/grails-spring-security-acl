@@ -1,21 +1,22 @@
-import com.testacl.Report
-import com.testacl.User
-
 import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.acls.domain.BasePermission
+import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.Permission
+import org.springframework.security.acls.model.Sid
 import org.springframework.transaction.annotation.Transactional
 
-class ReportService {
+import com.testacl.Report
 
-	static transactional = false
+class ReportService {
 
 	def aclPermissionFactory
 	def aclService
 	def aclUtilService
 	def springSecurityService
 
+	@PreAuthorize("hasPermission(#report, admin)")
+	@Transactional
 	void addPermission(Report report, String username, int permission) {
 		addPermission report, username, aclPermissionFactory.buildFromMask(permission)
 	}
@@ -79,6 +80,7 @@ class ReportService {
 		def acl = aclUtilService.readAcl(report)
 
 		// Remove all permissions associated with this particular recipient (string equality to KISS)
+		Sid recipient = new PrincipalSid(username)
 		acl.entries.eachWithIndex { entry, i ->
 			if (entry.sid.equals(recipient) && entry.permission.equals(permission)) {
 				acl.deleteAce i

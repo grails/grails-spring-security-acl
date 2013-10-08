@@ -1,4 +1,4 @@
-/* Copyright 2009-2012 SpringSource.
+/* Copyright 2009-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import test.TestReport as Report
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 class TestSpringAnnotatedService {
-
-	static transactional = true
 
 	@Secured(['ROLE_USER', 'AFTER_ACL_READ'])
 	Report getReport(long id) {

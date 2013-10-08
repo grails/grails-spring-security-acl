@@ -1,4 +1,4 @@
-/* Copyright 2009-2012 SpringSource.
+/* Copyright 2009-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,18 @@
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 
-includeTargets << grailsScript('_GrailsBootstrap')
+includeTargets << new File(springSecurityCorePluginDir, "scripts/_S2Common.groovy")
 
 functionalTestPluginVersion = '1.2.7'
+projectfiles = new File(basedir, 'webtest/projectFiles')
 appName = null
 grailsHome = null
 dotGrails = null
 projectDir = null
 pluginVersion = null
-pluginZip = null
 testprojectRoot = null
 deleteAll = false
+grailsVersion = null
 
 target(createAclTestApps: 'Creates ACL test apps') {
 
@@ -47,7 +48,7 @@ target(createAclTestApps: 'Creates ACL test apps') {
 		createProjectFiles()
 	}
 }
-
+	
 private void init(String name, config) {
 
 	pluginVersion = config.pluginVersion
@@ -55,7 +56,7 @@ private void init(String name, config) {
 		error "pluginVersion wasn't specified for config '$name'"
 	}
 
-	pluginZip = new File(basedir, "grails-spring-security-acl-${pluginVersion}.zip")
+	def pluginZip = new File(basedir, "grails-spring-security-acl-${pluginVersion}.zip")
 	if (!pluginZip.exists()) {
 		error "plugin $pluginZip.absolutePath not found"
 	}
@@ -68,6 +69,8 @@ private void init(String name, config) {
 	projectDir = config.projectDir
 	appName = 'spring-security-acl-test-' + name
 	testprojectRoot = "$projectDir/$appName"
+
+	grailsVersion = config.grailsVersion
 	dotGrails = config.dotGrails + '/' + grailsVersion
 }
 
@@ -90,15 +93,24 @@ private void installPlugins() {
 	contents = contents.replace('grails.project.test.class.dir = "target/test-classes"', '')
 	contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
 
+	contents = contents.replace('//mavenLocal()', 'mavenLocal()')
+	contents = contents.replace('repositories {', '''repositories {
+mavenRepo 'http://repo.spring.io/milestone' // TODO remove
+''')
+
+	contents = contents.replace('grails.project.fork', 'grails.project.forkDISABLED')
+
+	contents = contents.replace('plugins {', """plugins {
+test ":functional-test:$functionalTestPluginVersion"
+runtime ":spring-security-acl:$pluginVersion"
+""")
+
 	// configure the functional tests to run in order
 	contents += '\ngrails.testing.patterns = ["User1Functional", "User2Functional", "AdminFunctional"]\n'
 
 	buildConfig.withWriter { it.writeLine contents }
 
-	callGrails grailsHome, testprojectRoot, 'dev', 'install-plugin', ["functional-test ${functionalTestPluginVersion}"]
-
-	callGrails grailsHome, testprojectRoot, 'dev', 'install-plugin', [pluginZip.absolutePath]
-
+	callGrails grailsHome, testprojectRoot, 'dev', 'compile', null, true // can fail when installing the functional-test plugin
 	callGrails grailsHome, testprojectRoot, 'dev', 'compile'
 }
 
@@ -109,7 +121,6 @@ private void runQuickstart() {
 private void createProjectFiles() {
 	String source = "$basedir/webtest/projectfiles"
 	ant.copy file: "$source/resources.groovy", todir: "$testprojectRoot/grails-app/conf/spring", overwrite: true
-	ant.copy file: "$source/classpath", tofile: "$testprojectRoot/.classpath", overwrite: true
 	ant.copy file: "$source/Report.groovy", todir: "$testprojectRoot/grails-app/domain/com/testacl"
 
 	for (type in ['conf', 'controllers', 'services', 'views']) {
@@ -122,8 +133,10 @@ private void createProjectFiles() {
 		fileset dir: "$basedir/webtest", includes: "*Test*.groovy"
 	}
 
-	new File("$testprojectRoot/grails-app/conf/Config.groovy").withWriterAppend {
-		it.writeLine "grails.plugins.springsecurity.roleHierarchy = 'ROLE_ADMIN > ROLE_USER'"
+	new File(testprojectRoot, "grails-app/conf/Config.groovy").withWriterAppend {
+		it.writeLine "grails.plugin.springsecurity.roleHierarchy = 'ROLE_ADMIN > ROLE_USER'"
+		it.writeLine "grails.plugin.springsecurity.fii.rejectPublicInvocations = false"
+		it.writeLine "grails.plugin.springsecurity.rejectIfNoRule = false"
 	}
 }
 
@@ -149,7 +162,7 @@ private void error(String message) {
 	exit 1
 }
 
-private void callGrails(String grailsHome, String dir, String env, String action, List extraArgs = null) {
+private void callGrails(String grailsHome, String dir, String env, String action, List extraArgs = null, boolean ignoreFailure = false) {
 
 	String resultproperty = 'exitCode' + System.currentTimeMillis()
 	String outputproperty = 'execOutput' + System.currentTimeMillis()
@@ -162,17 +175,15 @@ private void callGrails(String grailsHome, String dir, String env, String action
 		ant.arg value: env
 		ant.arg value: action
 		extraArgs.each { ant.arg value: it }
+		ant.arg value: '--stacktrace'
 	}
 
 	println ant.project.getProperty(outputproperty)
 
 	int exitCode = ant.project.getProperty(resultproperty) as Integer
-	if (exitCode) {
+	if (exitCode && !ignoreFailure) {
 		exit exitCode
 	}
 }
-
-printMessage = { String message -> event('StatusUpdate', [message]) }
-errorMessage = { String message -> event('StatusError', [message]) }
 
 setDefaultTarget 'createAclTestApps'

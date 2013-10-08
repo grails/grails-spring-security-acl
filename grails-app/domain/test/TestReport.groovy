@@ -1,4 +1,4 @@
-/* Copyright 2009-2012 SpringSource.
+/* Copyright 2009-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  */
 package test
 
-import grails.plugins.springsecurity.acl.AclVoter
-import grails.plugins.springsecurity.acl.AclVoters
+import grails.plugin.springsecurity.acl.annotation.AclVoter
+import grails.plugin.springsecurity.acl.annotation.AclVoters
 
 // not packaged, for tests only
 

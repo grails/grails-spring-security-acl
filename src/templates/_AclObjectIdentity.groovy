@@ -1,6 +1,4 @@
-package org.codehaus.groovy.grails.plugins.springsecurity.acl
-
-import grails.plugins.springsecurity.acl.AbstractAclObjectIdentity
+package grails.plugin.springsecurity.acl
 
 class AclObjectIdentity extends AbstractAclObjectIdentity {
 

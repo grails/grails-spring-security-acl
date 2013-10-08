@@ -1,7 +1,7 @@
 package com.testacl
 
-import grails.plugins.springsecurity.acl.AclVoter
-import grails.plugins.springsecurity.acl.AclVoters
+import grails.plugin.springsecurity.acl.annotation.AclVoter
+import grails.plugin.springsecurity.acl.annotation.AclVoters
 
 @AclVoters([
 	@AclVoter(name='aclReportWriteVoter',

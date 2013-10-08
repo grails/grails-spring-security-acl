@@ -16,7 +16,7 @@ class AdminFunctionalTests extends AbstractSecurityWebTest {
 
 	private void viewAll() {
 		for (int i = 1; i <= 100; i++) {
-			get "/report/show/$i" 
+			get "/report/show/$i"
 			if (i == 11) {
 				// deleted by user2
 				assertContentContains 'Access Denied'
@@ -59,9 +59,9 @@ class AdminFunctionalTests extends AbstractSecurityWebTest {
 		assertContentContains "Permission $BasePermission.READ.mask granted on Report 16 to user2"
 
 		// login as user2 and verify the grant
-		get '/logout'
+		post '/logout'
 		login 'user2', 'password2'
-		get "/report/show/16" 
+		get "/report/show/16"
 		assertContentContains "report16"
 	}
 

@@ -1,4 +1,4 @@
-/* Copyright 2009-2012 SpringSource.
+/* Copyright 2009-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,7 @@
  */
 package test
 
-
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
@@ -23,7 +22,7 @@ import grails.plugins.springsecurity.Secured
 @Secured(['ROLE_ADMIN'])
 class TestClassAnnotatedService {
 
-	static transactional = true
+	static transactional = false
 
 	void notAnnotated() {}
 

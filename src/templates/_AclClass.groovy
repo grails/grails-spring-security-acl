@@ -1,4 +1,4 @@
-package org.codehaus.groovy.grails.plugins.springsecurity.acl
+package grails.plugin.springsecurity.acl
 
 class AclClass {
 
@@ -15,6 +15,6 @@ class AclClass {
 	}
 
 	static constraints = {
-		className unique: true, blank: false, size: 1..255
+		className unique: true, blank: false
 	}
 }

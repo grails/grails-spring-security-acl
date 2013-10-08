@@ -1,4 +1,4 @@
-/* Copyright 2009-2012 SpringSource.
+/* Copyright 2009-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,13 @@ package test
 
 import test.TestReport as Report
 
+import org.springframework.transaction.annotation.Transactional
+
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@Transactional
 class TestStaticConfiguredService {
-
-	static transactional = true
 
 	static springSecurityACL = [
 		getReportName: ['ROLE_USER', 'ROLE_ADMIN'],

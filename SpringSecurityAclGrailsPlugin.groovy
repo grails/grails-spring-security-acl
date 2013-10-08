@@ -1,4 +1,4 @@
-/* Copyright 2009-2012 SpringSource.
+/* Copyright 2009-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,34 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.lang.reflect.Method
 
-import grails.plugins.springsecurity.Secured as GrailsSecured
-import grails.plugins.springsecurity.acl.AclVoter
-import grails.plugins.springsecurity.acl.AclVoters
-import grails.util.GrailsNameUtils
-
-import org.apache.log4j.Logger
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.acl.AclAutoProxyCreator
+import grails.plugin.springsecurity.acl.ProxyAwareParameterNameDiscoverer
+import grails.plugin.springsecurity.acl.access.GroovyAwareAclVoter
+import grails.plugin.springsecurity.acl.access.method.ProxyAwareDelegatingMethodSecurityMetadataSource
+import grails.plugin.springsecurity.acl.access.method.ServiceStaticMethodSecurityMetadataSource
+import grails.plugin.springsecurity.acl.annotation.AclVoter
+import grails.plugin.springsecurity.acl.annotation.AclVoters
+import grails.plugin.springsecurity.acl.domain.NullAclAuditLogger
+import grails.plugin.springsecurity.acl.jdbc.GormAclLookupStrategy
+import grails.plugin.springsecurity.acl.model.GormObjectIdentityRetrievalStrategy
 
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.ClassLoaderPerProxyBeanNameAutoProxyCreator
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.GormAclLookupStrategy
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.GormObjectIdentityRetrievalStrategy
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.GroovyAwareAclVoter
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.NullAclAuditLogger
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.ProxyAwareDelegatingMethodSecurityMetadataSource
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.ProxyAwareParameterNameDiscoverer
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.SecuredAnnotationSecurityMetadataSource as GrailsSecuredAnnotationSecurityMetadataSource
-import org.codehaus.groovy.grails.plugins.springsecurity.acl.ServiceStaticMethodSecurityMetadataSource
-
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 import org.springframework.expression.spel.standard.SpelExpressionParser
-import org.springframework.security.access.ConfigAttribute
-import org.springframework.security.access.SecurityConfig
-import org.springframework.security.access.annotation.Secured as SpringSecured
-import org.springframework.security.access.annotation.SecuredAnnotationSecurityMetadataSource as SpringSecuredAnnotationSecurityMetadataSource
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
 import org.springframework.security.access.expression.method.ExpressionBasedAnnotationAttributeFactory
 import org.springframework.security.access.expression.method.ExpressionBasedPostInvocationAdvice
@@ -48,36 +37,31 @@ import org.springframework.security.access.intercept.AfterInvocationProviderMana
 import org.springframework.security.access.intercept.RunAsImplAuthenticationProvider
 import org.springframework.security.access.intercept.RunAsManagerImpl
 import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor
-import org.springframework.security.access.intercept.aopalliance.MethodSecurityMetadataSourceAdvisor
-import org.springframework.security.access.method.MapBasedMethodSecurityMetadataSource
-import org.springframework.security.access.prepost.PostAuthorize
-import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PostInvocationAdviceProvider
-import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.access.prepost.PreFilter
 import org.springframework.security.access.prepost.PreInvocationAuthorizationAdviceVoter
 import org.springframework.security.access.prepost.PrePostAnnotationSecurityMetadataSource
 import org.springframework.security.access.vote.AffirmativeBased
 import org.springframework.security.acls.AclEntryVoter
+import org.springframework.security.acls.AclPermissionCacheOptimizer
 import org.springframework.security.acls.AclPermissionEvaluator
 import org.springframework.security.acls.afterinvocation.AclEntryAfterInvocationCollectionFilteringProvider
 import org.springframework.security.acls.afterinvocation.AclEntryAfterInvocationProvider
 import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.DefaultPermissionFactory
+import org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy
 import org.springframework.security.acls.domain.EhCacheBasedAclCache
 import org.springframework.security.acls.domain.SidRetrievalStrategyImpl
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
-import org.springframework.security.core.authority.GrantedAuthorityImpl
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 class SpringSecurityAclGrailsPlugin {
 
-	String version = '1.1.1'
-	String grailsVersion = '1.3 > *'
+	String version = '2.0-RC1'
+	String grailsVersion = '2.0 > *'
 	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
 		'docs/**',
@@ -88,10 +72,15 @@ class SpringSecurityAclGrailsPlugin {
 	]
 
 	String author = 'Burt Beckwith'
-	String authorEmail = 'beckwithb@vmware.com'
-	String title = 'ACL support for the Spring Security plugin.'
-	String description = 'ACL support for the Spring Security plugin.'
-	String documentation = 'http://grails.org/plugin/spring-security-acl'
+	String authorEmail = 'burt@burtbeckwith.com'
+	String title = 'Spring Security ACL plugin'
+	String description = 'ACL support for the Spring Security plugin'
+	String documentation = 'http://grails-plugins.github.io/grails-spring-security-acl/'
+
+	String license = 'APACHE'
+	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
+	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYACL']
+	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-acl']
 
 	def doWithSpring = {
 
@@ -108,7 +97,11 @@ class SpringSecurityAclGrailsPlugin {
 			return
 		}
 
-		println '\nConfiguring Spring Security ACL ...'
+		boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
+
+		if (printStatusMessages) {
+			println '\nConfiguring Spring Security ACL ...'
+		}
 
 		if (conf.useRunAs) {
 			SpringSecurityUtils.registerProvider 'runAsAuthenticationProvider'
@@ -125,15 +118,17 @@ class SpringSecurityAclGrailsPlugin {
 		configureExpressionBeans.delegate = delegate
 		configureExpressionBeans conf
 
-		// secured services
-		configureSecuredServices.delegate = delegate
-		configureSecuredServices conf, application
+		// secured beans
+		configureSecuredBeans.delegate = delegate
+		configureSecuredBeans conf, application
 
 		// MetadataSource
 		configureSecurityMetadataSource.delegate = delegate
 		configureSecurityMetadataSource conf, voterConfig, application
 
-		println '... finished configuring Spring Security ACL\n'
+		if (printStatusMessages) {
+			println '... finished configuring Spring Security ACL\n'
+		}
 	}
 
 	def doWithApplicationContext = { ctx ->
@@ -163,7 +158,9 @@ class SpringSecurityAclGrailsPlugin {
 			cacheManager = ref('aclCacheManager')
 			cacheName = 'aclCache'
 		}
-		aclCache(EhCacheBasedAclCache, ehcacheAclCache)
+		aclCache(EhCacheBasedAclCache, ref('ehcacheAclCache'), ref('aclPermissionGrantingStrategy'), ref('aclAuthorizationStrategy'))
+
+		aclPermissionGrantingStrategy(DefaultPermissionGrantingStrategy, ref('aclAuditLogger'))
 
 		aclAuthorizationStrategy(AclAuthorizationStrategyImpl,
 				AuthorityUtils.createAuthorityList(
@@ -202,15 +199,21 @@ class SpringSecurityAclGrailsPlugin {
 
 		expressionParser(SpelExpressionParser)
 
+		aclPermissionCacheOptimizer(AclPermissionCacheOptimizer, ref('aclService')) {
+			objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
+			sidRetrievalStrategy = ref('sidRetrievalStrategy')
+		}
+
 		expressionHandler(DefaultMethodSecurityExpressionHandler) {
 			parameterNameDiscoverer = ref('parameterNameDiscoverer')
-			permissionEvaluator = ref('permissionEvaluator')
+			permissionCacheOptimizer = ref('aclPermissionCacheOptimizer')
+			expressionParser = ref('expressionParser')
 			roleHierarchy = ref('roleHierarchy')
-			trustResolver = ref('authenticationTrustResolver')
+			permissionEvaluator = ref('permissionEvaluator')
 		}
 	}
 
-	private configureSecuredServices = { conf, application ->
+	private configureSecuredBeans = { conf, application ->
 
 		debug 'configuring secured services'
 
@@ -224,45 +227,11 @@ class SpringSecurityAclGrailsPlugin {
 			}
 		}
 
-		def serviceNames = []
-		for (serviceClass in application.serviceClasses) {
-			boolean hasSpringSecurityACL = GCU.isStaticProperty(serviceClass.clazz, 'springSecurityACL')
-			if (hasSpringSecurityACL || serviceIsAnnotated(serviceClass.clazz)) {
-				serviceNames << GrailsNameUtils.getPropertyNameRepresentation(serviceClass.clazz.name)
-			}
+		securedBeansInterceptor(AclAutoProxyCreator) {
+			grailsApplication = ref('grailsApplication')
+			interceptorNames = ['methodSecurityInterceptor']
+			proxyTargetClass = true
 		}
-
-		if (serviceNames) {
-			securedServicesInterceptor(ClassLoaderPerProxyBeanNameAutoProxyCreator) {
-				proxyTargetClass = true
-				beanNames = serviceNames
-				interceptorNames = ['methodSecurityInterceptor']
-			}
-		}
-	}
-
-	private boolean serviceIsAnnotated(Class clazz) {
-		for (annotation in [GrailsSecured, SpringSecured, PreAuthorize,
-		                    PreFilter, PostAuthorize, PostFilter]) {
-			if (serviceIsAnnotated(clazz, annotation)) {
-				return true
-			}
-		}
-		false
-	}
-
-	private boolean serviceIsAnnotated(Class clazz, Class annotation) {
-		if (clazz.isAnnotationPresent(annotation)) {
-			return true
-		}
-
-		for (Method method in clazz.methods) {
-			if (method.isAnnotationPresent(annotation)) {
-				return true
-			}
-		}
-
-		false
 	}
 
 	private configureSecurityMetadataSource = { conf, voterConfig, application ->
@@ -271,10 +240,11 @@ class SpringSecurityAclGrailsPlugin {
 
 		groovyAwareAclVoter(GroovyAwareAclVoter)
 
-		def aclAccessDecisionManagerDecisionVoters = [ref('roleVoter'),
-		                                              ref('authenticatedVoter'),
-		                                              ref('preInvocationVoter'),
-		                                              ref('groovyAwareAclVoter')]
+		def aclAccessDecisionManagerDecisionVoters = [
+			ref('roleVoter'),
+			ref('authenticatedVoter'),
+			ref('preInvocationVoter'),
+			ref('groovyAwareAclVoter')]
 
 		voterConfig.each { beanName, voterData ->
 			"$beanName"(AclEntryVoter, ref('aclService'), voterData.configAttribute, voterData.permissions) {
@@ -328,29 +298,31 @@ class SpringSecurityAclGrailsPlugin {
 		}
 
 		prePostAnnotationSecurityMetadataSource(PrePostAnnotationSecurityMetadataSource, ref('annotationInvocationFactory'))
-		grailsSecuredAnnotationSecurityMetadataSource(GrailsSecuredAnnotationSecurityMetadataSource) {
+		grailsSecuredAnnotationSecurityMetadataSource(grails.plugin.springsecurity.acl.access.method.SecuredAnnotationSecurityMetadataSource) {
 			serviceClassNames = application.serviceClasses*.clazz.name
 		}
-		springSecuredAnnotationSecurityMetadataSource(SpringSecuredAnnotationSecurityMetadataSource)
+		springSecuredAnnotationSecurityMetadataSource(org.springframework.security.access.annotation.SecuredAnnotationSecurityMetadataSource)
 
-		def metadataSources = [ref('prePostAnnotationSecurityMetadataSource'),
-		                       ref('springSecuredAnnotationSecurityMetadataSource'),
-		                       ref('serviceStaticMethodSecurityMetadataSource')]
+		def metadataSources = [
+			ref('prePostAnnotationSecurityMetadataSource'),
+			ref('springSecuredAnnotationSecurityMetadataSource'),
+			ref('serviceStaticMethodSecurityMetadataSource')]
 		aclSecurityMetadataSource(ProxyAwareDelegatingMethodSecurityMetadataSource) {
 			methodSecurityMetadataSources = metadataSources
 		}
 
-		postInvocationProvider(PostInvocationAdviceProvider, ref('postInvocationAdvice'))
-		afterInvocationManager(AfterInvocationProviderManager) {
-			providers = [ref('postInvocationProvider'),
-			             ref('afterAclRead'),
-			             ref('afterAclCollectionRead')]
+		aclPostInvocationProvider(PostInvocationAdviceProvider, ref('postInvocationAdvice'))
+		aclAfterInvocationManager(AfterInvocationProviderManager) {
+			providers = [
+				ref('aclPostInvocationProvider'),
+				ref('afterAclRead'),
+				ref('afterAclCollectionRead')]
 		}
 
 		methodSecurityInterceptor(MethodSecurityInterceptor) {
 			accessDecisionManager = ref('aclAccessDecisionManager')
 			authenticationManager = ref('authenticationManager')
-			afterInvocationManager = ref('afterInvocationManager')
+			afterInvocationManager = ref('aclAfterInvocationManager')
 			securityMetadataSource = ref('aclSecurityMetadataSource')
 			runAsManager = ref('runAsManager')
 			validateConfigAttributes = false
@@ -438,9 +410,10 @@ class SpringSecurityAclGrailsPlugin {
 				for (String permissionName in annotation.permissions()) {
 					permissions << BasePermission."$permissionName"
 				}
-				config[annotation.name()] = [configAttribute: annotation.configAttribute(),
-				                             domainObjectClass: dc.clazz,
-				                             permissions: permissions]
+				config[annotation.name()] = [
+					configAttribute: annotation.configAttribute(),
+					domainObjectClass: dc.clazz,
+					permissions: permissions]
 			}
 		}
 

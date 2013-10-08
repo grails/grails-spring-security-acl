@@ -28,7 +28,7 @@
 						<tr class="prop">
 							<td valign="top" class="name">Name</td>
 							<td valign="top" class="value"><g:textField name="name" value="${reportInstance.name}" /></td>
-						</tr>					
+						</tr>
 					</tbody>
 				</table>
 			</div>

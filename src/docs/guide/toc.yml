@@ -1,0 +1,13 @@
+introduction:
+  title: Introduction to the Spring Security ACL Plugin
+  history: History
+usage:
+  title: Usage
+  serviceMethods: Securing Service Methods
+  acls: Working with ACLs
+  domainClasses: Domain Classes
+  configuration: Configuration
+  runAs: Run-As Authentication Replacement
+  customPermissions: Custom Permissions
+tutorial: Tutorial
+sampleApp: Sample Application

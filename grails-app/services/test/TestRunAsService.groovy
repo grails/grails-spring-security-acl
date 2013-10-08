@@ -1,4 +1,4 @@
-/* Copyright 2009-2012 SpringSource.
+/* Copyright 2009-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,11 @@
  */
 package test
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 class TestRunAsService {
+
+	static transactional = false
 
 	def testSecureService
 
