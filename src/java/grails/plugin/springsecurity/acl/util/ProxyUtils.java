@@ -22,7 +22,7 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Utility methods for unproxying transactional services.
+ * Utility methods for unproxying classes.
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
@@ -39,7 +39,7 @@ public class ProxyUtils {
 	 */
 	public static Class<?> unproxy(final Class<?> clazz) {
 		Class<?> current = clazz;
-		while (isCglibProxyClass(current)) {
+		while (isProxy(current)) {
 			current = current.getSuperclass();
 		}
 		return current;
@@ -53,7 +53,7 @@ public class ProxyUtils {
 	public static Method unproxy(final Method method) {
 		Class<?> clazz = method.getDeclaringClass();
 
-		if (!isCglibProxyClass(clazz)) {
+		if (!isProxy(clazz)) {
 			return method;
 		}
 
@@ -69,7 +69,7 @@ public class ProxyUtils {
 	public static Constructor<?> unproxy(final Constructor<?> constructor) {
 		Class<?> clazz = constructor.getDeclaringClass();
 
-		if (!isCglibProxyClass(clazz)) {
+		if (!isProxy(clazz)) {
 			return constructor;
 		}
 
@@ -87,6 +87,22 @@ public class ProxyUtils {
 
 		return null;
 	}
+
+	protected static boolean isProxy(Class<?> clazz) {
+		if (clazz.getSuperclass() == Object.class) {
+			return false;
+		}
+	   return isCglibProxyClass(clazz) || isJavassistProxy(clazz);
+   }
+
+	protected static boolean isJavassistProxy(Class<?> clazz) {
+		for (Class<?> i : clazz.getInterfaces()) {
+			if (i.getName().contains("org.hibernate.proxy.HibernateProxy")) {
+				return true;
+			}
+		}
+	   return false;
+   }
 
 	@SuppressWarnings("deprecation") // needs to work in Spring 3.1 and earlier
 	private static boolean isCglibProxyClass(Class<?> clazz) {
