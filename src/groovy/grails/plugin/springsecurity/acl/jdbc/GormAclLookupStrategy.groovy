@@ -59,6 +59,9 @@ class GormAclLookupStrategy implements LookupStrategy {
 	/** Dependency injection for auditLogger. */
 	def auditLogger
 
+	/** Dependency injection for permissionGrantingStrategy. */
+	def permissionGrantingStrategy
+
 	/** Dependency injection for permissionFactory. */
 	def permissionFactory
 
@@ -272,7 +275,7 @@ class GormAclLookupStrategy implements LookupStrategy {
 					new PrincipalSid(ownerSid.sid) :
 					new GrantedAuthoritySid(ownerSid.sid)
 
-			acl = new AclImpl(objectIdentity, id, aclAuthorizationStrategy, auditLogger,
+			acl = new AclImpl(objectIdentity, id, aclAuthorizationStrategy, permissionGrantingStrategy,
 					parentAcl, null, aclObjectIdentity.entriesInheriting, owner)
 			acls[id] = acl
 		}
