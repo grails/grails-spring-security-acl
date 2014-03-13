@@ -183,6 +183,7 @@ class SpringSecurityAclGrailsPlugin {
 			aclCache = ref('aclCache')
 			permissionFactory = ref('aclPermissionFactory')
 			auditLogger = ref('aclAuditLogger')
+			permissionGrantingStrategy = ref('aclPermissionGrantingStrategy')
 		}
 	}
 
