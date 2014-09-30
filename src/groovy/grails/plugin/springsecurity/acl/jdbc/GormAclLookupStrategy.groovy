@@ -17,8 +17,6 @@ package grails.plugin.springsecurity.acl.jdbc
 import grails.plugin.springsecurity.acl.AclEntry
 import grails.plugin.springsecurity.acl.AclObjectIdentity
 import grails.plugin.springsecurity.acl.model.StubAclParent
-import org.springframework.security.acls.domain.AclAuthorizationStrategy
-import org.springframework.security.acls.model.PermissionGrantingStrategy
 
 import java.lang.reflect.Field
 
@@ -43,296 +41,289 @@ import org.springframework.util.ReflectionUtils
  */
 class GormAclLookupStrategy implements LookupStrategy {
 
-    protected Field aceAclField
+	protected Field aceAclField
 
-    protected /*HibernateProxyHandler*/ hibernateProxyHandler
+	protected /*HibernateProxyHandler*/ hibernateProxyHandler
 
-    GormAclLookupStrategy() {
-        findAceAclField()
-        createHibernateProxyHandler()
-    }
+	GormAclLookupStrategy() {
+		findAceAclField()
+		createHibernateProxyHandler()
+	}
 
-    /** Dependency injection for aclAuthorizationStrategy. */
-    def aclAuthorizationStrategy
+	/** Dependency injection for aclAuthorizationStrategy. */
+	def aclAuthorizationStrategy
 
-    /** Dependency injection for aclCache. */
-    def aclCache
+	/** Dependency injection for aclCache. */
+	def aclCache
 
-    /** Dependency injection for auditLogger. */
-    def auditLogger
+	/** Dependency injection for auditLogger. */
+	def auditLogger
 
-    /** Dependency injection for permissionFactory. */
-    def permissionFactory
+	/** Dependency injection for permissionFactory. */
+	def permissionFactory
 
-    /** Dependency injection for permissionGrantingStrategy. */
-    def permissionGrantingStrategy
+	/** Dependency injection for permissionGrantingStrategy. */
+	def permissionGrantingStrategy
 
-    int batchSize = 50
+	int batchSize = 50
 
-    /**
-     * {@inheritDoc}
-     * @see org.springframework.security.acls.jdbc.LookupStrategy#readAclsById(
-     * 	java.util.List, java.util.List)
-     */
-    Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) {
-        Map<ObjectIdentity, Acl> result = [:]
-        Set<ObjectIdentity> currentBatchToLoad = []
+	/**
+	 * {@inheritDoc}
+	 * @see org.springframework.security.acls.jdbc.LookupStrategy#readAclsById(java.util.List, java.util.List)
+	 */
+	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) {
+		Map<ObjectIdentity, Acl> result = [:]
+		Set<ObjectIdentity> currentBatchToLoad = []
 
-        objects.eachWithIndex { object, i ->
-            // Check we don't already have this ACL in the results
-            boolean aclFound = result.containsKey(object)
+		objects.eachWithIndex { object, i ->
+			// Check we don't already have this ACL in the results
+			boolean aclFound = result.containsKey(object)
 
-            // Check cache for the present ACL entry
-            if (!aclFound) {
-                Acl acl = aclCache.getFromCache(object)
+			// Check cache for the present ACL entry
+			if (!aclFound) {
+				Acl acl = aclCache.getFromCache(object)
 
-                // Ensure any cached element supports all the requested SIDs
-                // (they should always, as our base impl doesn't filter on SID)
-                if (acl) {
-                    if (acl.isSidLoaded(sids)) {
-                        result[acl.objectIdentity] = acl
-                        aclFound = true
-                    }
-                    else {
-                        throw new IllegalStateException(
-                                'Error: SID-filtered element detected when implementation does not perform SID filtering ' +
-                                        '- have you added something to the cache manually?')
-                    }
-                }
-            }
+				// Ensure any cached element supports all the requested SIDs
+				// (they should always, as our base impl doesn't filter on SID)
+				if (acl) {
+					Assert.state(acl.isSidLoaded(sids),
+						'Error: SID-filtered element detected when implementation does not perform SID filtering ' +
+						'- have you added something to the cache manually?')
 
-            // Load the ACL from the database
-            if (!aclFound) {
-                currentBatchToLoad << object
-            }
+					result[acl.objectIdentity] = acl
+					aclFound = true
+				}
+			}
 
-            // Is it time to load from JDBC the currentBatchToLoad?
-            if (currentBatchToLoad.size() == batchSize || (i + 1) == objects.size()) {
-                if (currentBatchToLoad.size() > 0) {
-                    Map<ObjectIdentity, Acl> loadedBatch = lookupObjectIdentities(currentBatchToLoad, sids)
-                    // Add loaded batch (all elements 100% initialized) to results
-                    result.putAll loadedBatch
-                    // Add the loaded batch to the cache
-                    for (acl in loadedBatch.values()) {
-                        aclCache.putInCache acl
-                    }
-                    currentBatchToLoad.clear()
-                }
-            }
-        }
+			// Load the ACL from the database
+			if (!aclFound) {
+				currentBatchToLoad << object
+			}
 
-        return result
-    }
+			// Is it time to load from JDBC the currentBatchToLoad?
+			if (currentBatchToLoad.size() == batchSize || (i + 1) == objects.size()) {
+				if (currentBatchToLoad.size() > 0) {
+					Map<ObjectIdentity, Acl> loadedBatch = lookupObjectIdentities(currentBatchToLoad, sids)
+					// Add loaded batch (all elements 100% initialized) to results
+					result.putAll loadedBatch
+					// Add the loaded batch to the cache
+					for (acl in loadedBatch.values()) {
+						aclCache.putInCache acl
+					}
+					currentBatchToLoad.clear()
+				}
+			}
+		}
 
-    protected Map<ObjectIdentity, Acl> lookupObjectIdentities(
-            Collection<ObjectIdentity> objectIdentities, List<Sid> sids) {
+		return result
+	}
 
-        Assert.notEmpty objectIdentities, 'Must provide identities to lookup'
+	protected Map<ObjectIdentity, Acl> lookupObjectIdentities(
+			Collection<ObjectIdentity> objectIdentities, List<Sid> sids) {
 
-        Map<Serializable, Acl> acls = [:] // contains Acls with StubAclParents
+		Assert.notEmpty objectIdentities, 'Must provide identities to lookup'
 
-        List<AclObjectIdentity> aclObjectIdentities = AclObjectIdentity.withCriteria {
-            createAlias 'aclClass', 'ac'
-            or {
-                for (ObjectIdentity objectIdentity in objectIdentities) {
-                    and {
-                        eq 'objectId', objectIdentity.identifier
-                        eq 'ac.className', objectIdentity.type
-                    }
-                }
-            }
-            order 'objectId', 'asc'
-        }
+		Map<Serializable, Acl> acls = [:] // contains Acls with StubAclParents
 
-        unwrapProxies aclObjectIdentities
+		List<AclObjectIdentity> aclObjectIdentities = AclObjectIdentity.withCriteria {
+			createAlias 'aclClass', 'ac'
+			or {
+				for (ObjectIdentity objectIdentity in objectIdentities) {
+					and {
+						eq 'objectId', objectIdentity.identifier
+						eq 'ac.className', objectIdentity.type
+					}
+				}
+			}
+			order 'objectId', 'asc'
+		}
 
-        Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap = findAcls(aclObjectIdentities)
+		unwrapProxies aclObjectIdentities
 
-        List<AclObjectIdentity> parents = convertEntries(aclObjectIdentityMap, acls, sids)
-        if (parents) {
-            lookupParents acls, parents, sids
-        }
+		Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap = findAcls(aclObjectIdentities)
 
-        // Finally, convert our 'acls' containing StubAclParents into true Acls
-        Map<ObjectIdentity, Acl> result = [:]
-        for (Acl inputAcl in acls.values()) {
-            Acl converted = convert(acls, inputAcl.id)
-            result[converted.objectIdentity] = converted
-        }
+		List<AclObjectIdentity> parents = convertEntries(aclObjectIdentityMap, acls, sids)
+		if (parents) {
+			lookupParents acls, parents, sids
+		}
 
-        return result
-    }
+		// Finally, convert our 'acls' containing StubAclParents into true Acls
+		Map<ObjectIdentity, Acl> result = [:]
+		for (Acl inputAcl in acls.values()) {
+			Acl converted = convert(acls, inputAcl.id)
+			result[converted.objectIdentity] = converted
+		}
 
-    protected void unwrapProxies(List<AclObjectIdentity> aclObjectIdentities) {
-        if (!hibernateProxyHandler) {
-            return
-        }
-        for (ListIterator<AclObjectIdentity> iter = aclObjectIdentities.listIterator(); iter.hasNext(); ) {
-            iter.set hibernateProxyHandler.unwrapIfProxy(iter.next())
-        }
-    }
+		return result
+	}
 
-    protected Map<AclObjectIdentity, List<AclEntry>> findAcls(
-            List<AclObjectIdentity> aclObjectIdentities) {
+	protected void unwrapProxies(List<AclObjectIdentity> aclObjectIdentities) {
+		if (!hibernateProxyHandler) {
+			return
+		}
+		for (ListIterator<AclObjectIdentity> iter = aclObjectIdentities.listIterator(); iter.hasNext(); ) {
+			iter.set hibernateProxyHandler.unwrapIfProxy(iter.next())
+		}
+	}
 
-        List<AclEntry> entries
-        if (aclObjectIdentities) {
-            entries = AclEntry.withCriteria {
-                'in'('aclObjectIdentity', aclObjectIdentities)
-                order 'aceOrder', 'asc'
-            }
-        }
+	protected Map<AclObjectIdentity, List<AclEntry>> findAcls(List<AclObjectIdentity> aclObjectIdentities) {
 
-        def map = [:]
-        for (AclObjectIdentity aclObjectIdentity in aclObjectIdentities) {
-            map[aclObjectIdentity] = []
-        }
+		List<AclEntry> entries
+		if (aclObjectIdentities) {
+			entries = AclEntry.withCriteria {
+				'in'('aclObjectIdentity', aclObjectIdentities)
+				order 'aceOrder', 'asc'
+			}
+		}
 
-        for (entry in entries) {
-            map[entry.aclObjectIdentity] << entry
-        }
+		def map = [:]
+		for (AclObjectIdentity aclObjectIdentity in aclObjectIdentities) {
+			map[aclObjectIdentity] = []
+		}
 
-        return map
-    }
+		for (entry in entries) {
+			map[entry.aclObjectIdentity] << entry
+		}
 
-    protected AclImpl convert(Map<Serializable, Acl> inputMap, Serializable currentIdentity) {
-        Assert.notEmpty inputMap, 'InputMap required'
-        Assert.notNull currentIdentity, 'CurrentIdentity required'
+		return map
+	}
 
-        // Retrieve this Acl from the InputMap
-        Acl inputAcl = inputMap[currentIdentity]
-        Assert.isInstanceOf AclImpl, inputAcl, 'The inputMap contained a non-AclImpl'
+	protected AclImpl convert(Map<Serializable, Acl> inputMap, Serializable currentIdentity) {
+		Assert.notEmpty inputMap, 'InputMap required'
+		Assert.notNull currentIdentity, 'CurrentIdentity required'
 
-        Acl parent = inputAcl.parentAcl
-        if (parent instanceof StubAclParent) {
-            parent = convert(inputMap, parent.id)
-        }
+		// Retrieve this Acl from the InputMap
+		Acl inputAcl = inputMap[currentIdentity]
+		Assert.isInstanceOf AclImpl, inputAcl, 'The inputMap contained a non-AclImpl'
 
-        // Now we have the parent (if there is one), create the true AclImpl
-        AclImpl result = new AclImpl(inputAcl.objectIdentity, inputAcl.id,
-                aclAuthorizationStrategy, permissionGrantingStrategy, parent, null,
-                inputAcl.isEntriesInheriting(), inputAcl.owner)
+		Acl parent = inputAcl.parentAcl
+		if (parent instanceof StubAclParent) {
+			parent = convert(inputMap, parent.id)
+		}
 
-        List acesNew = []
-        for (AccessControlEntryImpl ace in inputAcl.@aces) {
-            ReflectionUtils.setField aceAclField, ace, result
-            acesNew << ace
-        }
-        result.@aces.clear()
-        result.@aces.addAll acesNew
+		// Now we have the parent (if there is one), create the true AclImpl
+		AclImpl result = new AclImpl(inputAcl.objectIdentity, inputAcl.id,
+				aclAuthorizationStrategy, permissionGrantingStrategy, parent, null /*List<Sid> loadedSids*/,
+				inputAcl.isEntriesInheriting(), inputAcl.owner)
 
-        return result
-    }
+		List acesNew = []
+		for (AccessControlEntryImpl ace in inputAcl.@aces) {
+			ReflectionUtils.setField aceAclField, ace, result
+			acesNew << ace
+		}
+		result.@aces.clear()
+		result.@aces.addAll acesNew
 
-    protected List<AclObjectIdentity> convertEntries(
-            Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap,
-            Map<Serializable, Acl> acls, List<Sid> sids) {
+		return result
+	}
 
-        List<AclObjectIdentity> parents = []
+	protected List<AclObjectIdentity> convertEntries(Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap,
+			Map<Serializable, Acl> acls, List<Sid> sids) {
 
-        aclObjectIdentityMap.each { aclObjectIdentity, aclEntries ->
-            createAcl acls, aclObjectIdentity, aclEntries
+		List<AclObjectIdentity> parents = []
 
-            if (aclObjectIdentity.parent) {
-                Serializable parentId = aclObjectIdentity.parent.id
-                if (acls.containsKey(parentId)) {
-                    return
-                }
+		aclObjectIdentityMap.each { aclObjectIdentity, aclEntries ->
+			createAcl acls, aclObjectIdentity, aclEntries
 
-                // Now try to find it in the cache
-                MutableAcl cached = aclCache.getFromCache(parentId)
-                if (!cached || !cached.isSidLoaded(sids)) {
-                    parents << aclObjectIdentity.parent
-                }
-                else {
-                    // Pop into the acls map, so our convert method doesn't
-                    // need to deal with an unsynchronized AclCache
-                    acls[cached.id] = cached
-                }
-            }
-        }
+			if (!aclObjectIdentity.parent) {
+				return
+			}
 
-        return parents
-    }
+			Serializable parentId = aclObjectIdentity.parent.id
+			if (acls.containsKey(parentId)) {
+				return
+			}
 
-    protected void createAcl(Map<Serializable, Acl> acls, AclObjectIdentity aclObjectIdentity,
-                             List<AclEntry> entries) {
+			// Now try to find it in the cache
+			MutableAcl cached = aclCache.getFromCache(parentId)
+			if (!cached || !cached.isSidLoaded(sids)) {
+				parents << aclObjectIdentity.parent
+			}
+			else {
+				// Pop into the acls map, so our convert method doesn't
+				// need to deal with an unsynchronized AclCache
+				acls[cached.id] = cached
+			}
+		}
 
-        Serializable id = aclObjectIdentity.id
+		return parents
+	}
 
-        // If we already have an ACL for this ID, just create the ACE
-        AclImpl acl = acls[id]
-        if (!acl) {
-            // Make an AclImpl and pop it into the Map
-            def objectIdentity = new ObjectIdentityImpl(
-                    lookupClass(aclObjectIdentity.aclClass.className),
-                    aclObjectIdentity.objectId)
-            Acl parentAcl
-            if (aclObjectIdentity.parent) {
-                parentAcl = new StubAclParent(aclObjectIdentity.parent.id)
-            }
+	protected void createAcl(Map<Serializable, Acl> acls, AclObjectIdentity aclObjectIdentity,
+			List<AclEntry> entries) {
 
-            def ownerSid = aclObjectIdentity.owner
-            Sid owner = ownerSid.principal ?
-                    new PrincipalSid(ownerSid.sid) :
-                    new GrantedAuthoritySid(ownerSid.sid)
+		Serializable id = aclObjectIdentity.id
 
-            acl = new AclImpl(objectIdentity, id, aclAuthorizationStrategy, permissionGrantingStrategy,
-                    parentAcl, null, aclObjectIdentity.entriesInheriting, owner)
-            acls[id] = acl
-        }
+		// If we already have an ACL for this ID, just create the ACE
+		AclImpl acl = acls[id]
+		if (!acl) {
+			// Make an AclImpl and pop it into the Map
+			def objectIdentity = new ObjectIdentityImpl(
+					lookupClass(aclObjectIdentity.aclClass.className),
+					aclObjectIdentity.objectId)
+			Acl parentAcl
+			if (aclObjectIdentity.parent) {
+				parentAcl = new StubAclParent(aclObjectIdentity.parent.id)
+			}
 
-        List aces = acl.@aces
-        for (AclEntry entry in entries) {
-            // Add an extra ACE to the ACL (ORDER BY maintains the ACE list order)
-            // It is permissable to have no ACEs in an ACL
-            String aceSid = entry.sid?.sid
-            if (aceSid) {
-                Sid recipient = entry.sid.principal ?
-                        new PrincipalSid(aceSid) :
-                        new GrantedAuthoritySid(aceSid)
+			def ownerSid = aclObjectIdentity.owner
+			Sid owner = ownerSid.principal ?
+					new PrincipalSid(ownerSid.sid) :
+					new GrantedAuthoritySid(ownerSid.sid)
 
-                Permission permission = permissionFactory.buildFromMask(entry.mask)
-                AccessControlEntryImpl ace = new AccessControlEntryImpl(
-                        entry.id, acl, recipient, permission,
-                        entry.granting, entry.auditSuccess, entry.auditFailure)
+			acl = new AclImpl(objectIdentity, id, aclAuthorizationStrategy, permissionGrantingStrategy,
+					parentAcl, null /*List<Sid> loadedSids*/, aclObjectIdentity.entriesInheriting, owner)
+			acls[id] = acl
+		}
 
-                // Add the ACE if it doesn't already exist in the ACL.aces field
-                if (!aces.contains(ace)) {
-                    aces << ace
-                }
-            }
-        }
-    }
+		List aces = acl.@aces
+		for (AclEntry entry in entries) {
+			// Add an extra ACE to the ACL (ORDER BY maintains the ACE list order)
+			// It is permissable to have no ACEs in an ACL
+			String aceSid = entry.sid?.sid
+			if (aceSid) {
+				Sid recipient = entry.sid.principal ? new PrincipalSid(aceSid) : new GrantedAuthoritySid(aceSid)
 
-    protected Class<?> lookupClass(String className) {
-        // workaround for Class.forName() not working in tests
-        return Class.forName(className, true, Thread.currentThread().contextClassLoader)
-    }
+				Permission permission = permissionFactory.buildFromMask(entry.mask)
+				AccessControlEntryImpl ace = new AccessControlEntryImpl(entry.id, acl, recipient, permission,
+						entry.granting, entry.auditSuccess, entry.auditFailure)
 
-    protected void lookupParents(Map<Serializable, Acl> acls,
-                                 Collection<AclObjectIdentity> findNow, List<Sid> sids) {
+				// Add the ACE if it doesn't already exist in the ACL.aces field
+				if (!aces.contains(ace)) {
+					aces << ace
+				}
+			}
+		}
+	}
 
-        Assert.notNull acls, 'ACLs are required'
-        Assert.notEmpty findNow, 'Items to find now required'
+	protected Class<?> lookupClass(String className) {
+		// workaround for Class.forName() not working in tests
+		return Class.forName(className, true, Thread.currentThread().contextClassLoader)
+	}
 
-        Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap = findAcls(findNow as List)
-        List<AclObjectIdentity> parents = convertEntries(aclObjectIdentityMap, acls, sids)
-        if (parents) {
-            lookupParents acls, parents, sids
-        }
-    }
+	protected void lookupParents(Map<Serializable, Acl> acls, Collection<AclObjectIdentity> findNow,
+			List<Sid> sids) {
 
-    protected void findAceAclField() {
-        aceAclField = ReflectionUtils.findField(AccessControlEntryImpl, 'acl')
-        aceAclField.accessible = true
-    }
+		Assert.notNull acls, 'ACLs are required'
+		Assert.notEmpty findNow, 'Items to find now required'
 
-    protected void createHibernateProxyHandler() {
-        try {
-            Class<?> c = lookupClass('org.codehaus.groovy.grails.orm.hibernate.proxy.HibernateProxyHandler')
-            hibernateProxyHandler = c.newInstance()
-        }
-        catch (ignored) {}
-    }
+		Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap = findAcls(findNow as List)
+		List<AclObjectIdentity> parents = convertEntries(aclObjectIdentityMap, acls, sids)
+		if (parents) {
+			lookupParents acls, parents, sids
+		}
+	}
+
+	protected void findAceAclField() {
+		aceAclField = ReflectionUtils.findField(AccessControlEntryImpl, 'acl')
+		aceAclField.accessible = true
+	}
+
+	protected void createHibernateProxyHandler() {
+		try {
+			Class<?> c = lookupClass('org.codehaus.groovy.grails.orm.hibernate.proxy.HibernateProxyHandler')
+			hibernateProxyHandler = c.newInstance()
+		}
+		catch (ignored) {}
+	}
 }
