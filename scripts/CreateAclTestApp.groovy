@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 SpringSource.
+/* Copyright 2009-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ target(createAclTestApps: 'Creates ACL test apps') {
 		createProjectFiles()
 	}
 }
-	
+
 private void init(String name, config) {
 
 	pluginVersion = config.pluginVersion

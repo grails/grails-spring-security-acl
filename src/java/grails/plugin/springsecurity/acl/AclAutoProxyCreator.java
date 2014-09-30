@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 SpringSource.
+/* Copyright 2009-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,10 +58,10 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 	@SuppressWarnings("unchecked")
 	protected final Class<? extends Annotation>[] ANNOTATIONS = new Class[] {
 		grails.plugin.springsecurity.annotation.Secured.class,
-		org.springframework.security.access.annotation.Secured.class, 
+		org.springframework.security.access.annotation.Secured.class,
 		PreAuthorize.class,
-		PreFilter.class, 
-		PostAuthorize.class, 
+		PreFilter.class,
+		PostAuthorize.class,
 		PostFilter.class};
 
 	@Override
@@ -109,7 +109,7 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 			if (log.isDebugEnabled()) log.debug("Secure '{0}' instances of {1}", new Object[] { beanName, c.getName() });
 			return true;
 		}
-		return false; 
+		return false;
 	}
 
 	@Override
