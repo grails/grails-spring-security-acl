@@ -61,7 +61,7 @@ import org.springframework.security.core.authority.AuthorityUtils
 class SpringSecurityAclGrailsPlugin {
 
 	String version = '2.0-RC1'
-	String grailsVersion = '2.0 > *'
+	String grailsVersion = '2.3 > *'
 	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
 		'docs/**',
