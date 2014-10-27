@@ -14,7 +14,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		String springSecurityVersion = '3.2.0.RC1'
+		String springSecurityVersion = '3.2.3.RELEASE'
 
 		compile "org.springframework.security:spring-security-acl:$springSecurityVersion", {
 			excludes 'aopalliance', 'commons-logging', 'ehcache', 'fest-assert', 'hsqldb',

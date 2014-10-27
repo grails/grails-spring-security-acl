@@ -20,13 +20,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader;
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsClass;
 import org.codehaus.groovy.grails.commons.GrailsClassUtils;
 import org.codehaus.groovy.grails.commons.ServiceArtefactHandler;
-import org.codehaus.groovy.grails.compiler.GrailsClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.TargetSource;
@@ -116,7 +115,7 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 	@Override
 	protected Object createProxy(Class<?> beanClass, String beanName, Object[] specificInterceptors, TargetSource targetSource) {
 		try {
-			setProxyClassLoader(new GrailsClassLoader(baseLoader, null, null));
+			setProxyClassLoader(new GrailsAwareClassLoader(baseLoader, null, false));
 			return super.createProxy(beanClass, beanName, specificInterceptors, targetSource);
 		}
 		finally {
