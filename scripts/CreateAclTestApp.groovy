@@ -94,15 +94,16 @@ private void installPlugins() {
 	contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
 
 	contents = contents.replace('//mavenLocal()', 'mavenLocal()')
-	contents = contents.replace('repositories {', '''repositories {
-mavenRepo 'http://repo.spring.io/milestone' // TODO remove
-''')
-
 	contents = contents.replace('grails.project.fork', 'grails.project.forkDISABLED')
 
 	contents = contents.replace('plugins {', """plugins {
 test ":functional-test:$functionalTestPluginVersion"
 runtime ":spring-security-acl:$pluginVersion"
+""")
+
+
+	contents = contents.replace('dependencies {', """dependencies {
+compile "commons-collections:commons-collections:3.2.1"
 """)
 
 	// configure the functional tests to run in order
