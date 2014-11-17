@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 SpringSource.
+/* Copyright 2009-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader;
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsClass;
 import org.codehaus.groovy.grails.commons.GrailsClassUtils;
 import org.codehaus.groovy.grails.commons.ServiceArtefactHandler;
-import org.codehaus.groovy.grails.compiler.GrailsClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.TargetSource;
@@ -59,10 +58,10 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 	@SuppressWarnings("unchecked")
 	protected final Class<? extends Annotation>[] ANNOTATIONS = new Class[] {
 		grails.plugin.springsecurity.annotation.Secured.class,
-		org.springframework.security.access.annotation.Secured.class, 
+		org.springframework.security.access.annotation.Secured.class,
 		PreAuthorize.class,
-		PreFilter.class, 
-		PostAuthorize.class, 
+		PreFilter.class,
+		PostAuthorize.class,
 		PostFilter.class};
 
 	@Override
@@ -110,13 +109,13 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 			if (log.isDebugEnabled()) log.debug("Secure '{0}' instances of {1}", new Object[] { beanName, c.getName() });
 			return true;
 		}
-		return false; 
+		return false;
 	}
 
 	@Override
 	protected Object createProxy(Class<?> beanClass, String beanName, Object[] specificInterceptors, TargetSource targetSource) {
 		try {
-			setProxyClassLoader(new GrailsClassLoader(baseLoader, null, null));
+			setProxyClassLoader(new GrailsAwareClassLoader(baseLoader, null, false));
 			return super.createProxy(beanClass, beanName, specificInterceptors, targetSource);
 		}
 		finally {

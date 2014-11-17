@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 SpringSource.
+/* Copyright 2009-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  */
 package grails.plugin.springsecurity.acl
 
+import grails.test.spock.IntegrationSpec
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -24,7 +26,7 @@ import test.TestReport as Report
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-abstract class AbstractAclTest extends GroovyTestCase {
+abstract class AbstractAclSpec extends IntegrationSpec {
 
 	protected static final String USER = 'username'
 	protected static final String ADMIN = 'admin'
@@ -34,25 +36,13 @@ abstract class AbstractAclTest extends GroovyTestCase {
 	protected long report1Id
 	protected long report2Id
 
-	/**
-	 * {@inheritDoc}
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
-	protected void setUp() {
-		super.setUp()
+	def setup() {
 		report1Id = new Report(name: 'r1').save().id
 		report2Id = new Report(name: 'r2').save().id
-		assertEquals 2, Report.count()
+		assert 2 == Report.count()
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	@Override
-	protected void tearDown() {
-		super.tearDown()
+	def cleanup() {
 		SCH.clearContext()
 	}
 

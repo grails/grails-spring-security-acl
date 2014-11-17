@@ -12,29 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package grails.plugin.springsecurity.acl.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package grails.plugin.springsecurity.acl
 
 /**
- * Wrapper annotation that contains multiple {@link AclVoter} annotations.
- *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Documented
-public @interface AclVoters {
+class TestSpringAnnotatedServiceSpec extends AbstractAclMappedServiceSpec {
 
-	/**
-	 * The wrapped annotations.
-	 * @return  the annotations.
-	 */
-	AclVoter[] value() default {};
+	def testSpringAnnotatedService
+
+	def setup() {
+		service = testSpringAnnotatedService
+	}
 }

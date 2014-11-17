@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 SpringSource.
+/* Copyright 2009-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class AclObjectIdentity extends AbstractAclObjectIdentity {
 
 	@Override
 	String toString() {
-		"AclObjectIdentity id $id, aclClass $aclClass.className, " +
+		"AclObjectIdentity id $id, aclClass $aclClass?.className, " +
 		"objectId $objectId, entriesInheriting $entriesInheriting"
 	}
 

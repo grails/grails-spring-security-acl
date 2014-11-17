@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 SpringSource.
+/* Copyright 2009-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ target(createAclTestApps: 'Creates ACL test apps') {
 		createProjectFiles()
 	}
 }
-	
+
 private void init(String name, config) {
 
 	pluginVersion = config.pluginVersion
@@ -94,15 +94,16 @@ private void installPlugins() {
 	contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
 
 	contents = contents.replace('//mavenLocal()', 'mavenLocal()')
-	contents = contents.replace('repositories {', '''repositories {
-mavenRepo 'http://repo.spring.io/milestone' // TODO remove
-''')
-
 	contents = contents.replace('grails.project.fork', 'grails.project.forkDISABLED')
 
 	contents = contents.replace('plugins {', """plugins {
 test ":functional-test:$functionalTestPluginVersion"
 runtime ":spring-security-acl:$pluginVersion"
+""")
+
+
+	contents = contents.replace('dependencies {', """dependencies {
+compile "commons-collections:commons-collections:3.2.1"
 """)
 
 	// configure the functional tests to run in order

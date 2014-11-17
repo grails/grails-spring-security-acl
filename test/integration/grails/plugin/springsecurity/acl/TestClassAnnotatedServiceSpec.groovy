@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 SpringSource.
+/* Copyright 2009-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,36 +20,53 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class TestClassAnnotatedServiceTests extends AbstractAclTest {
+class TestClassAnnotatedServiceSpec extends AbstractAclSpec {
 
 	def testClassAnnotatedService
 
-	void testNotAnnotated() {
+	def 'check that the notAnnotated method inherits ROLE_ADMIN from the class annotation'() {
 
-		shouldFail(AuthenticationCredentialsNotFoundException) {
+		when:
 			testClassAnnotatedService.notAnnotated()
-		}
 
-		loginAsUser()
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AuthenticationCredentialsNotFoundException
+
+		when:
+			loginAsUser()
 			testClassAnnotatedService.notAnnotated()
-		}
 
-		loginAsAdmin()
-		testClassAnnotatedService.notAnnotated()
+		then:
+			thrown AccessDeniedException
+
+		when:
+			loginAsAdmin()
+			testClassAnnotatedService.notAnnotated()
+
+		then:
+			notThrown()
 	}
 
-	void testOverrideUserAnnotated() {
-		shouldFail(AuthenticationCredentialsNotFoundException) {
-			testClassAnnotatedService.userAnnotated()
-		}
+	def 'check that the userAnnotated method overides the class annotation and requires ROLE_USER'() {
 
-		loginAsAdmin()
-		shouldFail(AccessDeniedException) {
+		when:
 			testClassAnnotatedService.userAnnotated()
-		}
 
-		loginAsUser()
-		testClassAnnotatedService.userAnnotated()
+		then:
+			thrown AuthenticationCredentialsNotFoundException
+
+		when:
+			loginAsAdmin()
+			testClassAnnotatedService.userAnnotated()
+
+		then:
+			thrown AccessDeniedException
+
+		when:
+			loginAsUser()
+			testClassAnnotatedService.userAnnotated()
+
+		then:
+			notThrown()
 	}
 }

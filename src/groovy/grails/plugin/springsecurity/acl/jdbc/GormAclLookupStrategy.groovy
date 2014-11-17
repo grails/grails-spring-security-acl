@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 SpringSource.
+/* Copyright 2009-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,12 +62,14 @@ class GormAclLookupStrategy implements LookupStrategy {
 	/** Dependency injection for permissionFactory. */
 	def permissionFactory
 
+	/** Dependency injection for permissionGrantingStrategy. */
+	def permissionGrantingStrategy
+
 	int batchSize = 50
 
 	/**
 	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.jdbc.LookupStrategy#readAclsById(
-	 * 	java.util.List, java.util.List)
+	 * @see org.springframework.security.acls.jdbc.LookupStrategy#readAclsById(java.util.List, java.util.List)
 	 */
 	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) {
 		Map<ObjectIdentity, Acl> result = [:]
@@ -84,15 +86,12 @@ class GormAclLookupStrategy implements LookupStrategy {
 				// Ensure any cached element supports all the requested SIDs
 				// (they should always, as our base impl doesn't filter on SID)
 				if (acl) {
-					if (acl.isSidLoaded(sids)) {
-						result[acl.objectIdentity] = acl
-						aclFound = true
-					}
-					else {
-						throw new IllegalStateException(
-								'Error: SID-filtered element detected when implementation does not perform SID filtering ' +
-								'- have you added something to the cache manually?')
-					}
+					Assert.state(acl.isSidLoaded(sids),
+						'Error: SID-filtered element detected when implementation does not perform SID filtering ' +
+						'- have you added something to the cache manually?')
+
+					result[acl.objectIdentity] = acl
+					aclFound = true
 				}
 			}
 
@@ -167,8 +166,7 @@ class GormAclLookupStrategy implements LookupStrategy {
 		}
 	}
 
-	protected Map<AclObjectIdentity, List<AclEntry>> findAcls(
-			List<AclObjectIdentity> aclObjectIdentities) {
+	protected Map<AclObjectIdentity, List<AclEntry>> findAcls(List<AclObjectIdentity> aclObjectIdentities) {
 
 		List<AclEntry> entries
 		if (aclObjectIdentities) {
@@ -205,7 +203,7 @@ class GormAclLookupStrategy implements LookupStrategy {
 
 		// Now we have the parent (if there is one), create the true AclImpl
 		AclImpl result = new AclImpl(inputAcl.objectIdentity, inputAcl.id,
-				aclAuthorizationStrategy, auditLogger, parent, null,
+				aclAuthorizationStrategy, permissionGrantingStrategy, parent, null /*List<Sid> loadedSids*/,
 				inputAcl.isEntriesInheriting(), inputAcl.owner)
 
 		List acesNew = []
@@ -219,8 +217,7 @@ class GormAclLookupStrategy implements LookupStrategy {
 		return result
 	}
 
-	protected List<AclObjectIdentity> convertEntries(
-			Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap,
+	protected List<AclObjectIdentity> convertEntries(Map<AclObjectIdentity, List<AclEntry>> aclObjectIdentityMap,
 			Map<Serializable, Acl> acls, List<Sid> sids) {
 
 		List<AclObjectIdentity> parents = []
@@ -228,22 +225,24 @@ class GormAclLookupStrategy implements LookupStrategy {
 		aclObjectIdentityMap.each { aclObjectIdentity, aclEntries ->
 			createAcl acls, aclObjectIdentity, aclEntries
 
-			if (aclObjectIdentity.parent) {
-				Serializable parentId = aclObjectIdentity.parent.id
-				if (acls.containsKey(parentId)) {
-					return
-				}
+			if (!aclObjectIdentity.parent) {
+				return
+			}
 
-				// Now try to find it in the cache
-				MutableAcl cached = aclCache.getFromCache(parentId)
-				if (!cached || !cached.isSidLoaded(sids)) {
-					parents << aclObjectIdentity.parent
-				}
-				else {
-					// Pop into the acls map, so our convert method doesn't
-					// need to deal with an unsynchronized AclCache
-					acls[cached.id] = cached
-				}
+			Serializable parentId = aclObjectIdentity.parent.id
+			if (acls.containsKey(parentId)) {
+				return
+			}
+
+			// Now try to find it in the cache
+			MutableAcl cached = aclCache.getFromCache(parentId)
+			if (!cached || !cached.isSidLoaded(sids)) {
+				parents << aclObjectIdentity.parent
+			}
+			else {
+				// Pop into the acls map, so our convert method doesn't
+				// need to deal with an unsynchronized AclCache
+				acls[cached.id] = cached
 			}
 		}
 
@@ -272,8 +271,8 @@ class GormAclLookupStrategy implements LookupStrategy {
 					new PrincipalSid(ownerSid.sid) :
 					new GrantedAuthoritySid(ownerSid.sid)
 
-			acl = new AclImpl(objectIdentity, id, aclAuthorizationStrategy, auditLogger,
-					parentAcl, null, aclObjectIdentity.entriesInheriting, owner)
+			acl = new AclImpl(objectIdentity, id, aclAuthorizationStrategy, permissionGrantingStrategy,
+					parentAcl, null /*List<Sid> loadedSids*/, aclObjectIdentity.entriesInheriting, owner)
 			acls[id] = acl
 		}
 
@@ -283,13 +282,10 @@ class GormAclLookupStrategy implements LookupStrategy {
 			// It is permissable to have no ACEs in an ACL
 			String aceSid = entry.sid?.sid
 			if (aceSid) {
-				Sid recipient = entry.sid.principal ?
-						new PrincipalSid(aceSid) :
-						new GrantedAuthoritySid(aceSid)
+				Sid recipient = entry.sid.principal ? new PrincipalSid(aceSid) : new GrantedAuthoritySid(aceSid)
 
 				Permission permission = permissionFactory.buildFromMask(entry.mask)
-				AccessControlEntryImpl ace = new AccessControlEntryImpl(
-						entry.id, acl, recipient, permission,
+				AccessControlEntryImpl ace = new AccessControlEntryImpl(entry.id, acl, recipient, permission,
 						entry.granting, entry.auditSuccess, entry.auditFailure)
 
 				// Add the ACE if it doesn't already exist in the ACL.aces field
@@ -305,8 +301,8 @@ class GormAclLookupStrategy implements LookupStrategy {
 		return Class.forName(className, true, Thread.currentThread().contextClassLoader)
 	}
 
-	protected void lookupParents(Map<Serializable, Acl> acls,
-			Collection<AclObjectIdentity> findNow, List<Sid> sids) {
+	protected void lookupParents(Map<Serializable, Acl> acls, Collection<AclObjectIdentity> findNow,
+			List<Sid> sids) {
 
 		Assert.notNull acls, 'ACLs are required'
 		Assert.notEmpty findNow, 'Items to find now required'
