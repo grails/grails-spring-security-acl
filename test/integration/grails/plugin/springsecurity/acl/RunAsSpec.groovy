@@ -15,6 +15,7 @@
 package grails.plugin.springsecurity.acl
 
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.test.spock.IntegrationSpec
 
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.TestingAuthenticationToken
@@ -26,106 +27,140 @@ import org.springframework.security.core.userdetails.User
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class RunAsTests extends GroovyTestCase {
+class RunAsSpec extends IntegrationSpec {
 
 	def filterInvocationInterceptor
 	def testRunAsService
 	def testSecureService
 
-	/**
-	 * {@inheritDoc}
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	@Override
-	protected void tearDown() {
-		super.tearDown()
+	def cleanup() {
 		SCH.clearContext()
 	}
 
-	void testNotAuthenticated() {
-		authenticate 'ROLE_ANONYMOUS'
+	def 'not authenticated'() {
 
-		shouldFail(AccessDeniedException) {
+		given:
+			authenticate 'ROLE_ANONYMOUS'
+
+		when:
 			testRunAsService.method1()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testRunAsService.method2()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testSecureService.method1()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testSecureService.method2()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testSecureService.method3()
-		}
+
+		then:
+			thrown AccessDeniedException
 	}
 
-	void testAuthenticatedAdmin() {
-		authenticate 'ROLE_ADMIN'
+	def 'authenticated admin'() {
 
-		shouldFail(AccessDeniedException) {
+		given:
+			authenticate 'ROLE_ADMIN'
+
+		when:
 			testSecureService.method1()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testSecureService.method2()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testSecureService.method3()
-		}
 
-		assertEquals 'method1', testRunAsService.method1()
-		assertEquals 'method2', testRunAsService.method2()
+		then:
+			thrown AccessDeniedException
+
+			'method1' == testRunAsService.method1()
+			'method2' == testRunAsService.method2()
 	}
 
-	void testAuthenticatedUser() {
-		authenticate 'ROLE_USER'
+	def 'authenticated user'() {
 
-		shouldFail(AccessDeniedException) {
+		given:
+			authenticate 'ROLE_USER'
+
+		when:
 			testRunAsService.method1()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testRunAsService.method2()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testSecureService.method1()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testSecureService.method2()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testSecureService.method3()
-		}
+
+		then:
+			thrown AccessDeniedException
 	}
 
-	void testAuthenticatedSuperuser() {
-		authenticate 'ROLE_SUPERUSER'
+	def 'authenticated superuser'() {
 
-		shouldFail(AccessDeniedException) {
+		given:
+			authenticate 'ROLE_SUPERUSER'
+
+		when:
 			testRunAsService.method1()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testRunAsService.method2()
-		}
 
-		shouldFail(AccessDeniedException) {
+		then:
+			thrown AccessDeniedException
+
+		when:
 			testSecureService.method1()
-		}
 
-		assertEquals 'method2', testSecureService.method2()
-		assertEquals 'method3', testSecureService.method3()
+		then:
+			thrown AccessDeniedException
+
+			'method2' == testSecureService.method2()
+			'method3' == testSecureService.method3()
 	}
 
 	private void authenticate(roles) {

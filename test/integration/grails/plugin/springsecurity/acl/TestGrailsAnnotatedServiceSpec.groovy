@@ -17,17 +17,11 @@ package grails.plugin.springsecurity.acl
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class TestStaticConfiguredServiceTests extends AbstractAclMappedServiceTests {
+class TestGrailsAnnotatedServiceSpec extends AbstractAclMappedServiceSpec {
 
-	def testStaticConfiguredService
+	def testGrailsAnnotatedService
 
-	/**
-	 * {@inheritDoc}
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
-	protected void setUp() {
-		super.setUp()
-		service = testStaticConfiguredService
+	def setup() {
+		service = testGrailsAnnotatedService
 	}
 }
