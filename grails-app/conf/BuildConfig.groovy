@@ -3,7 +3,6 @@ grails.project.docs.output.dir = 'docs/manual' // for the gh-pages branch
 
 grails.project.dependency.resolver = 'maven'
 grails.project.dependency.resolution = {
-
 	inherits 'global'
 	log 'warn'
 
