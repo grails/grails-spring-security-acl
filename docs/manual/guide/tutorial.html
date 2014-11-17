@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3 Tutorial 2.0-RC1</title>
+    <title>3 Tutorial 2.0-RC2</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -74,7 +74,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 2.0-RC1</p>
+                    <p><strong>Version:</strong> 2.0-RC2</p>
 
                     
                 </div>
@@ -88,7 +88,7 @@ First create a test application:<p class="paragraph"/><pre class="bq"><code>
 $ grails create-app acltest
 $ cd acltest</code></pre><p class="paragraph"/>Install the plugin by adding it to the plugins section in BuildConfig.groovy:<p class="paragraph"/><div class="code"><pre>plugins &#123;
    &#8230;
-   runtime ':spring&#45;security&#45;acl:2.0&#45;RC1'
+   runtime ':spring&#45;security&#45;acl:2.0&#45;RC2'
 &#125;</pre></div><p class="paragraph"/>This will install the <a href="http://grails.org/plugin/spring-security-core" target="blank">Spring Security Core</a> plugin, so you'll need to configure that by running the <code>s2-quickstart</code> script:<p class="paragraph"/><pre class="bq"><code>
 $ grails s2-quickstart com.testacl User Role</code></pre><p class="paragraph"/>The ACL support uses domain classes but to allow customizing the domain classes (e.g. to enable Hibernate 2nd-level caching) there's a script that copies the domain classes into your application, <code>s2-create-acl-domains</code>. This script is run when the plugin is installed (otherwise the plugin code wouldn't compile) but you can run it again to re-create the domain classes:
 <pre class="bq"><code>
@@ -344,7 +344,11 @@ class ErrorsController &#123;<p class="paragraph"/>   def error403() &#123;&#125
     &#60;/div&#62;
 &#60;/g:form&#62;</pre></div><p class="paragraph"/><code>list.gsp</code> and <code>show.gsp</code> are fine as they are.<p class="paragraph"/><h4>Testing</h4><p class="paragraph"/>Now start the app:
 <pre class="bq"><code>
-$ grails run-app</code></pre><p class="paragraph"/>and open <a href="http://localhost:8080/acltest/report/list" target="blank">http://localhost:8080/acltest/report/list</a><p class="paragraph"/>Login as user1/password1 and you should see the first page of results. But if you click on page 7 or higher, you'll see that you can only see a subset of the <code>Report</code>s. This illustrates one issue with using ACLs to restrict view access to instances; you would have to add joins in your query to the ACL database tables to get an accurate count of the total number of visible instances.<p class="paragraph"/>Click on any of the report instance links (e.g. <a href="http://localhost:8080/acltest/report/show/63" target="blank">http://localhost:8080/acltest/report/show/63</a>) to verify that you can view the instance. You can test that you have no view access to the filtered instances by navigating to <a href="http://localhost:8080/acltest/report/show/83" target="blank">http://localhost:8080/acltest/report/show/83</a>.<p class="paragraph"/>Verify that user1 has admin permission on report #11 by editing it and deleting it.<p class="paragraph"/>Verify that user1 doesn't have admin permission on report #13 by trying to editing or delete it and you should see the error page when you submit the form.<p class="paragraph"/>Logout (by navigating to <a href="http://localhost:8080/acltest/logout" target="blank">http://localhost:8080/acltest/logout</a>) and login as user2/password2. You should only see the first five reports. Verify that you can edit #5 but not any of the others, and that you can't delete any.<p class="paragraph"/>Finally. logout and login as admin/admin123. You should be able to view, edit, and delete all instances.
+$ grails run-app</code></pre><p class="paragraph"/>and open <a href="http://localhost:8080/acltest/report/list" target="blank">http://localhost:8080/acltest/report/list</a><p class="paragraph"/>Login as user1/password1 and you should see the first page of results. But if you click on page 7 or higher, you'll see that you can only see a subset of the <code>Report</code>s. This illustrates one issue with using ACLs to restrict view access to instances; you would have to add joins in your query to the ACL database tables to get an accurate count of the total number of visible instances.<p class="paragraph"/>Click on any of the report instance links (e.g. <a href="http://localhost:8080/acltest/report/show/63" target="blank">http://localhost:8080/acltest/report/show/63</a>) to verify that you can view the instance. You can test that you have no view access to the filtered instances by navigating to <a href="http://localhost:8080/acltest/report/show/83" target="blank">http://localhost:8080/acltest/report/show/83</a>.<p class="paragraph"/>Verify that user1 has admin permission on report #11 by editing it and deleting it.<p class="paragraph"/>Verify that user1 doesn't have admin permission on report #13 by trying to editing or delete it and you should see the error page when you submit the form.<p class="paragraph"/>Logout (by navigating to <a href="http://localhost:8080/acltest/logout" target="blank">http://localhost:8080/acltest/logout</a>) and login as user2/password2. You should only see the first five reports. Verify that you can edit #5 but not any of the others, and that you can't delete any.<p class="paragraph"/>Finally. logout and login as admin/admin123. You should be able to view, edit, and delete all instances.<p class="paragraph"/><h4>Database tables</h4><p class="paragraph"/><div class="code"><pre>select e.id, e.ace_order, c.class, oi.object_id_identity, e.audit_failure, e.audit_success, e.granting, e.mask, s.sid
+from acl_entry e
+join acl_object_identity oi on e.acl_object_identity=oi.id
+join acl_class c on oi.object_id_class=c.id
+join acl_sid s on e.sid=s.id</pre></div>
 
 
 
@@ -423,17 +427,5 @@ $ grails run-app</code></pre><p class="paragraph"/>and open <a href="http://loca
 
 <script type="text/javascript" src="../js/docs.js"></script>
 
-
-<script type="text/javascript">
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-16219500-1']);
-	_gaq.push(['_trackPageview']);
-
-	(function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	})();
-</script>
 </body>
 </html>
