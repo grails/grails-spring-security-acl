@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 SpringSource.
+/* Copyright 2009-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import grails.plugin.springsecurity.acl.AclAutoProxyCreator
 import grails.plugin.springsecurity.acl.ProxyAwareParameterNameDiscoverer
 import grails.plugin.springsecurity.acl.access.GroovyAwareAclVoter
 import grails.plugin.springsecurity.acl.access.method.ProxyAwareDelegatingMethodSecurityMetadataSource
+import grails.plugin.springsecurity.acl.access.method.SecuredAnnotationSecurityMetadataSource as GrailsSecuredAnnotationSecurityMetadataSource
 import grails.plugin.springsecurity.acl.access.method.ServiceStaticMethodSecurityMetadataSource
 import grails.plugin.springsecurity.acl.annotation.AclVoter
 import grails.plugin.springsecurity.acl.annotation.AclVoters
@@ -29,6 +30,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 import org.springframework.expression.spel.standard.SpelExpressionParser
+import org.springframework.security.access.annotation.SecuredAnnotationSecurityMetadataSource as SpringSecuredAnnotationSecurityMetadataSource
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
 import org.springframework.security.access.expression.method.ExpressionBasedAnnotationAttributeFactory
 import org.springframework.security.access.expression.method.ExpressionBasedPostInvocationAdvice
@@ -61,7 +63,8 @@ import org.springframework.security.core.authority.AuthorityUtils
 class SpringSecurityAclGrailsPlugin {
 
 	String version = '2.0.2-SNAPSHOT'
-	String grailsVersion = '2.0 > *'
+	String grailsVersion = '2.3 > *'
+
 	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
 		'docs/**',
@@ -299,10 +302,10 @@ class SpringSecurityAclGrailsPlugin {
 		}
 
 		prePostAnnotationSecurityMetadataSource(PrePostAnnotationSecurityMetadataSource, ref('annotationInvocationFactory'))
-		grailsSecuredAnnotationSecurityMetadataSource(grails.plugin.springsecurity.acl.access.method.SecuredAnnotationSecurityMetadataSource) {
+		grailsSecuredAnnotationSecurityMetadataSource(GrailsSecuredAnnotationSecurityMetadataSource) {
 			serviceClassNames = application.serviceClasses*.clazz.name
 		}
-		springSecuredAnnotationSecurityMetadataSource(org.springframework.security.access.annotation.SecuredAnnotationSecurityMetadataSource)
+		springSecuredAnnotationSecurityMetadataSource(SpringSecuredAnnotationSecurityMetadataSource)
 
 		def metadataSources = [
 			ref('prePostAnnotationSecurityMetadataSource'),
