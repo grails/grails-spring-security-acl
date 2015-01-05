@@ -387,7 +387,7 @@ class SpringSecurityAclGrailsPlugin {
 
 		In addition you can declare a config attribute 'acl.voters':
 
-		grails.plugins.springsecurity.acl.voters = [
+		grails.plugin.springsecurity.acl.voters = [
 			aclReportWriteVoter: [
 				domainObjectClass: Report,
 				configAttribute: 'ACL_REPORT_WRITE',
