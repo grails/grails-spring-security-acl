@@ -6,3 +6,5 @@ grails-spring-security-acl-*.zip.sha1
 /target
 /docs
 /web-app
+.idea
+*.iml

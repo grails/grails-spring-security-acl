@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import org.codehaus.groovy.grails.commons.spring.TypeSpecifyableTransactionProxyFactoryBean;
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader;
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
@@ -30,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
+import org.springframework.aop.target.SingletonTargetSource;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -66,7 +69,7 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 
 	@Override
 	protected Object[] getAdvicesAndAdvisorsForBean(final Class<?> beanClass, final String beanName, final TargetSource customTargetSource) throws BeansException {
-		if (serviceBeanNames.contains(beanName) || shouldProxy(beanClass, beanName)) {
+		if ( (serviceBeanNames.contains(beanName) &&  (beanClass != TypeSpecifyableTransactionProxyFactoryBean.class) ) || shouldProxy(beanClass, beanName)) {
 			return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
 		}
 		return DO_NOT_PROXY;
@@ -89,7 +92,7 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 
 	@Override
 	protected boolean shouldProxyTargetClass(Class<?> beanClass, String beanName) {
-		return serviceBeanNames.contains(beanName) || super.shouldProxyTargetClass(beanClass, beanName);
+		return (serviceBeanNames.contains(beanName) &&  (beanClass != TypeSpecifyableTransactionProxyFactoryBean.class) ) || super.shouldProxyTargetClass(beanClass, beanName);
 	}
 
 	@Override
@@ -116,6 +119,15 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 	protected Object createProxy(Class<?> beanClass, String beanName, Object[] specificInterceptors, TargetSource targetSource) {
 		try {
 			setProxyClassLoader(new GrailsAwareClassLoader(baseLoader, null, false));
+            if(beanClass == TypeSpecifyableTransactionProxyFactoryBean.class){
+                try {
+                    TypeSpecifyableTransactionProxyFactoryBean bean =(TypeSpecifyableTransactionProxyFactoryBean) targetSource.getTarget();
+                    beanClass = bean.getObjectType();
+                    targetSource = new SingletonTargetSource(bean.getObject());
+                }catch (Exception e){
+                    log.error("Failed to getobject type inside createProxy",e);
+                }
+            }
 			return super.createProxy(beanClass, beanName, specificInterceptors, targetSource);
 		}
 		finally {

@@ -61,8 +61,7 @@ import org.springframework.security.core.authority.AuthorityUtils
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 class SpringSecurityAclGrailsPlugin {
-
-	String version = '2.0-RC2'
+	String version = '2.0-RC3-SNAPSHOT'
 	String grailsVersion = '2.3 > *'
 	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
