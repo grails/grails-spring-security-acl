@@ -61,388 +61,388 @@ import org.springframework.security.core.authority.AuthorityUtils
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 class SpringSecurityAclGrailsPlugin {
-	String version = '2.0-RC3-SNAPSHOT'
-	String grailsVersion = '2.3 > *'
-	List loadAfter = ['springSecurityCore']
-	List pluginExcludes = [
-		'docs/**',
-		'src/docs/**',
-		'grails-app/services/**/Test*Service.groovy',
-		'grails-app/domain/test/TestReport.groovy',
-		'scripts/CreateAclTestApp.groovy'
-	]
+    String version = '2.0-RC3-SNAPSHOT'
+    String grailsVersion = '2.3 > *'
+    List loadAfter = ['springSecurityCore']
+    List pluginExcludes = [
+            'docs/**',
+            'src/docs/**',
+            'grails-app/services/**/Test*Service.groovy',
+            'grails-app/domain/test/TestReport.groovy',
+            'scripts/CreateAclTestApp.groovy'
+    ]
 
-	String author = 'Burt Beckwith'
-	String authorEmail = 'burt@burtbeckwith.com'
-	String title = 'Spring Security ACL plugin'
-	String description = 'ACL support for the Spring Security plugin'
-	String documentation = 'http://grails-plugins.github.io/grails-spring-security-acl/'
+    String author = 'Burt Beckwith'
+    String authorEmail = 'burt@burtbeckwith.com'
+    String title = 'Spring Security ACL plugin'
+    String description = 'ACL support for the Spring Security plugin'
+    String documentation = 'http://grails-plugins.github.io/grails-spring-security-acl/'
 
-	String license = 'APACHE'
-	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
-	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYACL']
-	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-acl']
+    String license = 'APACHE'
+    def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
+    def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYACL']
+    def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-acl']
 
-	def doWithSpring = {
+    def doWithSpring = {
 
-		def conf = SpringSecurityUtils.securityConfig
-		if (!conf || !conf.active) {
-			return
-		}
+        def conf = SpringSecurityUtils.securityConfig
+        if (!conf || !conf.active) {
+            return
+        }
 
-		SpringSecurityUtils.loadSecondaryConfig 'DefaultAclSecurityConfig'
-		// have to get again after overlaying DefaultAclSecurityConfig
-		conf = SpringSecurityUtils.securityConfig
+        SpringSecurityUtils.loadSecondaryConfig 'DefaultAclSecurityConfig'
+        // have to get again after overlaying DefaultAclSecurityConfig
+        conf = SpringSecurityUtils.securityConfig
 
-		if (!conf.acl.active) {
-			return
-		}
+        if (!conf.acl.active) {
+            return
+        }
 
-		boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
+        boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
 
-		if (printStatusMessages) {
-			println '\nConfiguring Spring Security ACL ...'
-		}
+        if (printStatusMessages) {
+            println '\nConfiguring Spring Security ACL ...'
+        }
 
-		if (conf.useRunAs) {
-			SpringSecurityUtils.registerProvider 'runAsAuthenticationProvider'
-		}
+        if (conf.useRunAs) {
+            SpringSecurityUtils.registerProvider 'runAsAuthenticationProvider'
+        }
 
-		Map voterConfig = buildVoterConfig(conf, application)
-		debug "voterConfig: $voterConfig"
+        Map voterConfig = buildVoterConfig(conf, application)
+        debug "voterConfig: $voterConfig"
 
-		// core beans
-		configureCoreBeans.delegate = delegate
-		configureCoreBeans conf
+        // core beans
+        configureCoreBeans.delegate = delegate
+        configureCoreBeans conf
 
-		// expression support
-		configureExpressionBeans.delegate = delegate
-		configureExpressionBeans conf
+        // expression support
+        configureExpressionBeans.delegate = delegate
+        configureExpressionBeans conf
 
-		// secured beans
-		configureSecuredBeans.delegate = delegate
-		configureSecuredBeans conf, application
+        // secured beans
+        configureSecuredBeans.delegate = delegate
+        configureSecuredBeans conf, application
 
-		// MetadataSource
-		configureSecurityMetadataSource.delegate = delegate
-		configureSecurityMetadataSource conf, voterConfig, application
+        // MetadataSource
+        configureSecurityMetadataSource.delegate = delegate
+        configureSecurityMetadataSource conf, voterConfig, application
 
-		if (printStatusMessages) {
-			println '... finished configuring Spring Security ACL\n'
-		}
-	}
+        if (printStatusMessages) {
+            println '... finished configuring Spring Security ACL\n'
+        }
+    }
 
-	def doWithApplicationContext = { ctx ->
+    def doWithApplicationContext = { ctx ->
 
-		def conf = SpringSecurityUtils.securityConfig
-		if (!conf || !conf.active || !conf.acl.active) {
-			return
-		}
+        def conf = SpringSecurityUtils.securityConfig
+        if (!conf || !conf.active || !conf.acl.active) {
+            return
+        }
 
-		ctx.aclSecurityMetadataSource.methodSecurityMetadataSources = [
-			ctx.prePostAnnotationSecurityMetadataSource,
-			ctx.springSecuredAnnotationSecurityMetadataSource,
-			ctx.grailsSecuredAnnotationSecurityMetadataSource,
-			ctx.serviceStaticMethodSecurityMetadataSource
-		]
-	}
+        ctx.aclSecurityMetadataSource.methodSecurityMetadataSources = [
+                ctx.prePostAnnotationSecurityMetadataSource,
+                ctx.springSecuredAnnotationSecurityMetadataSource,
+                ctx.grailsSecuredAnnotationSecurityMetadataSource,
+                ctx.serviceStaticMethodSecurityMetadataSource
+        ]
+    }
 
-	private configureCoreBeans = { conf ->
+    private configureCoreBeans = { conf ->
 
-		sidRetrievalStrategy(SidRetrievalStrategyImpl, ref('roleHierarchy'))
+        sidRetrievalStrategy(SidRetrievalStrategyImpl, ref('roleHierarchy'))
 
-		objectIdentityRetrievalStrategy(GormObjectIdentityRetrievalStrategy)
+        objectIdentityRetrievalStrategy(GormObjectIdentityRetrievalStrategy)
 
-		// acl cache
-		aclCacheManager(EhCacheManagerFactoryBean)
-		ehcacheAclCache(EhCacheFactoryBean) {
-			cacheManager = ref('aclCacheManager')
-			cacheName = 'aclCache'
-		}
-		aclCache(EhCacheBasedAclCache, ref('ehcacheAclCache'), ref('aclPermissionGrantingStrategy'), ref('aclAuthorizationStrategy'))
+        // acl cache
+        aclCacheManager(EhCacheManagerFactoryBean)
+        ehcacheAclCache(EhCacheFactoryBean) {
+            cacheManager = ref('aclCacheManager')
+            cacheName = 'aclCache'
+        }
+        aclCache(EhCacheBasedAclCache, ref('ehcacheAclCache'), ref('aclPermissionGrantingStrategy'), ref('aclAuthorizationStrategy'))
 
-		aclPermissionGrantingStrategy(DefaultPermissionGrantingStrategy, ref('aclAuditLogger'))
+        aclPermissionGrantingStrategy(DefaultPermissionGrantingStrategy, ref('aclAuditLogger'))
 
-		aclAuthorizationStrategy(AclAuthorizationStrategyImpl,
-				AuthorityUtils.createAuthorityList(
-						conf.acl.authority.changeOwnership,
-						conf.acl.authority.modifyAuditingDetails,
-						conf.acl.authority.changeAclDetails) as GrantedAuthority[]) {
-			sidRetrievalStrategy = ref('sidRetrievalStrategy')
-		}
+        aclAuthorizationStrategy(AclAuthorizationStrategyImpl,
+                AuthorityUtils.createAuthorityList(
+                        conf.acl.authority.changeOwnership,
+                        conf.acl.authority.modifyAuditingDetails,
+                        conf.acl.authority.changeAclDetails) as GrantedAuthority[]) {
+            sidRetrievalStrategy = ref('sidRetrievalStrategy')
+        }
 
-		aclAuditLogger(NullAclAuditLogger)
+        aclAuditLogger(NullAclAuditLogger)
 
-		def permissionClass = conf.acl.permissionClass
-		if (permissionClass instanceof String) {
-			permissionClass = classLoader.loadClass(permissionClass)
-		}
-		aclPermissionFactory(DefaultPermissionFactory, permissionClass ?: BasePermission)
+        def permissionClass = conf.acl.permissionClass
+        if (permissionClass instanceof String) {
+            permissionClass = classLoader.loadClass(permissionClass)
+        }
+        aclPermissionFactory(DefaultPermissionFactory, permissionClass ?: BasePermission)
 
-		aclLookupStrategy(GormAclLookupStrategy) {
-			aclAuthorizationStrategy = ref('aclAuthorizationStrategy')
-			aclCache = ref('aclCache')
-			permissionFactory = ref('aclPermissionFactory')
-			auditLogger = ref('aclAuditLogger')
-			permissionGrantingStrategy = ref('aclPermissionGrantingStrategy')
-		}
-	}
+        aclLookupStrategy(GormAclLookupStrategy) {
+            aclAuthorizationStrategy = ref('aclAuthorizationStrategy')
+            aclCache = ref('aclCache')
+            permissionFactory = ref('aclPermissionFactory')
+            auditLogger = ref('aclAuditLogger')
+            permissionGrantingStrategy = ref('aclPermissionGrantingStrategy')
+        }
+    }
 
-	private configureExpressionBeans = { conf ->
+    private configureExpressionBeans = { conf ->
 
-		parameterNameDiscoverer(ProxyAwareParameterNameDiscoverer)
+        parameterNameDiscoverer(ProxyAwareParameterNameDiscoverer)
 
-		permissionEvaluator(AclPermissionEvaluator, ref('aclService')) {
-			objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
-			objectIdentityGenerator = ref('objectIdentityRetrievalStrategy')
-			sidRetrievalStrategy = ref('sidRetrievalStrategy')
-			permissionFactory = ref('aclPermissionFactory')
-		}
+        permissionEvaluator(AclPermissionEvaluator, ref('aclService')) {
+            objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
+            objectIdentityGenerator = ref('objectIdentityRetrievalStrategy')
+            sidRetrievalStrategy = ref('sidRetrievalStrategy')
+            permissionFactory = ref('aclPermissionFactory')
+        }
 
-		expressionParser(SpelExpressionParser)
+        expressionParser(SpelExpressionParser)
 
-		aclPermissionCacheOptimizer(AclPermissionCacheOptimizer, ref('aclService')) {
-			objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
-			sidRetrievalStrategy = ref('sidRetrievalStrategy')
-		}
+        aclPermissionCacheOptimizer(AclPermissionCacheOptimizer, ref('aclService')) {
+            objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
+            sidRetrievalStrategy = ref('sidRetrievalStrategy')
+        }
 
-		expressionHandler(DefaultMethodSecurityExpressionHandler) {
-			parameterNameDiscoverer = ref('parameterNameDiscoverer')
-			permissionCacheOptimizer = ref('aclPermissionCacheOptimizer')
-			expressionParser = ref('expressionParser')
-			roleHierarchy = ref('roleHierarchy')
-			permissionEvaluator = ref('permissionEvaluator')
-		}
-	}
+        expressionHandler(DefaultMethodSecurityExpressionHandler) {
+            parameterNameDiscoverer = ref('parameterNameDiscoverer')
+            permissionCacheOptimizer = ref('aclPermissionCacheOptimizer')
+            expressionParser = ref('expressionParser')
+            roleHierarchy = ref('roleHierarchy')
+            permissionEvaluator = ref('permissionEvaluator')
+        }
+    }
 
-	private configureSecuredBeans = { conf, application ->
+    private configureSecuredBeans = { conf, application ->
 
-		debug 'configuring secured services'
+        debug 'configuring secured services'
 
-		if (conf.useRunAs) {
-			runAsManager(RunAsManagerImpl) {
-				key = conf.runAs.key
-			}
+        if (conf.useRunAs) {
+            runAsManager(RunAsManagerImpl) {
+                key = conf.runAs.key
+            }
 
-			runAsAuthenticationProvider(RunAsImplAuthenticationProvider) {
-				key = conf.runAs.key
-			}
-		}
+            runAsAuthenticationProvider(RunAsImplAuthenticationProvider) {
+                key = conf.runAs.key
+            }
+        }
 
-		securedBeansInterceptor(AclAutoProxyCreator) {
-			grailsApplication = ref('grailsApplication')
-			interceptorNames = ['methodSecurityInterceptor']
-			proxyTargetClass = true
-		}
-	}
+        securedBeansInterceptor(AclAutoProxyCreator) {
+            grailsApplication = ref('grailsApplication')
+            interceptorNames = ['methodSecurityInterceptor']
+            proxyTargetClass = true
+        }
+    }
 
-	private configureSecurityMetadataSource = { conf, voterConfig, application ->
+    private configureSecurityMetadataSource = { conf, voterConfig, application ->
 
-		// create decision voters
+        // create decision voters
 
-		groovyAwareAclVoter(GroovyAwareAclVoter)
+        groovyAwareAclVoter(GroovyAwareAclVoter)
 
-		def aclAccessDecisionManagerDecisionVoters = [
-			ref('roleVoter'),
-			ref('authenticatedVoter'),
-			ref('preInvocationVoter'),
-			ref('groovyAwareAclVoter')]
+        def aclAccessDecisionManagerDecisionVoters = [
+                ref('roleVoter'),
+                ref('authenticatedVoter'),
+                ref('preInvocationVoter'),
+                ref('groovyAwareAclVoter')]
 
-		voterConfig.each { beanName, voterData ->
-			"$beanName"(AclEntryVoter, ref('aclService'), voterData.configAttribute, voterData.permissions) {
-				processDomainObjectClass = voterData.domainObjectClass
-				internalMethod = voterData.internalMethod
-				objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
-				sidRetrievalStrategy = ref('sidRetrievalStrategy')
-			}
-			aclAccessDecisionManagerDecisionVoters << ref(beanName)
-			debug "created AclEntryVoter $beanName for domain class $voterData.domainObjectClass.name with configAttribute $voterData.configAttribute and permissions $voterData.permissions"
-		}
+        voterConfig.each { beanName, voterData ->
+            "$beanName"(AclEntryVoter, ref('aclService'), voterData.configAttribute, voterData.permissions) {
+                processDomainObjectClass = voterData.domainObjectClass
+                internalMethod = voterData.internalMethod
+                objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
+                sidRetrievalStrategy = ref('sidRetrievalStrategy')
+            }
+            aclAccessDecisionManagerDecisionVoters << ref(beanName)
+            debug "created AclEntryVoter $beanName for domain class $voterData.domainObjectClass.name with configAttribute $voterData.configAttribute and permissions $voterData.permissions"
+        }
 
-		aclAccessDecisionManager(AffirmativeBased) {
-			allowIfAllAbstainDecisions = false
-			decisionVoters = aclAccessDecisionManagerDecisionVoters
-		}
+        aclAccessDecisionManager(AffirmativeBased) {
+            allowIfAllAbstainDecisions = false
+            decisionVoters = aclAccessDecisionManagerDecisionVoters
+        }
 
-		// processes AFTER_ACL_COLLECTION_READ configuration settings;
-		// filters out records you don't have access to
-		afterAclCollectionRead(AclEntryAfterInvocationCollectionFilteringProvider, ref('aclService'),
-				[BasePermission.READ]) {
-			objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
-			sidRetrievalStrategy = ref('sidRetrievalStrategy')
-		}
+        // processes AFTER_ACL_COLLECTION_READ configuration settings;
+        // filters out records you don't have access to
+        afterAclCollectionRead(AclEntryAfterInvocationCollectionFilteringProvider, ref('aclService'),
+                [BasePermission.READ]) {
+            objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
+            sidRetrievalStrategy = ref('sidRetrievalStrategy')
+        }
 
-		// processes AFTER_ACL_READ configuration settings;
-		// determines access to single instances returned
-		afterAclRead(AclEntryAfterInvocationProvider, ref('aclService'),
-				[BasePermission.READ]) {
-			objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
-			sidRetrievalStrategy = ref('sidRetrievalStrategy')
-		}
+        // processes AFTER_ACL_READ configuration settings;
+        // determines access to single instances returned
+        afterAclRead(AclEntryAfterInvocationProvider, ref('aclService'),
+                [BasePermission.READ]) {
+            objectIdentityRetrievalStrategy = ref('objectIdentityRetrievalStrategy')
+            sidRetrievalStrategy = ref('sidRetrievalStrategy')
+        }
 
-		preInvocationAdvice(ExpressionBasedPreInvocationAdvice) {
-			expressionHandler = ref('expressionHandler')
-		}
+        preInvocationAdvice(ExpressionBasedPreInvocationAdvice) {
+            expressionHandler = ref('expressionHandler')
+        }
 
-		preInvocationVoter(PreInvocationAuthorizationAdviceVoter, ref('preInvocationAdvice'))
+        preInvocationVoter(PreInvocationAuthorizationAdviceVoter, ref('preInvocationAdvice'))
 
-		postInvocationAdvice(ExpressionBasedPostInvocationAdvice, ref('expressionHandler'))
+        postInvocationAdvice(ExpressionBasedPostInvocationAdvice, ref('expressionHandler'))
 
-		annotationInvocationFactory(ExpressionBasedAnnotationAttributeFactory, ref('expressionHandler'))
+        annotationInvocationFactory(ExpressionBasedAnnotationAttributeFactory, ref('expressionHandler'))
 
-		Map<String, List<String>> classConfigNameMap = [:]
-		Map<String, Map<String, List<String>>> methodConfigNameMap = [:]
-		findConfigNames classConfigNameMap, methodConfigNameMap, application
+        Map<String, List<String>> classConfigNameMap = [:]
+        Map<String, Map<String, List<String>>> methodConfigNameMap = [:]
+        findConfigNames classConfigNameMap, methodConfigNameMap, application
 
-		serviceStaticMethodSecurityMetadataSource(ServiceStaticMethodSecurityMetadataSource) {
-			classConfigNames = classConfigNameMap
-			methodConfigNames = methodConfigNameMap
-		}
+        serviceStaticMethodSecurityMetadataSource(ServiceStaticMethodSecurityMetadataSource) {
+            classConfigNames = classConfigNameMap
+            methodConfigNames = methodConfigNameMap
+        }
 
-		prePostAnnotationSecurityMetadataSource(PrePostAnnotationSecurityMetadataSource, ref('annotationInvocationFactory'))
-		grailsSecuredAnnotationSecurityMetadataSource(GrailsSecuredAnnotationSecurityMetadataSource) {
-			serviceClassNames = application.serviceClasses*.clazz.name
-		}
-		springSecuredAnnotationSecurityMetadataSource(SpringSecuredAnnotationSecurityMetadataSource)
+        prePostAnnotationSecurityMetadataSource(PrePostAnnotationSecurityMetadataSource, ref('annotationInvocationFactory'))
+        grailsSecuredAnnotationSecurityMetadataSource(GrailsSecuredAnnotationSecurityMetadataSource) {
+            serviceClassNames = application.serviceClasses*.clazz.name
+        }
+        springSecuredAnnotationSecurityMetadataSource(SpringSecuredAnnotationSecurityMetadataSource)
 
-		def metadataSources = [
-			ref('prePostAnnotationSecurityMetadataSource'),
-			ref('springSecuredAnnotationSecurityMetadataSource'),
-			ref('serviceStaticMethodSecurityMetadataSource')]
-		aclSecurityMetadataSource(ProxyAwareDelegatingMethodSecurityMetadataSource) {
-			methodSecurityMetadataSources = metadataSources
-		}
+        def metadataSources = [
+                ref('prePostAnnotationSecurityMetadataSource'),
+                ref('springSecuredAnnotationSecurityMetadataSource'),
+                ref('serviceStaticMethodSecurityMetadataSource')]
+        aclSecurityMetadataSource(ProxyAwareDelegatingMethodSecurityMetadataSource) {
+            methodSecurityMetadataSources = metadataSources
+        }
 
-		aclPostInvocationProvider(PostInvocationAdviceProvider, ref('postInvocationAdvice'))
-		aclAfterInvocationManager(AfterInvocationProviderManager) {
-			providers = [
-				ref('aclPostInvocationProvider'),
-				ref('afterAclRead'),
-				ref('afterAclCollectionRead')]
-		}
+        aclPostInvocationProvider(PostInvocationAdviceProvider, ref('postInvocationAdvice'))
+        aclAfterInvocationManager(AfterInvocationProviderManager) {
+            providers = [
+                    ref('aclPostInvocationProvider'),
+                    ref('afterAclRead'),
+                    ref('afterAclCollectionRead')]
+        }
 
-		methodSecurityInterceptor(MethodSecurityInterceptor) {
-			accessDecisionManager = ref('aclAccessDecisionManager')
-			authenticationManager = ref('authenticationManager')
-			afterInvocationManager = ref('aclAfterInvocationManager')
-			securityMetadataSource = ref('aclSecurityMetadataSource')
-			runAsManager = ref('runAsManager')
-			validateConfigAttributes = false
-		}
+        methodSecurityInterceptor(MethodSecurityInterceptor) {
+            accessDecisionManager = ref('aclAccessDecisionManager')
+            authenticationManager = ref('authenticationManager')
+            afterInvocationManager = ref('aclAfterInvocationManager')
+            securityMetadataSource = ref('aclSecurityMetadataSource')
+            runAsManager = ref('runAsManager')
+            validateConfigAttributes = false
+        }
 
 //		methodSecurityMetadataSourceAdvisor(MethodSecurityMetadataSourceAdvisor,
 //				'methodSecurityInterceptor', ref('aclSecurityMetadataSource'), 'aclSecurityMetadataSource')
-	}
+    }
 
-	private void findConfigNames(Map<String, List<String>> classConfigNames,
-			Map<String, Map<String, List<String>>> methodConfigNames, application) {
+    private void findConfigNames(Map<String, List<String>> classConfigNames,
+                                 Map<String, Map<String, List<String>>> methodConfigNames, application) {
 
-		/*
-		Look for configurations like this in services:
+        /*
+        Look for configurations like this in services:
 
-		static springSecurityACL = [
-			getReportName: ['ROLE_USER', 'ROLE_ADMIN'],
-			getAllReports: ['ROLE_USER', 'AFTER_ACL_COLLECTION_READ'],
-			getReport: ['ROLE_USER', 'AFTER_ACL_READ'],
-			updateReport: ['ACL_REPORT_WRITE'],
-			deleteReport: ['ACL_REPORT_DELETE']
-		]
-		*/
+        static springSecurityACL = [
+            getReportName: ['ROLE_USER', 'ROLE_ADMIN'],
+            getAllReports: ['ROLE_USER', 'AFTER_ACL_COLLECTION_READ'],
+            getReport: ['ROLE_USER', 'AFTER_ACL_READ'],
+            updateReport: ['ACL_REPORT_WRITE'],
+            deleteReport: ['ACL_REPORT_DELETE']
+        ]
+        */
 
-		for (serviceClass in application.serviceClasses) {
-			methodConfigNames[serviceClass.clazz.name] = [:]
-		}
+        for (serviceClass in application.serviceClasses) {
+            methodConfigNames[serviceClass.clazz.name] = [:]
+        }
 
-		for (serviceClass in application.serviceClasses) {
-			if (!GCU.isStaticProperty(serviceClass.clazz, 'springSecurityACL')) {
-				continue
-			}
+        for (serviceClass in application.serviceClasses) {
+            if (!GCU.isStaticProperty(serviceClass.clazz, 'springSecurityACL')) {
+                continue
+            }
 
-			String className = serviceClass.clazz.name
-			def springSecurityACL = serviceClass.clazz.springSecurityACL
-			springSecurityACL.each { methodName, configNames ->
-				if ('*'.equals(methodName)) {
-					classConfigNames[className] = configNames
-				}
-				else {
-					methodConfigNames[className][methodName] = configNames
-				}
-			}
-		}
-	}
+            String className = serviceClass.clazz.name
+            def springSecurityACL = serviceClass.clazz.springSecurityACL
+            springSecurityACL.each { methodName, configNames ->
+                if ('*'.equals(methodName)) {
+                    classConfigNames[className] = configNames
+                }
+                else {
+                    methodConfigNames[className][methodName] = configNames
+                }
+            }
+        }
+    }
 
-	private Map buildVoterConfig(conf, application) {
+    private Map buildVoterConfig(conf, application) {
 
-		/*
-		Look for annotations like this in domain classes:
+        /*
+        Look for annotations like this in domain classes:
 
-		@AclVoters([
-			@AclVoter(name='aclReportWriteVoter',
-			          configAttribute='ACL_REPORT_WRITE',
-			          permissions=['ADMINISTRATION', 'WRITE']),
-			@AclVoter(name='aclReportDeleteVoter',
-			          configAttribute='ACL_REPORT_DELETE',
-			          permissions=['ADMINISTRATION', 'DELETE'])
-		])
+        @AclVoters([
+            @AclVoter(name='aclReportWriteVoter',
+                      configAttribute='ACL_REPORT_WRITE',
+                      permissions=['ADMINISTRATION', 'WRITE']),
+            @AclVoter(name='aclReportDeleteVoter',
+                      configAttribute='ACL_REPORT_DELETE',
+                      permissions=['ADMINISTRATION', 'DELETE'])
+        ])
 
-		In addition you can declare a config attribute 'acl.voters':
+        In addition you can declare a config attribute 'acl.voters':
 
-		grails.plugin.springsecurity.acl.voters = [
-			aclReportWriteVoter: [
-				domainObjectClass: Report,
-				configAttribute: 'ACL_REPORT_WRITE',
-				permissions: [BasePermission.ADMINISTRATION,
-				              BasePermission.WRITE]
-			],
+        grails.plugin.springsecurity.acl.voters = [
+            aclReportWriteVoter: [
+                domainObjectClass: Report,
+                configAttribute: 'ACL_REPORT_WRITE',
+                permissions: [BasePermission.ADMINISTRATION,
+                              BasePermission.WRITE]
+            ],
 
-			aclReportDeleteVoter: [
-				domainObjectClass: Report,
-				configAttribute: 'ACL_REPORT_DELETE',
-				permissions: [BasePermission.ADMINISTRATION,
-				              BasePermission.DELETE]
-			]
-		]
-		*/
+            aclReportDeleteVoter: [
+                domainObjectClass: Report,
+                configAttribute: 'ACL_REPORT_DELETE',
+                permissions: [BasePermission.ADMINISTRATION,
+                              BasePermission.DELETE]
+            ]
+        ]
+        */
 
-		Map config = conf.acl.voters.clone()
+        Map config = conf.acl.voters.clone()
 
-		for (dc in application.domainClasses) {
-			for (annotation in findAclVoterAnnotations(dc.clazz)) {
-				def permissions = []
-				for (String permissionName in annotation.permissions()) {
-					permissions << BasePermission."$permissionName"
-				}
-				config[annotation.name()] = [
-					configAttribute: annotation.configAttribute(),
-					domainObjectClass: dc.clazz,
-					permissions: permissions]
-			}
-		}
+        for (dc in application.domainClasses) {
+            for (annotation in findAclVoterAnnotations(dc.clazz)) {
+                def permissions = []
+                for (String permissionName in annotation.permissions()) {
+                    permissions << BasePermission."$permissionName"
+                }
+                config[annotation.name()] = [
+                        configAttribute: annotation.configAttribute(),
+                        domainObjectClass: dc.clazz,
+                        permissions: permissions]
+            }
+        }
 
-		config
-	}
+        config
+    }
 
-	/**
-	 * Look for @AclVoter annotations in the specified domain class.
-	 */
-	private List<AclVoter> findAclVoterAnnotations(Class<?> domainClass) {
-		List<AclVoter> annotations = []
+    /**
+     * Look for @AclVoter annotations in the specified domain class.
+     */
+    private List<AclVoter> findAclVoterAnnotations(Class<?> domainClass) {
+        List<AclVoter> annotations = []
 
-		AclVoter aclVoterAnnotation = domainClass.getAnnotation(AclVoter)
-		if (aclVoterAnnotation) {
-			annotations << aclVoterAnnotation
-		}
+        AclVoter aclVoterAnnotation = domainClass.getAnnotation(AclVoter)
+        if (aclVoterAnnotation) {
+            annotations << aclVoterAnnotation
+        }
 
-		AclVoters aclVotersAnnotation = domainClass.getAnnotation(AclVoters)
-		if (aclVotersAnnotation) {
-			annotations.addAll aclVotersAnnotation.value() as List
-		}
+        AclVoters aclVotersAnnotation = domainClass.getAnnotation(AclVoters)
+        if (aclVotersAnnotation) {
+            annotations.addAll aclVotersAnnotation.value() as List
+        }
 
-		annotations
-	}
+        annotations
+    }
 
-	private void debug(message) {
+    private void debug(message) {
 //		log.debug message
 //		println message
-	}
+    }
 }

@@ -13,7 +13,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		String springSecurityVersion = '3.2.3.RELEASE'
+		String springSecurityVersion = '3.2.6.RELEASE'
 
 		compile "org.springframework.security:spring-security-acl:$springSecurityVersion", {
 			excludes 'aopalliance', 'commons-logging', 'ehcache', 'fest-assert', 'hsqldb',
@@ -29,7 +29,7 @@ grails.project.dependency.resolution = {
 	}
 
 	plugins {
-		compile ':spring-security-core:2.0-RC4'
+		compile ':spring-security-core:2.0-SNAPSHOT'
 
 		compile ':hibernate:3.6.10.17', {
 			export = false
