@@ -14,7 +14,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		String springSecurityVersion = '3.2.3.RELEASE'
+		String springSecurityVersion = '3.2.6.RELEASE'
 
 		compile "org.springframework.security:spring-security-acl:$springSecurityVersion", {
 			excludes 'aopalliance', 'commons-logging', 'ehcache', 'fest-assert', 'hsqldb',
@@ -36,7 +36,7 @@ grails.project.dependency.resolution = {
 			export = false
 		}
 
-		build ':release:3.0.1', ':rest-client-builder:1.0.3', {
+		build ':release:3.0.1', ':rest-client-builder:2.0.3', {
 			export = false
 		}
 	}
