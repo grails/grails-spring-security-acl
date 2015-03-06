@@ -1,7 +1,7 @@
 *.iml
 *.log
 .idea/
-.settings
+.settings/
 /docs/
 /target/
 /web-app/
