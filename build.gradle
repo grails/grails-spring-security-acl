@@ -1,6 +1,9 @@
 buildscript {
     ext {
         grailsVersion = project.grailsVersion
+        springSecurityVersion = '3.2.3.RELEASE'
+        grailsProjectWorkDir = 'target'
+        grailsProjectDocsOutputDir = 'docs/manual' // for the gh-pages branch
     }
     repositories {
         mavenLocal()
@@ -64,12 +67,95 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
 
     console "org.grails:grails-console"
+    
+    
+    //-- Copied over build-configurations
+
+    compile("org.springframework.security:spring-security-acl:$springSecurityVersion") {
+      exclude module:'aopalliance'
+      exclude module:'commons-logging'
+      exclude module:'ehcache'
+      exclude module:'fest-assert'
+      exclude module:'hsqldb'
+      
+      exclude module:'jcl-over-slf4j'
+      exclude module:'junit'
+      exclude module:'logback-classic'
+      exclude module: 'mockito-core'
+      exclude module:'spring-aop'
+      
+      exclude module:'spring-beans'
+      exclude module:'spring-context'
+      exclude module:'spring-context-support'
+      exclude module:'spring-core'
+      
+      exclude module:'spring-jdbc'
+      exclude module:'spring-security-core'
+      exclude module:'spring-test'
+      exclude module:'spring-tx'
+  }
+  // temporary until release plugin v3.1.0 is released
+  provided 'commons-io:commons-io:2.1'
+  
+  //plugins
+  provided 'org.grails.plugins:hibernate'
+  compile 'org.grails.plugins:grails-spring-security-core:2.4-GRAILS3-SNAPSHOT'
+  /* build-plugins
+    build ':release:3.0.1', ':rest-client-builder:2.0.3', {
+      export = false
+    }
+  */
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
 }
 
+/* BuildConfig.groovy copied-over-configurations
+ 
+ grails.project.work.dir = 'target'
+grails.project.docs.output.dir = 'docs/manual' // for the gh-pages branch
+
+grails.project.dependency.resolver = 'maven'
+grails.project.dependency.resolution = {
+  inherits 'global'
+  log 'warn'
+
+  repositories {
+    grailsCentral()
+    mavenLocal()
+    mavenCentral()
+  }
+
+  dependencies {
+    String springSecurityVersion = '3.2.3.RELEASE'
+
+    compile "org.springframework.security:spring-security-acl:$springSecurityVersion", {
+      excludes 'aopalliance', 'commons-logging', 'ehcache', 'fest-assert', 'hsqldb',
+               'jcl-over-slf4j', 'junit', 'logback-classic', 'mockito-core', 'spring-aop',
+               'spring-beans', 'spring-context', 'spring-context-support', 'spring-core',
+               'spring-jdbc', 'spring-security-core', 'spring-test', 'spring-tx'
+    }
+
+    // temporary until release plugin v3.1.0 is released
+    compile 'commons-io:commons-io:2.1', {
+      export = false
+    }
+  }
+
+  plugins {
+    compile ':spring-security-core:2.0-RC4'
+
+    compile ':hibernate:3.6.10.17', {
+      export = false
+    }
+
+    build ':release:3.0.1', ':rest-client-builder:2.0.3', {
+      export = false
+    }
+  }
+}
+ */
 /* TODO create gradle-tasks to previous ant-tasks
   <!-- Properties -->
 
@@ -136,49 +222,4 @@ task wrapper(type: Wrapper) {
     <delete dir='web-app'/>
   </target>
  */
-/* BuildConfig.groovy changes
- grails.project.work.dir = 'target'
-grails.project.docs.output.dir = 'docs/manual' // for the gh-pages branch
 
-grails.project.dependency.resolver = 'maven'
-grails.project.dependency.resolution = {
-  inherits 'global'
-  log 'warn'
-
-  repositories {
-    grailsCentral()
-    mavenLocal()
-    mavenCentral()
-  }
-
-  dependencies {
-    String springSecurityVersion = '3.2.3.RELEASE'
-
-    compile "org.springframework.security:spring-security-acl:$springSecurityVersion", {
-      excludes 'aopalliance', 'commons-logging', 'ehcache', 'fest-assert', 'hsqldb',
-               'jcl-over-slf4j', 'junit', 'logback-classic', 'mockito-core', 'spring-aop',
-               'spring-beans', 'spring-context', 'spring-context-support', 'spring-core',
-               'spring-jdbc', 'spring-security-core', 'spring-test', 'spring-tx'
-    }
-
-    // temporary until release plugin v3.1.0 is released
-    compile 'commons-io:commons-io:2.1', {
-      export = false
-    }
-  }
-
-  plugins {
-    compile ':spring-security-core:2.0-RC4'
-
-    compile ':hibernate:3.6.10.17', {
-      export = false
-    }
-
-    build ':release:3.0.1', ':rest-client-builder:2.0.3', {
-      export = false
-    }
-  }
-}
- */
-
-*/
