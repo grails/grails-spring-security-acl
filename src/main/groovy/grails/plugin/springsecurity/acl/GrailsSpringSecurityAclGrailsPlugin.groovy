@@ -1,4 +1,4 @@
-package grails.spring.security.acl
+package grails.plugin.springsecurity.acl
 
 import grails.plugins.*
 
