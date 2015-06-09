@@ -2,7 +2,18 @@
 grails:
     profile: web-plugin
     codegen:
-        defaultPackage: grails.spring.security.acl
+        defaultPackage: grails.plugin.springsecurity.acl
+    doc:
+        authors: 'Burt Beckwith'
+        license: 'Apache License 2.0'
+        title: 'Spring Security ACL'
+        
+--- for testing
+grails:
+    plugin:
+        springsecurity:
+            useRunAs: true
+            
 info:
     app:
         name: '@info.app.name@'
