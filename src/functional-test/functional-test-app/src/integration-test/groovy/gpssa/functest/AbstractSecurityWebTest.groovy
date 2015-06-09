@@ -1,3 +1,5 @@
+package gpssa.functest;
+
 import functionaltestplugin.FunctionalTestCase
 
 import java.util.regex.Pattern
