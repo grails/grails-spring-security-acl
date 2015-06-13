@@ -15,7 +15,7 @@
 package grails.plugin.springsecurity.acl
 
 import grails.plugin.springsecurity.SpringSecurityUtils
-import grails.test.spock.IntegrationSpec
+import spock.lang.Specification
 
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.TestingAuthenticationToken
@@ -27,7 +27,7 @@ import org.springframework.security.core.userdetails.User
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class RunAsSpec extends IntegrationSpec {
+class RunAsSpec extends Specification {
 
 	def filterInvocationInterceptor
 	def testRunAsService

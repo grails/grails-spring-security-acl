@@ -18,7 +18,7 @@ import grails.plugin.springsecurity.acl.AclClass
 import grails.plugin.springsecurity.acl.AclEntry
 import grails.plugin.springsecurity.acl.AclObjectIdentity
 import grails.plugin.springsecurity.acl.AclSid
-import grails.test.spock.IntegrationSpec
+import spock.lang.Specification
 
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.ObjectIdentityImpl
@@ -34,7 +34,7 @@ import test.TestReport as Report
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class GormAclLookupStrategySpec extends IntegrationSpec {
+class GormAclLookupStrategySpec extends Specification {
 
 	def aclLookupStrategy
 	def ehcacheAclCache

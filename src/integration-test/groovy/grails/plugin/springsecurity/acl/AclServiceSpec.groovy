@@ -14,7 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
-import grails.test.spock.IntegrationSpec
+import spock.lang.Specification
 
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.CumulativePermission
@@ -38,7 +38,7 @@ import test.TestReport as Report
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class AclServiceSpec extends IntegrationSpec {
+class AclServiceSpec extends Specification {
 
 	private final Authentication auth = new TestingAuthenticationToken('ben', 'ignored', 'ROLE_ADMIN')
 

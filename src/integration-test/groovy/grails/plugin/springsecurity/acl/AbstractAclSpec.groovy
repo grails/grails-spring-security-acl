@@ -14,7 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
-import grails.test.spock.IntegrationSpec
+import spock.lang.Specification
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -26,7 +26,7 @@ import test.TestReport as Report
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-abstract class AbstractAclSpec extends IntegrationSpec {
+abstract class AbstractAclSpec extends Specification {
 
 	protected static final String USER = 'username'
 	protected static final String ADMIN = 'admin'
