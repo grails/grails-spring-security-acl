@@ -1,4 +1,4 @@
-/* Copyright 2009-2015 the original author or authors.
+/* Copyright 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,14 @@
  */
 package grails.plugin.springsecurity.acl
 
+import grails.boot.GrailsApp
+import grails.boot.config.GrailsAutoConfiguration
+
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class AclSid {
-
-	String sid
-	boolean principal
-
-	@Override
-	String toString() {
-		"AclSid id $id, sid $sid, principal $principal"
-	}
-
-	static mapping = {
-		version false
-	}
-
-	static constraints = {
-		principal unique: 'sid'
-		sid blank: false, size: 1..255
+class Application extends GrailsAutoConfiguration {
+	static void main(String[] args) {
+		GrailsApp.run Application, args
 	}
 }

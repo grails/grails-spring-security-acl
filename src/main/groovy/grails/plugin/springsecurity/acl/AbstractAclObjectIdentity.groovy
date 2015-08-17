@@ -15,24 +15,20 @@
 package grails.plugin.springsecurity.acl
 
 /**
+ * Abstract base class for the AclObjectIdentity domain class. The default implementation
+ * assumes a long objectId but custom implementations may wish to use other PK types.
+ *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class AclSid {
+abstract class AbstractAclObjectIdentity {
 
-	String sid
-	boolean principal
-
-	@Override
-	String toString() {
-		"AclSid id $id, sid $sid, principal $principal"
-	}
-
-	static mapping = {
-		version false
-	}
+	AclClass aclClass
+	AclObjectIdentity parent
+	AclSid owner
+	boolean entriesInheriting
 
 	static constraints = {
-		principal unique: 'sid'
-		sid blank: false, size: 1..255
+		parent nullable: true
+		owner nullable: true
 	}
 }
