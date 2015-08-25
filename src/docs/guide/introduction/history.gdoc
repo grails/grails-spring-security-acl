@@ -1,5 +1,7 @@
 h4. History
 
+* August 25, 2015
+** 3.0.0.M1 release
 * November 17, 2014
 ** 2.0-RC2 release
 * October 08, 2013
@@ -27,4 +29,4 @@ Stephan February did the [first work|http://blog.bruary.net/2008/04/grails-acegi
 
 Work was done in 2009 to create a GORM-based implementation (the standard Spring Security implementation uses JDBC). Around the same time, Phillip Merensky [mentioned on the Grails mailing list|http://grails.1312388.n4.nabble.com/Acegi-Plugin-0-5-1-with-ACL-support-implemented-td1400650.html] that he was working on an implementation. He wrote about his approach [here|http://imagesiteproject.wordpress.com/2009/09/24/integration-of-spring-security-into-grails-plugin-approach-3/] and this was merged in with the other approach but never formally released.
 
-This plugin builds on that work but is based on Spring Security 3 and Spring 3.
+This plugin builds on that work but is based on Spring Security 3 and Spring 4.
