@@ -27,7 +27,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'org.grails.grails-plugin'
 apply plugin: 'org.grails.grails-doc'
 
-String repoRoot = 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/'
+String repoRoot = 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates'
 apply from: "$repoRoot/grailsCentralPublishing.gradle"
 //apply from: "$repoRoot/bintrayPublishing.gradle"
 apply from: 'bintrayPublishing.gradle' // using modified local copy so the issueTrackerUrl and vcsUrl properties are correct
@@ -68,9 +68,9 @@ dependencies {
 		 'spring-core', 'spring-jdbc', 'spring-security-core', 'spring-test', 'spring-tx'].each { exclude module: it }
 	}
 
-	testCompile 'org.grails:grails-plugin-testing'
-
 	console 'org.grails:grails-console'
+
+	testCompile 'org.grails:grails-plugin-testing'
 }
 
 docs.doLast {
