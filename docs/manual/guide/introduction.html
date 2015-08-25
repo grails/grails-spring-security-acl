@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1 Introduction to the Spring Security ACL Plugin 2.0-RC2</title>
+    <title>1 Introduction to the Spring Security ACL Plugin 3.0.0.M1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -49,7 +49,7 @@ function addJsClass() {
         
         
     </div>
-    <p>ACL support for the Spring Security plugin</p>
+    <p></p>
 </div>
 
 
@@ -72,7 +72,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 2.0-RC2</p>
+                    <p><strong>Version:</strong> 3.0.0.M1</p>
 
                     
                 </div>
@@ -90,13 +90,17 @@ function addJsClass() {
                 
 
 <h1 id="introduction">1 Introduction to the Spring Security ACL Plugin</h1>
-The ACL plugin adds Domain Object Security support to a Grails application that uses Spring Security. It depends on the <a href="http://grails.org/plugin/spring-security-core" target="blank">Spring Security Core plugin</a>.<p class="paragraph"/>The core plugin and other extension plugins support restricting access to URLs via rules that include checking a user's authentication status, roles, etc. and the ACL plugin extends this by adding support for restricting access to individual domain class instances. The access can be very fine-grained and can define which actions can be taken on an object - these typically include Read, Create, Write, Delete, and Administer but you're free to define whatever actions you like.<p class="paragraph"/>To learn about using ACLs in Grails, you can follow guide:3. Tutorial and in addition you can download and run a complete Grails application that uses the plugin. Installing and running the application are described guide:4. Sample Application.<p class="paragraph"/>In addition to this document, you should read the Spring Security documentation <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/domain-acls.html" target="blank">here</a>.
+The ACL plugin adds Domain Object Security support to a Grails application that uses Spring Security. It depends on the <a href="http://grails.org/plugin/spring-security-core" target="blank">Spring Security Core plugin</a>.<p class="paragraph"/>The core plugin and other extension plugins support restricting access to URLs via rules that include checking a user's authentication status, roles, etc. and the ACL plugin extends this by adding support for restricting access to individual domain class instances. The access can be very fine-grained and can define which actions can be taken on an object - these typically include Read, Create, Write, Delete, and Administer but you're free to define whatever actions you like.<p class="paragraph"/>To learn about using ACLs in Grails, you can follow guide:3. Tutorial and in addition you can download and run a complete Grails application that uses the plugin. Installing and running the application are described guide:4. Sample Application.<p class="paragraph"/>In addition to this document, you should read the Spring Security documentation <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#domain-acls" target="blank">here</a>.
 
 
 
 <h2 id="history">1.1 History</h2>
 <h4>History</h4>
 <ul class="star">
+<li>August 24, 2015</li>
+<ul class="star">
+<li>3.0.0.M1 release</li>
+</ul>
 <li>November 17, 2014</li>
 <ul class="star">
 <li>2.0-RC2 release</li>
@@ -128,7 +132,7 @@ The ACL plugin adds Domain Object Security support to a Grails application that 
 <li>May 22, 2010</li>
 <ul class="star">
 <li>initial 0.1 release</li>
-</ul></ul><p class="paragraph"/><h4>Authors</h4><p class="paragraph"/>Burt Beckwith<p class="paragraph"/><h4>Previous work</h4><p class="paragraph"/>Stephan February did the <a href="http://blog.bruary.net/2008/04/grails-acegi-acl-howto.html" target="blank">first work</a> adding ACL support to the <a href="http://grails.org/plugin/acegi/" target="blank">Acegi</a> plugin. At the time the plugin was based on Acegi 1.0.x and around the same time the plugin was converted to use Spring Security 2.0 and the ACL support wasn't converted to use the new package layout and approach.<p class="paragraph"/>Work was done in 2009 to create a GORM-based implementation (the standard Spring Security implementation uses JDBC). Around the same time, Phillip Merensky <a href="http://grails.1312388.n4.nabble.com/Acegi-Plugin-0-5-1-with-ACL-support-implemented-td1400650.html" target="blank">mentioned on the Grails mailing list</a> that he was working on an implementation. He wrote about his approach <a href="http://imagesiteproject.wordpress.com/2009/09/24/integration-of-spring-security-into-grails-plugin-approach-3/" target="blank">here</a> and this was merged in with the other approach but never formally released.<p class="paragraph"/>This plugin builds on that work but is based on Spring Security 3 and Spring 3.
+</ul></ul><p class="paragraph"/><h4>Authors</h4><p class="paragraph"/>Burt Beckwith<p class="paragraph"/><h4>Previous work</h4><p class="paragraph"/>Stephan February did the <a href="http://blog.bruary.net/2008/04/grails-acegi-acl-howto.html" target="blank">first work</a> adding ACL support to the <a href="http://grails.org/plugin/acegi/" target="blank">Acegi</a> plugin. At the time the plugin was based on Acegi 1.0.x and around the same time the plugin was converted to use Spring Security 2.0 and the ACL support wasn't converted to use the new package layout and approach.<p class="paragraph"/>Work was done in 2009 to create a GORM-based implementation (the standard Spring Security implementation uses JDBC). Around the same time, Phillip Merensky <a href="http://grails.1312388.n4.nabble.com/Acegi-Plugin-0-5-1-with-ACL-support-implemented-td1400650.html" target="blank">mentioned on the Grails mailing list</a> that he was working on an implementation. He wrote about his approach <a href="http://imagesiteproject.wordpress.com/2009/09/24/integration-of-spring-security-into-grails-plugin-approach-3/" target="blank">here</a> and this was merged in with the other approach but never formally released.<p class="paragraph"/>This plugin builds on that work but is based on Spring Security 3 and Spring 4.
 
 
 

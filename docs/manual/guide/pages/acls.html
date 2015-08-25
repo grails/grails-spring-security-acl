@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2.2 Working with ACLs 2.0-RC2</title>
+    <title>2.2 Working with ACLs 3.0.0.M1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -49,7 +49,7 @@ function addJsClass() {
         
         
     </div>
-    <p>ACL support for the Spring Security plugin</p>
+    <p></p>
 </div>
 
 
@@ -74,7 +74,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 2.0-RC2</p>
+                    <p><strong>Version:</strong> 3.0.0.M1</p>
 
                     
                 </div>
@@ -86,9 +86,7 @@ function addJsClass() {
 <h2 id="acls">2.2 Working with ACLs</h2>
 <h4>Suggested application changes</h4><p class="paragraph"/>To properly display access denied exceptions (e.g. when a user tries to perform an action but doesn't have a grant authorizing it), you should create a mapping in <code>grails-app/conf/UrlMappings.groovy</code> for error code 403. In addition, it's possible to trigger a <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/acls/model/NotFoundException.html" target="blank">NotFoundException</a> which will create an error 500, but should be treated like a 403 error, so you should add mappings for these conditions:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> org.springframework.security.access.AccessDeniedException
 <span class="java&#45;keyword">import</span> org.springframework.security.acls.model.NotFoundException<p class="paragraph"/>class UrlMappings &#123;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> mappings = &#123;
-      <span class="java&#45;quote">"/$controller/$action?/$id?"</span>&#123;
-         constraints &#123;&#125;
-      &#125;<p class="paragraph"/>      <span class="java&#45;quote">"/"</span>(view:<span class="java&#45;quote">"/index"</span>)<p class="paragraph"/>      <span class="java&#45;quote">"403"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error403"</span>)
+      <span class="java&#45;quote">"/$controller/$action?/$id?"</span> &#123;&#125;<p class="paragraph"/>      <span class="java&#45;quote">"/"</span>(view:<span class="java&#45;quote">"/index"</span>)<p class="paragraph"/>      <span class="java&#45;quote">"403"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error403"</span>)
       <span class="java&#45;quote">"500"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error500"</span>)
       <span class="java&#45;quote">"500"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error403"</span>,
             exception: AccessDeniedException)

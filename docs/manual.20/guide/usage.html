@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2 Usage 2.0-RC2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction to the Spring Security ACL Plugin</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/tutorial.html"><strong>3</strong><span>Tutorial</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/sampleApp.html"><strong>4</strong><span>Sample Application</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>ACL support for the Spring Security plugin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction to the Spring Security ACL Plugin</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/tutorial.html"><strong>3</strong><span>Tutorial</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2 Usage - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Burt Beckwith</p>
+
+                    <p><strong>Version:</strong> 2.0-RC2</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#serviceMethods"><strong>2.1</strong><span>Securing Service Methods</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#acls"><strong>2.2</strong><span>Working with ACLs</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#domainClasses"><strong>2.3</strong><span>Domain Classes</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#configuration"><strong>2.4</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#runAs"><strong>2.5</strong><span>Run-As Authentication Replacement</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#customPermissions"><strong>2.6</strong><span>Custom Permissions</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="usage">2 Usage</h1>
+
+
+
+<h2 id="serviceMethods">2.1 Securing Service Methods</h2>
+There are two primary use cases for ACL security: determining whether a user is allowed to perform an action on an instance before the action is invoked, and restricting access to single or multiple instances after methods are invoked (this is typically implemented by collection filtering). You can call <code>aclUtilService.hasPermission()</code> explicitly, but this tends to clutter your code with security logic that often has little to do with business logic. Instead, Spring Security provides some convenient annotations that are used to wrap your method calls in access checks.<p class="paragraph"/>There are four annotations:
+<ul class="star">
+<li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PreAuthorize.html" target="blank">@PreAuthorize</a></li>
+<li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PreFilter.html" target="blank">@PreFilter</a></li>
+<li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html" target="blank">@PostAuthorize</a></li>
+<li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostFilter.html" target="blank">@PostFilter</a></li>
+</ul><p class="paragraph"/>The annotations use security-specific Spring expression language (SpEL) expressions - see <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/el-access.html" target="blank">the documentation</a> for the available standard and method expressions.<p class="paragraph"/>Here's an example service that manages a <code>Report</code> domain class and uses these annotations and expressions:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> org.springframework.security.access.prepost.PostFilter
+<span class="java&#45;keyword">import</span> org.springframework.security.access.prepost.PreAuthorize
+<span class="java&#45;keyword">import</span> org.springframework.transaction.annotation.Transactional<p class="paragraph"/><span class="java&#45;keyword">import</span> com.yourapp.Report<p class="paragraph"/>class ReportService &#123;<p class="paragraph"/>   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;id, 'com.yourapp.Report', read) or "</span> +
+                 <span class="java&#45;quote">"hasPermission(&#35;id, 'com.yourapp.Report', admin)"</span>)
+   Report getReport(<span class="java&#45;object">long</span> id) &#123;
+      Report.get(id)
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasRole('ROLE_USER')"</span>)
+   Report createReport(params) &#123;
+      Report report = <span class="java&#45;keyword">new</span> Report(params)
+      report.save()
+      report
+   &#125;<p class="paragraph"/>   @PreAuthorize(<span class="java&#45;quote">"hasRole('ROLE_USER')"</span>)
+   @PostFilter(<span class="java&#45;quote">"hasPermission(filterObject, read) or "</span> +
+               <span class="java&#45;quote">"hasPermission(filterObject, admin)"</span>)
+   List getAllReports(params = &#91;:&#93;) &#123;
+      Report.list(params)
+   &#125;<p class="paragraph"/>   @Secured(&#91;'ROLE_USER', 'ROLE_ADMIN'&#93;)
+   <span class="java&#45;object">String</span> getReportName(<span class="java&#45;object">long</span> id) &#123;
+      Report.get(id).name
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;report, write) or "</span> +
+                 <span class="java&#45;quote">"hasPermission(&#35;report, admin)"</span>)
+   Report updateReport(Report report, params) &#123;
+      report.properties = params
+      report.save()
+      report
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;report, delete) or "</span> +
+                 <span class="java&#45;quote">"hasPermission(&#35;report, admin)"</span>)
+   void deleteReport(Report report) &#123;
+      report.delete()
+   &#125;
+&#125;</pre></div><p class="paragraph"/>The configuration specifies these rules:
+<ul class="star">
+<li><code>getReport</code> requires that the authenticated user have <code>BasePermission.READ</code> or <code>BasePermission.ADMIN</code> for the instance</li>
+<li><code>createReport</code> requires <code>ROLE_USER</code></li>
+<li><code>getAllReports</code> requires <code>ROLE_USER</code> and will have elements removed from the returned <code>List</code> that the user doesn't have an ACL grant for; the user must have <code>BasePermission.READ</code> or <code>BasePermission.ADMIN</code> for each element in the list; elements that don't have access granted will be removed</li>
+<li><code>getReportName</code> requires that the authenticated user have either <code>ROLE_USER</code> or <code>ROLE_ADMIN</code> (but no ACL rules)</li>
+<li><code>updateReport</code> has no role restrictions but must satisfy the requirements of the <code>aclReportWriteVoter</code> voter (which has the <code>ACL_REPORT_WRITE</code> config attribute), i.e. <code>BasePermission.ADMINISTRATION</code> or <code>BasePermission.WRITE</code></li>
+<li><code>deleteReport</code> has no role restrictions but must satisfy the requirements of the <code>aclReportDeleteVoter</code> voter (which has the <code>ACL_REPORT_DELETE</code> config attribute), i.e. <code>BasePermission.ADMINISTRATION</code> or <code>BasePermission.DELETE</code></li>
+</ul><p class="paragraph"/>
+
+
+<h2 id="acls">2.2 Working with ACLs</h2>
+<h4>Suggested application changes</h4><p class="paragraph"/>To properly display access denied exceptions (e.g. when a user tries to perform an action but doesn't have a grant authorizing it), you should create a mapping in <code>grails-app/conf/UrlMappings.groovy</code> for error code 403. In addition, it's possible to trigger a <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/acls/model/NotFoundException.html" target="blank">NotFoundException</a> which will create an error 500, but should be treated like a 403 error, so you should add mappings for these conditions:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> org.springframework.security.access.AccessDeniedException
+<span class="java&#45;keyword">import</span> org.springframework.security.acls.model.NotFoundException<p class="paragraph"/>class UrlMappings &#123;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> mappings = &#123;
+      <span class="java&#45;quote">"/$controller/$action?/$id?"</span>&#123;
+         constraints &#123;&#125;
+      &#125;<p class="paragraph"/>      <span class="java&#45;quote">"/"</span>(view:<span class="java&#45;quote">"/index"</span>)<p class="paragraph"/>      <span class="java&#45;quote">"403"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error403"</span>)
+      <span class="java&#45;quote">"500"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error500"</span>)
+      <span class="java&#45;quote">"500"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error403"</span>,
+            exception: AccessDeniedException)
+      <span class="java&#45;quote">"500"</span>(controller: <span class="java&#45;quote">"errors"</span>, action: <span class="java&#45;quote">"error403"</span>,
+            exception: NotFoundException)
+   &#125;
+&#125;</pre></div><p class="paragraph"/>These depend on an <code>ErrorsController</code>:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.yourcompany.yourapp<p class="paragraph"/><span class="java&#45;keyword">import</span> grails.plugin.springsecurity.annotation.Secured<p class="paragraph"/>@Secured(&#91;'permitAll'&#93;)
+class ErrorsController &#123;<p class="paragraph"/>   def error403() &#123;&#125;<p class="paragraph"/>   def error500() &#123;
+      render view: '/error'
+   &#125;
+&#125;</pre></div><p class="paragraph"/>and a <code>grails-app/views/errors/error403.gsp</code> similar to this:<p class="paragraph"/><div class="code"><pre>&#60;html&#62;
+&#60;head&#62;
+&#60;title&#62;Access denied!&#60;/title&#62;
+&#60;meta name='layout' content='main' /&#62;
+&#60;/head&#62;<p class="paragraph"/>&#60;body&#62;
+&#60;h1&#62;Access Denied&#60;/h1&#62;
+&#60;p&#62;We're sorry, but you are not authorized to
+   perform the requested operation.&#60;/p&#62;
+&#60;/body&#62;
+&#60;/html&#62;</pre></div><p class="paragraph"/><h4>actionSubmit</h4><p class="paragraph"/>Grails has a convenient feature where it supports multiple submit actions per form via the <code>&#60;g:actionSubmit&#62;</code> tag. This is done by posting to the <code>index</code> action but with a special parameter that indicates which action to invoke. This is a problem in general for security since any URL rules for edit, delete, save, etc. will be bypassed. It's an even more significant issue with ACLs because of the way that the access denied exception interacts with the <code>actionSubmit</code> processing. If you don't make any adjustments for this, your users will see a blank page when they attempt to submit a form and the action is disallowed. The solution is to remove <code>actionSubmit</code> buttons and replace them with regular submit buttons. This requires one form per button, and without adjusting the CSS the buttons will look differently than if they were in-line <code>actionSubmit</code> buttons, but that is fixable with the appropriate CSS changes.<p class="paragraph"/>It's simple to adjust the <code>actionSubmit</code> buttons and you'll need to change them in <code>show.gsp</code> and <code>edit.gsp</code>; <code>list.gsp</code> and <code>show.gsp</code> don't need any changes. In <code>show.gsp</code>, replace the two actionSubmit buttons with these two forms (maintain the g:message tags; the strings are hard-coded here to reduce clutter):<p class="paragraph"/><div class="code"><pre>&#60;div class=<span class="java&#45;quote">"buttons"</span>&#62;
+   &#60;g:form action='edit'&#62;
+      &#60;g:hiddenField name=<span class="java&#45;quote">"id"</span> value=<span class="java&#45;quote">"$&#123;reportInstance?.id&#125;"</span> /&#62;
+      &#60;span class=<span class="java&#45;quote">"button"</span>&#62;
+         &#60;g:submitButton class=<span class="java&#45;quote">"edit"</span> name=<span class="java&#45;quote">"Edit"</span> /&#62;
+      &#60;/span&#62;
+   &#60;/g:form&#62;
+   &#60;g:form action='delete'&#62;
+      &#60;g:hiddenField name=<span class="java&#45;quote">"id"</span> value=<span class="java&#45;quote">"$&#123;reportInstance?.id&#125;"</span> /&#62;
+      &#60;span class=<span class="java&#45;quote">"button"</span>&#62;
+         &#60;g:submitButton class=<span class="java&#45;quote">"delete"</span> name=<span class="java&#45;quote">"Delete"</span>
+                         onclick=<span class="java&#45;quote">"<span class="java&#45;keyword">return</span> confirm('Are you sure?');"</span> /&#62;
+      &#60;/span&#62;
+   &#60;/g:form&#62;
+&#60;/div&#62;</pre></div><p class="paragraph"/>In <code>edit.gsp</code>, change the <code>&#60;form&#62;</code> tag to<p class="paragraph"/><div class="code"><pre>&#60;g:form action='update'&#62;</pre></div><p class="paragraph"/>and convert the update button to a regular submit button:<p class="paragraph"/><div class="code"><pre>&#60;div class=<span class="java&#45;quote">"buttons"</span>&#62;
+   &#60;span class=<span class="java&#45;quote">"button"</span>&#62;
+      &#60;g:submitButton class=<span class="java&#45;quote">"save"</span> name=<span class="java&#45;quote">"Update"</span> /&#62;
+   &#60;/span&#62;
+&#60;/div&#62;</pre></div><p class="paragraph"/>and move the delete button out of the form into its own form just below the main form:<p class="paragraph"/><div class="code"><pre>&#60;g:form action='delete'&#62;
+   &#60;g:hiddenField name=<span class="java&#45;quote">"id"</span> value=<span class="java&#45;quote">"$&#123;reportInstance?.id&#125;"</span> /&#62;
+   &#60;div class=<span class="java&#45;quote">"buttons"</span>&#62;
+      &#60;span class=<span class="java&#45;quote">"button"</span>&#62;
+         &#60;g:submitButton class=<span class="java&#45;quote">"delete"</span> name=<span class="java&#45;quote">"Delete"</span>
+                         onclick=<span class="java&#45;quote">"<span class="java&#45;keyword">return</span> confirm('Are you sure?');"</span> /&#62;
+      &#60;/span&#62;
+   &#60;/div&#62;
+&#60;/g:form&#62;</pre></div>
+
+
+
+<h2 id="domainClasses">2.3 Domain Classes</h2>
+The plugin uses domain classes to manage database state. Ordinarily the database structure isn't all that important, but to be compatible with the traditional JDBC-based Spring Security code, the domain classes are configured to generate the table and column names that are used there.<p class="paragraph"/>The plugin classes related to persistence use these classes, so they're included in the plugin but can be overridden by running the <a href="../ref/Scripts/s2-create-acl-domains.html" class="Scripts">s2-create-acl-domains</a> script.<p class="paragraph"/>As you can see, the database structure is highly normalized.<p class="paragraph"/><h4>AclClass</h4><p class="paragraph"/>The <code>AclClass</code> domain class contains entries for the names of each application domain class that has associated permissions:<p class="paragraph"/><div class="code"><pre>class AclClass &#123;<p class="paragraph"/>   <span class="java&#45;object">String</span> className<p class="paragraph"/>   @Override
+   <span class="java&#45;object">String</span> toString() &#123;
+      <span class="java&#45;quote">"AclClass id $id, className $className"</span>
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> mapping = &#123;
+      className column: 'class'
+      version <span class="java&#45;keyword">false</span>
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> constraints = &#123;
+      className unique: <span class="java&#45;keyword">true</span>
+   &#125;
+&#125;</pre></div><p class="paragraph"/><h4>AclSid</h4><p class="paragraph"/>The <code>AclSid</code> domain class contains entries for the names of grant recipients (a principal or authority - SID is an acronym for "security identity"). These are typically usernames (where <code>principal</code> is <code>true</code>) but can also be a <code>GrantedAuthority</code> (role name, where <code>principal</code> is <code>false</code>). When granting permissions to a role, any user with that role receives that permission:<p class="paragraph"/><div class="code"><pre>class AclSid &#123;<p class="paragraph"/>   <span class="java&#45;object">String</span> sid
+   <span class="java&#45;object">boolean</span> principal<p class="paragraph"/>   @Override
+   <span class="java&#45;object">String</span> toString() &#123;
+      <span class="java&#45;quote">"AclSid id $id, sid $sid, principal $principal"</span>
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> mapping = &#123;
+      version <span class="java&#45;keyword">false</span>
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> constraints = &#123;
+      principal unique: 'sid'
+   &#125;
+&#125;</pre></div><p class="paragraph"/><h4>AclObjectIdentity</h4><p class="paragraph"/>The <code>AclObjectIdentity</code> domain class contains entries representing individual domain class instances (OIDs). It has a field for the instance id (<code>objectId</code>) and domain class (<code>aclClass</code>) that uniquely identify the instance. In addition there are optional nullable fields for the parent OID (<code>parent</code>) and owner (<code>owner</code>). There's also a flag (<code>entriesInheriting</code>) to indicate whether ACL entries can inherit from a parent ACL.<p class="paragraph"/><div class="code"><pre>class AclObjectIdentity <span class="java&#45;keyword">extends</span> AbstractAclObjectIdentity &#123;<p class="paragraph"/>   <span class="java&#45;object">Long</span> objectId<p class="paragraph"/>   @Override
+   <span class="java&#45;object">String</span> toString() &#123;
+      <span class="java&#45;quote">"AclObjectIdentity id $id, aclClass $aclClass.className, "</span> +
+      <span class="java&#45;quote">"objectId $objectId, entriesInheriting $entriesInheriting"</span>
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> mapping = &#123;
+      version <span class="java&#45;keyword">false</span>
+      aclClass column: 'object_id_class'
+      owner column: 'owner_sid'
+      parent column: 'parent_object'
+      objectId column: 'object_id_identity'
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> constraints = &#123;
+      objectId unique: 'aclClass'
+   &#125;
+&#125;</pre></div><p class="paragraph"/><code>AclObjectIdentity</code> actually extends a base class, <code>AbstractAclObjectIdentity</code>:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">abstract</span> class AbstractAclObjectIdentity &#123;<p class="paragraph"/>   AclClass aclClass
+   AclObjectIdentity parent
+   AclSid owner
+   <span class="java&#45;object">boolean</span> entriesInheriting<p class="paragraph"/>   <span class="java&#45;keyword">static</span> constraints = &#123;
+      parent nullable: <span class="java&#45;keyword">true</span>
+      owner nullable: <span class="java&#45;keyword">true</span>
+   &#125;
+&#125;</pre></div><p class="paragraph"/>By default it's assumed that domain classes have a numeric primary key, but that's not required. So the default implementation has a <code>Long</code> <code>objectId</code> field, but if you want to support other types of ids you can change that field and retain the other standard functionality from the base class.<p class="paragraph"/><h4>AclEntry</h4><p class="paragraph"/>Finally, the <code>AclEntry</code> domain class contains entries representing grants (or denials) of a permission on an object instance to a recipient. The <code>aclObjectIdentity</code> field references the domain class instance (since an instance can have many granted permissions). The <code>sid</code> field references the recipient. The <code>granting</code> field determines whether the entry grants the permission (<code>true</code>) or denies it (<code>false</code>). The <code>aceOrder</code> field specifies the position of the entry, which is important because the entries are evaluated in order and the first matching entry determines whether access is allowed. <code>auditSuccess</code> and <code>auditFailure</code> determine whether to log success and/or failure events (these both default to <code>false</code>).<p class="paragraph"/>The <code>mask</code> field holds the permission. This can be a source of confusion because the name (and the Spring Security documentation) indicates that it's a bit mask. A value of 1 indicates permission A, a value of 2 indicates permission B, a value of 4 indicates permission C, a value of 8 indicates permission D, etc. So you would think that a value of 5 would indicate a grant of both permission A and C. Unfortunately this is not the case. There is a <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/acls/domain/CumulativePermission.html" target="blank">CumulativePermission</a> class that supports this, but the standard classes don't support it (<code>AclImpl.isGranted()</code> checks for == rather than using | (bitwise or) so a combined entry would never match). So rather than grouping all permissions for one recipient on one instances into a bit mask, you must create individual records for each. This will be addressed in Spring Security 3.1 however.<p class="paragraph"/><div class="code"><pre>class AclEntry &#123;<p class="paragraph"/>   AclObjectIdentity aclObjectIdentity
+   <span class="java&#45;object">int</span> aceOrder
+   AclSid sid
+   <span class="java&#45;object">int</span> mask
+   <span class="java&#45;object">boolean</span> granting
+   <span class="java&#45;object">boolean</span> auditSuccess
+   <span class="java&#45;object">boolean</span> auditFailure<p class="paragraph"/>   @Override
+   <span class="java&#45;object">String</span> toString() &#123;
+      <span class="java&#45;quote">"AclEntry id $id, aceOrder $aceOrder, mask $mask, "</span> +
+      <span class="java&#45;quote">"granting $granting, aclObjectIdentity $aclObjectIdentity"</span>
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> mapping = &#123;
+      version <span class="java&#45;keyword">false</span>
+      sid column: 'sid'
+      aclObjectIdentity column: 'acl_object_identity'
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> constraints = &#123;
+      aceOrder unique: 'aclObjectIdentity'
+   &#125;
+&#125;</pre></div>
+
+
+
+<h2 id="configuration">2.4 Configuration</h2>
+Creating, editing, or deleting permissions requires an authenticated user. In most cases  if the authenticated user is the owner of the ACL then access is allowed, but granted roles also affect whether access is allowed. The default required role is <code>ROLE_ADMIN</code> for all actions, but this can be configured in <code>grails-app/conf/Config.groovy</code>. This table summarizes the attribute names and the corresponding actions that are allowed for it:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute</strong></th><th><strong class="bold">Affected methods</strong></th></tr><tr class="table-odd"><td><code>grails.plugin.springsecurity. acl.authority. modifyAuditingDetails</code></td><td><code>AuditableAcl.updateAuditing()</code></td></tr><tr class="table-even"><td><code>grails.plugin.springsecurity. acl.authority.changeOwnership</code></td><td><code>OwnershipAcl.setOwner()</code></td></tr><tr class="table-odd"><td><code>grails.plugin.springsecurity. acl.authority. changeAclDetails</code></td><td><code>MutableAcl.deleteAce()</code>, <code>MutableAcl.insertAce()</code>, <code>MutableAcl.setEntriesInheriting()</code>, <code>MutableAcl.setParent()</code>, <code>MutableAcl.updateAce()</code></td></tr></table><p class="paragraph"/>You can leave the attributes set to <code>ROLE_ADMIN</code> or change them to have separate values, e.g.<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.acl.authority.
+        modifyAuditingDetails = 'ROLE_ACL_MODIFY_AUDITING'<p class="paragraph"/>grails.plugin.springsecurity.acl.authority.
+        changeOwnership = 'ROLE_ACL_CHANGE_OWNERSHIP'<p class="paragraph"/>grails.plugin.springsecurity.acl.authority.
+        changeAclDetails = 'ROLE_ACL_CHANGE_DETAILS'</pre></div><p class="paragraph"/><h4>Run-As Authentication Replacement</h4><p class="paragraph"/>There are also two options to configure <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/runas.html" target="blank">Run-As Authentication Replacement</a>:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td><code>grails.plugin.springsecurity. useRunAs</code></td><td>change to <code>true</code> to enable; defaults to <code>false</code></td></tr><tr class="table-even"><td><code>grails.plugin.springsecurity. runAs.key</code></td><td>a shared key between the two standard implementation classes, used to verify that a third party hasn't created a token for the user; should be changed from its default value</td></tr></table><p class="paragraph"/>Example:<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.useRunAs = <span class="java&#45;keyword">true</span>
+grails.plugin.springsecurity.runAs.key = 'your run&#45;as key'</pre></div>
+
+
+
+<h2 id="runAs">2.5 Run-As Authentication Replacement</h2>
+Although not strictly related to ACLs, the plugin implements <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/runas.html" target="blank">Run-As Authentication Replacement</a> since it's related to method security in general. This feature is similar to the Switch User feature of the Spring Security Core plugin, but instead of running as another user until you choose to revert to your original <code>Authentication</code>, the temporary authentication switch only lasts for one method invocation.<p class="paragraph"/>For example, in this service <code>someMethod()</code> requires that the authenticated user have <code>ROLE_ADMIN</code> and will also be granted <code>ROLE_RUN_AS_SUPERUSER</code> for the duration of the method only:<p class="paragraph"/><div class="code"><pre>class SecureService &#123;<p class="paragraph"/>   @Secured(&#91;'ROLE_ADMIN', 'RUN_AS_SUPERUSER'&#93;)
+   def someMethod() &#123;
+      &#8230;
+   &#125;
+&#125;</pre></div><p class="paragraph"/>
+
+
+<h2 id="customPermissions">2.6 Custom Permissions</h2>
+By default there are 5 permissions available from the <code>org.springframework.security.acls.domain. BasePermission</code> class: <code>READ</code>, <code>WRITE</code>, <code>CREATE</code>, <code>DELETE</code>, and <code>ADMINISTRATION</code>. You can also add your own permissions if these aren't sufficient.<p class="paragraph"/>The easiest approach is to create a subclass of <code>BasePermission</code> and add your new permissions there. This way you retain the default permissions and can use them if you need. For example, here's a subclass that adds a new <code>APPROVE</code> permission:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.mycompany.myapp;<p class="paragraph"/><span class="java&#45;keyword">import</span> org.springframework.security.acls.domain.BasePermission;
+<span class="java&#45;keyword">import</span> org.springframework.security.acls.model.Permission;<p class="paragraph"/><span class="java&#45;keyword">public</span> class MyPermission <span class="java&#45;keyword">extends</span> BasePermission &#123;<p class="paragraph"/>   <span class="java&#45;keyword">public</span> <span class="java&#45;keyword">static</span> <span class="java&#45;keyword">final</span> Permission APPROVE = <span class="java&#45;keyword">new</span> MyPermission(1 &#60;&#60; 5, 'V');<p class="paragraph"/>   <span class="java&#45;keyword">protected</span> MyPermission(<span class="java&#45;object">int</span> mask) &#123;
+      <span class="java&#45;keyword">super</span>(mask);
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">protected</span> MyPermission(<span class="java&#45;object">int</span> mask, <span class="java&#45;object">char</span> code) &#123;
+      <span class="java&#45;keyword">super</span>(mask, code);
+   &#125;
+&#125;</pre></div><p class="paragraph"/>It sets the mask value to 32 (1 &#60;&#60; 5) since the values up to 16 are defined in the base class.<p class="paragraph"/>To use your class instead of the default, specify it in with the <code>grails.plugin.springsecurity.acl. permissionClass</code> attribute either as a Class or a String, for example<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> com.mycompany.myapp.MyPermissions
+&#8230;
+grails.plugin.springsecurity.acl. permissionClass = MyPermissions</pre></div><p class="paragraph"/>or<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.acl.permissionClass = 'com.mycompany.myapp.MyPermissions'</pre></div><p class="paragraph"/>You can also override the <code>aclPermissionFactory</code> bean in <code>grails-app/conf/spring/resources.groovy</code>, keeping the <code>org.springframework.security.acls.domain. DefaultPermissionFactory</code> class but passing your class as the constructor argument to keep it from defaulting to <code>BasePermission</code>, or do a more complex override to more fully reconfigure the behavior:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> org.springframework.security.acls.domain.DefaultPermissionFactory
+<span class="java&#45;keyword">import</span> com.mycompany.myapp.MyPermission<p class="paragraph"/>beans = &#123;
+   aclPermissionFactory(DefaultPermissionFactory, MyPermission)
+&#125;</pre></div><p class="paragraph"/>Once this is done you can use the permission like any other, specifying its quoted lowercase name in an expression, e.g.<p class="paragraph"/><div class="code"><pre>@PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;id, 'com.testacl.Report', 'approve')"</span>)
+Report get(<span class="java&#45;object">long</span> id) &#123;
+   Report.get id
+&#125;</pre></div>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction to the Spring Security ACL Plugin</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/tutorial.html"><strong>3</strong><span>Tutorial</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">AclUtilService</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/addPermission.html">addPermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/changeOwner.html">changeOwner</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/deleteAcl.html">deleteAcl</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/deletePermission.html">deletePermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/hasPermission.html">hasPermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/AclUtilService/readAcl.html">readAcl</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Scripts</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Scripts/s2-create-acl-domains.html">s2-create-acl-domains</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tag Libraries</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Tag%20Libraries/notPermitted.html">notPermitted</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tag%20Libraries/permitted.html">permitted</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

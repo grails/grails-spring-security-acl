@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2.4 Configuration 2.0-RC2</title>
+    <title>2.4 Configuration 3.0.0.M1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -49,7 +49,7 @@ function addJsClass() {
         
         
     </div>
-    <p>ACL support for the Spring Security plugin</p>
+    <p></p>
 </div>
 
 
@@ -74,7 +74,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 2.0-RC2</p>
+                    <p><strong>Version:</strong> 3.0.0.M1</p>
 
                     
                 </div>
@@ -84,10 +84,10 @@ function addJsClass() {
                 
 
 <h2 id="configuration">2.4 Configuration</h2>
-Creating, editing, or deleting permissions requires an authenticated user. In most cases  if the authenticated user is the owner of the ACL then access is allowed, but granted roles also affect whether access is allowed. The default required role is <code>ROLE_ADMIN</code> for all actions, but this can be configured in <code>grails-app/conf/Config.groovy</code>. This table summarizes the attribute names and the corresponding actions that are allowed for it:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute</strong></th><th><strong class="bold">Affected methods</strong></th></tr><tr class="table-odd"><td><code>grails.plugin.springsecurity. acl.authority. modifyAuditingDetails</code></td><td><code>AuditableAcl.updateAuditing()</code></td></tr><tr class="table-even"><td><code>grails.plugin.springsecurity. acl.authority.changeOwnership</code></td><td><code>OwnershipAcl.setOwner()</code></td></tr><tr class="table-odd"><td><code>grails.plugin.springsecurity. acl.authority. changeAclDetails</code></td><td><code>MutableAcl.deleteAce()</code>, <code>MutableAcl.insertAce()</code>, <code>MutableAcl.setEntriesInheriting()</code>, <code>MutableAcl.setParent()</code>, <code>MutableAcl.updateAce()</code></td></tr></table><p class="paragraph"/>You can leave the attributes set to <code>ROLE_ADMIN</code> or change them to have separate values, e.g.<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.acl.authority.
+Creating, editing, or deleting permissions requires an authenticated user. In most cases  if the authenticated user is the owner of the ACL then access is allowed, but granted roles also affect whether access is allowed. The default required role is <code>ROLE_ADMIN</code> for all actions, but this can be configured in <code>grails-app/conf/Config.groovy</code>. This table summarizes the attribute names and the corresponding actions that are allowed for it:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute</strong></th><th><strong class="bold">Affected methods</strong></th></tr><tr class="table-odd"><td><code>grails.plugin.springsecurity. acl.authority. modifyAuditingDetails</code></td><td><code>AuditableAcl.updateAuditing()</code></td></tr><tr class="table-even"><td><code>grails.plugin.springsecurity. acl.authority. changeOwnership</code></td><td><code>OwnershipAcl.setOwner()</code></td></tr><tr class="table-odd"><td><code>grails.plugin.springsecurity. acl.authority. changeAclDetails</code></td><td><code>MutableAcl.deleteAce()</code>, <code>MutableAcl.insertAce()</code>, <code>MutableAcl.setEntriesInheriting()</code>, <code>MutableAcl.setParent()</code>, <code>MutableAcl.updateAce()</code></td></tr></table><p class="paragraph"/>You can leave the attributes set to <code>ROLE_ADMIN</code> or change them to have separate values, e.g.<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.acl.authority.
         modifyAuditingDetails = 'ROLE_ACL_MODIFY_AUDITING'<p class="paragraph"/>grails.plugin.springsecurity.acl.authority.
         changeOwnership = 'ROLE_ACL_CHANGE_OWNERSHIP'<p class="paragraph"/>grails.plugin.springsecurity.acl.authority.
-        changeAclDetails = 'ROLE_ACL_CHANGE_DETAILS'</pre></div><p class="paragraph"/><h4>Run-As Authentication Replacement</h4><p class="paragraph"/>There are also two options to configure <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/runas.html" target="blank">Run-As Authentication Replacement</a>:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td><code>grails.plugin.springsecurity. useRunAs</code></td><td>change to <code>true</code> to enable; defaults to <code>false</code></td></tr><tr class="table-even"><td><code>grails.plugin.springsecurity. runAs.key</code></td><td>a shared key between the two standard implementation classes, used to verify that a third party hasn't created a token for the user; should be changed from its default value</td></tr></table><p class="paragraph"/>Example:<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.useRunAs = <span class="java&#45;keyword">true</span>
+        changeAclDetails = 'ROLE_ACL_CHANGE_DETAILS'</pre></div><p class="paragraph"/><h4>Run-As Authentication Replacement</h4><p class="paragraph"/>There are also two options to configure <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#runas" target="blank">Run-As Authentication Replacement</a>:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td><code>grails.plugin.springsecurity. useRunAs</code></td><td>change to <code>true</code> to enable; defaults to <code>false</code></td></tr><tr class="table-even"><td><code>grails.plugin.springsecurity. runAs.key</code></td><td>a shared key between the two standard implementation classes, used to verify that a third party hasn't created a token for the user; should be changed from its default value</td></tr></table><p class="paragraph"/>Example:<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.useRunAs = <span class="java&#45;keyword">true</span>
 grails.plugin.springsecurity.runAs.key = 'your run&#45;as key'</pre></div>
 
 

@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4 Sample Application 2.0-RC2</title>
+    <title>4 Sample Application 3.0.0.M1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -49,7 +49,7 @@ function addJsClass() {
         
         
     </div>
-    <p>ACL support for the Spring Security plugin</p>
+    <p></p>
 </div>
 
 
@@ -72,7 +72,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 2.0-RC2</p>
+                    <p><strong>Version:</strong> 3.0.0.M1</p>
 
                     
                 </div>
@@ -82,8 +82,8 @@ function addJsClass() {
                 
 
 <h1 id="sampleApp">4 Sample Application</h1>
-Working with ACLs in Spring Security is complex but it will be easier to understand with a sample application. To help get you started, there's a Grails application that uses the plugin to test with. It's based on the <a href="http://docs.spring.io/spring-security/site/start-here.html" target="blank">Contacts</a> application that comes with Spring Security. But where the Spring Security application uses SpringMVC, JDBC, etc., this application is 100% Grails. Download it from <a href="http://github.com/grails-plugins/grails-spring-security-acl/raw/master/grails-contacts.zip" target="blank">here</a>.<p class="paragraph"/>Unpack the zip file, for example in <code>/opt/workspace/grails-contacts</code><p class="paragraph"/>Upgrade the application to make sure it's compatible with the version of Grails you're using (note that all of the Spring Security plugins require at least version 2.0 of Grails) and start the app:<p class="paragraph"/><pre class="bq"><code>
-$ grails run-app</code></pre><p class="paragraph"/>Open <a href="http://localhost:8080/grails-contacts/" target="blank">http://localhost:8080/grails-contacts/</a> in a browser to get started. The main functionality is at <a href="http://localhost:8080/grails-contacts/secure" target="blank">http://localhost:8080/grails-contacts/secure</a>. The login page lists the various configured users and their passwords; the "rod" user is an admin and has full access and the other users have various grants and ownership.
+Working with ACLs in Spring Security is complex but it will be easier to understand with a sample application. To help get you started, there's a Grails application that uses the plugin to test with. It's based on the Spring Security <a href="https://github.com/spring-projects/spring-security/tree/master/samples/contacts-xml" target="blank">Contacts</a> sample application. But where the Spring Security application uses SpringMVC, JDBC, etc., this application is 100% Grails. The application is available <a href="https://github.com/burtbeckwith/grails-contacts" target="blank">at GitHub</a>.<p class="paragraph"/>Clone or fork the repo and start the app:<p class="paragraph"/><pre class="bq"><code>
+$ grails run-app</code></pre><p class="paragraph"/>Open <a href="http://localhost:8080/" target="blank">http://localhost:8080/</a> in a browser to get started. The main functionality is at <a href="http://localhost:8080/secure" target="blank">http://localhost:8080/secure</a>. The login page lists the various configured users and their passwords; the "rod" user is an admin and has full access and the other users have various grants and ownership.
 
 
 

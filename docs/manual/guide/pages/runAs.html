@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2.5 Run-As Authentication Replacement 2.0-RC2</title>
+    <title>2.5 Run-As Authentication Replacement 3.0.0.M1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -49,7 +49,7 @@ function addJsClass() {
         
         
     </div>
-    <p>ACL support for the Spring Security plugin</p>
+    <p></p>
 </div>
 
 
@@ -74,7 +74,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 2.0-RC2</p>
+                    <p><strong>Version:</strong> 3.0.0.M1</p>
 
                     
                 </div>
@@ -84,7 +84,7 @@ function addJsClass() {
                 
 
 <h2 id="runAs">2.5 Run-As Authentication Replacement</h2>
-Although not strictly related to ACLs, the plugin implements <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/runas.html" target="blank">Run-As Authentication Replacement</a> since it's related to method security in general. This feature is similar to the Switch User feature of the Spring Security Core plugin, but instead of running as another user until you choose to revert to your original <code>Authentication</code>, the temporary authentication switch only lasts for one method invocation.<p class="paragraph"/>For example, in this service <code>someMethod()</code> requires that the authenticated user have <code>ROLE_ADMIN</code> and will also be granted <code>ROLE_RUN_AS_SUPERUSER</code> for the duration of the method only:<p class="paragraph"/><div class="code"><pre>class SecureService &#123;<p class="paragraph"/>   @Secured(&#91;'ROLE_ADMIN', 'RUN_AS_SUPERUSER'&#93;)
+Although not strictly related to ACLs, the plugin implements <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#runas" target="blank">Run-As Authentication Replacement</a> since it's related to method security in general. This feature is similar to the Switch User feature of the Spring Security Core plugin, but instead of running as another user until you choose to revert to your original <code>Authentication</code>, the temporary authentication switch only lasts for one method invocation.<p class="paragraph"/>For example, in this service <code>someMethod()</code> requires that the authenticated user have <code>ROLE_ADMIN</code> and will also be granted <code>ROLE_RUN_AS_SUPERUSER</code> for the duration of the method only:<p class="paragraph"/><div class="code"><pre>class SecureService &#123;<p class="paragraph"/>   @Secured(&#91;'ROLE_ADMIN', 'RUN_AS_SUPERUSER'&#93;)
    def someMethod() &#123;
       &#8230;
    &#125;

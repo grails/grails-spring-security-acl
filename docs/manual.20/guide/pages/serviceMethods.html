@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2.1 Securing Service Methods 2.0-RC2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction to the Spring Security ACL Plugin</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/tutorial.html"><strong>3</strong><span>Tutorial</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/sampleApp.html"><strong>4</strong><span>Sample Application</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>ACL support for the Spring Security plugin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction to the Spring Security ACL Plugin</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/tutorial.html"><strong>3</strong><span>Tutorial</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2.1 Securing Service Methods - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Burt Beckwith</p>
+
+                    <p><strong>Version:</strong> 2.0-RC2</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="serviceMethods">2.1 Securing Service Methods</h2>
+There are two primary use cases for ACL security: determining whether a user is allowed to perform an action on an instance before the action is invoked, and restricting access to single or multiple instances after methods are invoked (this is typically implemented by collection filtering). You can call <code>aclUtilService.hasPermission()</code> explicitly, but this tends to clutter your code with security logic that often has little to do with business logic. Instead, Spring Security provides some convenient annotations that are used to wrap your method calls in access checks.<p class="paragraph"/>There are four annotations:
+<ul class="star">
+<li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PreAuthorize.html" target="blank">@PreAuthorize</a></li>
+<li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PreFilter.html" target="blank">@PreFilter</a></li>
+<li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html" target="blank">@PostAuthorize</a></li>
+<li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostFilter.html" target="blank">@PostFilter</a></li>
+</ul><p class="paragraph"/>The annotations use security-specific Spring expression language (SpEL) expressions - see <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/el-access.html" target="blank">the documentation</a> for the available standard and method expressions.<p class="paragraph"/>Here's an example service that manages a <code>Report</code> domain class and uses these annotations and expressions:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> org.springframework.security.access.prepost.PostFilter
+<span class="java&#45;keyword">import</span> org.springframework.security.access.prepost.PreAuthorize
+<span class="java&#45;keyword">import</span> org.springframework.transaction.annotation.Transactional<p class="paragraph"/><span class="java&#45;keyword">import</span> com.yourapp.Report<p class="paragraph"/>class ReportService &#123;<p class="paragraph"/>   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;id, 'com.yourapp.Report', read) or "</span> +
+                 <span class="java&#45;quote">"hasPermission(&#35;id, 'com.yourapp.Report', admin)"</span>)
+   Report getReport(<span class="java&#45;object">long</span> id) &#123;
+      Report.get(id)
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasRole('ROLE_USER')"</span>)
+   Report createReport(params) &#123;
+      Report report = <span class="java&#45;keyword">new</span> Report(params)
+      report.save()
+      report
+   &#125;<p class="paragraph"/>   @PreAuthorize(<span class="java&#45;quote">"hasRole('ROLE_USER')"</span>)
+   @PostFilter(<span class="java&#45;quote">"hasPermission(filterObject, read) or "</span> +
+               <span class="java&#45;quote">"hasPermission(filterObject, admin)"</span>)
+   List getAllReports(params = &#91;:&#93;) &#123;
+      Report.list(params)
+   &#125;<p class="paragraph"/>   @Secured(&#91;'ROLE_USER', 'ROLE_ADMIN'&#93;)
+   <span class="java&#45;object">String</span> getReportName(<span class="java&#45;object">long</span> id) &#123;
+      Report.get(id).name
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;report, write) or "</span> +
+                 <span class="java&#45;quote">"hasPermission(&#35;report, admin)"</span>)
+   Report updateReport(Report report, params) &#123;
+      report.properties = params
+      report.save()
+      report
+   &#125;<p class="paragraph"/>   @Transactional
+   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;report, delete) or "</span> +
+                 <span class="java&#45;quote">"hasPermission(&#35;report, admin)"</span>)
+   void deleteReport(Report report) &#123;
+      report.delete()
+   &#125;
+&#125;</pre></div><p class="paragraph"/>The configuration specifies these rules:
+<ul class="star">
+<li><code>getReport</code> requires that the authenticated user have <code>BasePermission.READ</code> or <code>BasePermission.ADMIN</code> for the instance</li>
+<li><code>createReport</code> requires <code>ROLE_USER</code></li>
+<li><code>getAllReports</code> requires <code>ROLE_USER</code> and will have elements removed from the returned <code>List</code> that the user doesn't have an ACL grant for; the user must have <code>BasePermission.READ</code> or <code>BasePermission.ADMIN</code> for each element in the list; elements that don't have access granted will be removed</li>
+<li><code>getReportName</code> requires that the authenticated user have either <code>ROLE_USER</code> or <code>ROLE_ADMIN</code> (but no ACL rules)</li>
+<li><code>updateReport</code> has no role restrictions but must satisfy the requirements of the <code>aclReportWriteVoter</code> voter (which has the <code>ACL_REPORT_WRITE</code> config attribute), i.e. <code>BasePermission.ADMINISTRATION</code> or <code>BasePermission.WRITE</code></li>
+<li><code>deleteReport</code> has no role restrictions but must satisfy the requirements of the <code>aclReportDeleteVoter</code> voter (which has the <code>ACL_REPORT_DELETE</code> config attribute), i.e. <code>BasePermission.ADMINISTRATION</code> or <code>BasePermission.DELETE</code></li>
+</ul><p class="paragraph"/>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction to the Spring Security ACL Plugin</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/tutorial.html"><strong>3</strong><span>Tutorial</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">AclUtilService</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/addPermission.html">addPermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/changeOwner.html">changeOwner</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/deleteAcl.html">deleteAcl</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/deletePermission.html">deletePermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/hasPermission.html">hasPermission</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/AclUtilService/readAcl.html">readAcl</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Scripts</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../../ref/Scripts/s2-create-acl-domains.html">s2-create-acl-domains</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tag Libraries</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../../ref/Tag%20Libraries/notPermitted.html">notPermitted</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tag%20Libraries/permitted.html">permitted</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
