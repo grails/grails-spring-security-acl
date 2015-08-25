@@ -3,7 +3,7 @@ Creating, editing, or deleting permissions requires an authenticated user. In mo
 {table}
 *Attribute* | *Affected methods*
 @grails.plugin.springsecurity. acl.authority. modifyAuditingDetails@ | @AuditableAcl.updateAuditing()@
-@grails.plugin.springsecurity. acl.authority.changeOwnership@ | @OwnershipAcl.setOwner()@
+@grails.plugin.springsecurity. acl.authority. changeOwnership@ | @OwnershipAcl.setOwner()@
 @grails.plugin.springsecurity. acl.authority. changeAclDetails@ | @MutableAcl.deleteAce()@, @MutableAcl.insertAce()@, @MutableAcl.setEntriesInheriting()@, @MutableAcl.setParent()@, @MutableAcl.updateAce()@
 {table}
 
@@ -22,7 +22,7 @@ grails.plugin.springsecurity.acl.authority.
 
 h4. Run-As Authentication Replacement
 
-There are also two options to configure [Run-As Authentication Replacement|http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/runas.html]:
+There are also two options to configure [Run-As Authentication Replacement|http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#runas]:
 
 {table}
 *Attribute* | *Meaning*

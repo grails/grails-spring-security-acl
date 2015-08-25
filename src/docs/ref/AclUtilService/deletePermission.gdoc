@@ -27,4 +27,3 @@ h4. Parameters
 * @domainObject@ - the domain class instance, used when the instance is available
 * @recipient@ - the grantee; can be a String (username or role name), or a @Sid@, or an @Authentication@
 * @permission@ - the permission to remove
-

@@ -20,4 +20,3 @@ h4. Parameters
 
 * @domainObject@ - the domain class instance
 * @newUsername@ - the username of the new owner
-

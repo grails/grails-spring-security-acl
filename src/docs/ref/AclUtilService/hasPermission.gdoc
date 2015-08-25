@@ -25,4 +25,3 @@ h4. Parameters
 * @authentication@ - an authentication representing a user and associated roles
 * @domainObject@ - the domain class instance
 * @permissions@ - one or more permissions to check
-
