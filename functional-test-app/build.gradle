@@ -8,7 +8,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-		classpath 'com.bertramlabs.plugins:asset-pipeline-gradle:2.1.1'
+		classpath 'com.bertramlabs.plugins:asset-pipeline-gradle:2.5.0'
 	}
 }
 
@@ -21,8 +21,6 @@ group 'functional.test.app'
 
 apply plugin: 'spring-boot'
 apply plugin: 'asset-pipeline'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'org.grails.grails-web'
 
 ext {
@@ -51,7 +49,8 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-logging'
 	compile 'org.springframework.boot:spring-boot-starter-tomcat'
 
-	compile 'org.grails.plugins:spring-security-acl:3.0.0.M1'
+	String pluginVersion = file('../version.txt').text.trim()
+	compile 'org.grails.plugins:spring-security-acl:' + pluginVersion
 
 	runtime 'org.grails.plugins:asset-pipeline'
 

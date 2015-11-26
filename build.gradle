@@ -20,20 +20,16 @@ plugins {
 	id 'com.jfrog.bintray' version '1.2'
 }
 
-version '3.0.0.M1'
+version = file('version.txt').text.trim()
 group 'org.grails.plugins'
 
 apply plugin: 'maven-publish'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: 'org.grails.grails-plugin'
 apply plugin: 'org.asciidoctor.convert'
 
-String repoRoot = 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates'
-apply from: "$repoRoot/grailsCentralPublishing.gradle"
-//apply from: "$repoRoot/bintrayPublishing.gradle"
-apply from: 'bintrayPublishing.gradle' // using modified local copy so the issueTrackerUrl and vcsUrl properties are correct
+apply from: 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
+apply from: 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
 ext {
 	grailsVersion = project.grailsVersion
@@ -60,7 +56,6 @@ dependencies {
 	provided 'javax.servlet:javax.servlet-api:3.1.0'
 	provided 'org.grails:grails-dependencies'
 	provided 'org.grails:grails-web-boot'
-	provided 'org.springframework.boot:spring-boot-autoconfigure'
 
 	compile 'org.grails.plugins:spring-security-core:3.0.0.M1'
 
@@ -111,14 +106,9 @@ task wrapper(type: Wrapper) {
 	gradleVersion = gradleWrapperVersion
 }
 
-eclipse {
-	classpath {
-		plusConfigurations += [configurations.provided]
-	}
-}
-
-idea {
-	module {
-		scopes.PROVIDED.plus += [configurations.provided]
+test {
+	testLogging {
+		exceptionFormat = 'full'
+		events 'failed', 'standardOut', 'standardError'
 	}
 }

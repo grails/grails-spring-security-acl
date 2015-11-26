@@ -19,8 +19,6 @@ version '0.1'
 group 'integration.test.app'
 
 apply plugin: 'spring-boot'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'org.grails.grails-web'
 
 ext {
@@ -45,14 +43,12 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-autoconfigure'
 	compile 'org.springframework.boot:spring-boot-starter-tomcat'
 	compile 'org.grails:grails-dependencies'
-	compile 'org.grails:grails-web-boot'
 
 	compile 'org.grails.plugins:hibernate'
 	compile 'org.grails.plugins:cache'
 
-	compile 'org.grails.plugins:spring-security-acl:3.0.0.M1'
-
-	console "org.grails:grails-console"
+	String pluginVersion = file('../version.txt').text.trim()
+	compile 'org.grails.plugins:spring-security-acl:' + pluginVersion
 
 	testCompile 'org.grails:grails-plugin-testing'
 }
