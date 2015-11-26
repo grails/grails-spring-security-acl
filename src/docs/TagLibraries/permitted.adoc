@@ -1,31 +1,38 @@
-h1. permitted
+[[permitted]]
+=== permitted
 
-h2. Purpose
+.Purpose
 
 Renders the body if the user is granted the specified permission(s)
 
-h2. Examples
+.Examples
 
 Single String:
-{code}
+
+[source,html]
+----
 <sec:permitted className='com.foo.Report' id='${reportId}' permission='read'>
 
 the body content
 
 </sec:permitted>
-{code}
+----
 
 Multiple String:
-{code}
+
+[source,html]
+----
 <sec:permitted className='com.foo.Report' id='${reportId}' permission='write,read'>
 
 the body content
 
 </sec:permitted>
-{code}
+----
 
 Single Permission:
-{code}
+
+[source,html]
+----
 <%@ page import="org.springframework.security.acls.domain.BasePermission" %>
 
 <sec:permitted className='com.foo.Report' id='${reportId}' permission='${BasePermission.READ}'>
@@ -33,10 +40,12 @@ Single Permission:
 the body content
 
 </sec:permitted>
-{code}
+----
 
 List of Permission:
-{code}
+
+[source,html]
+----
 <%@ page import="org.springframework.security.acls.domain.BasePermission" %>
 
 <sec:permitted className='com.foo.Report' id='${reportId}' permission='${[BasePermission.WRITE,BasePermission.READ]}'>
@@ -44,26 +53,30 @@ List of Permission:
 the body content
 
 </sec:permitted>
-{code}
+----
 
 Single mask int:
-{code}
+
+[source,html]
+----
 <sec:permitted className='com.foo.Report' id='${reportId}' permission='${1}'>
 
 the body content
 
 </sec:permitted>
-{code}
+----
 
 Multiple mask int:
-{code}
+
+[source,html]
+----
 <sec:permitted className='com.foo.Report' id='${reportId}' permission='2,1'>
 
 the body content
 
 </sec:permitted>
-{code}
+----
 
-h2. Description
+.Description
 
-Renders the body if the user has grants for the specified permissions. Permissions are specified in the 'permission' attribute and can be a single Permission, an array of Permission, an int/Integer (which is assumed to be a mask), a String (which can be a single name, or a comma-delimited list of names, or a comma-delimited list of masks), or a List of any of these.
+Renders the body if the user has grants for the specified permissions. Permissions are specified in the "`permission`" attribute and can be a single Permission, an array of Permission, an int/Integer (which is assumed to be a mask), a String (which can be a single name, or a comma-delimited list of names, or a comma-delimited list of masks), or a List of any of these.
