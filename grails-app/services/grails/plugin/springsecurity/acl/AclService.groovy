@@ -16,11 +16,14 @@ package grails.plugin.springsecurity.acl
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.context.MessageSource
 import org.springframework.security.acls.domain.AccessControlEntryImpl
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
+import org.springframework.security.acls.jdbc.LookupStrategy
 import org.springframework.security.acls.model.Acl
+import org.springframework.security.acls.model.AclCache
 import org.springframework.security.acls.model.AlreadyExistsException
 import org.springframework.security.acls.model.AuditableAccessControlEntry
 import org.springframework.security.acls.model.ChildrenExistException
@@ -47,13 +50,13 @@ class AclService implements MutableAclService {
 	protected final Logger log = LoggerFactory.getLogger(getClass())
 
 	/** Dependency injection for aclLookupStrategy. */
-	def aclLookupStrategy
+	LookupStrategy aclLookupStrategy
 
 	/** Dependency injection for aclCache. */
-	def aclCache
+	AclCache aclCache
 
 	/** Dependency injection for messageSource. */
-	def messageSource
+	MessageSource messageSource
 
 	@Transactional
 	MutableAcl createAcl(ObjectIdentity objectIdentity) throws AlreadyExistsException {

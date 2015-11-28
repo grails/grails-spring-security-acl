@@ -14,6 +14,8 @@
  */
 package grails.plugin.springsecurity.acl
 
+import grails.plugin.springsecurity.acl.model.ObjectIdentityRetrievalStrategyAndGenerator
+import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.Acl
@@ -21,6 +23,7 @@ import org.springframework.security.acls.model.NotFoundException
 import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
+import org.springframework.security.acls.model.SidRetrievalStrategy
 import org.springframework.security.core.Authentication
 
 /**
@@ -34,13 +37,13 @@ class AclUtilService {
 	def aclService
 
 	/** Dependency injection for permissionEvaluator. */
-	def permissionEvaluator
+	PermissionEvaluator permissionEvaluator
 
 	/** Dependency injection for sidRetrievalStrategy. */
-	def sidRetrievalStrategy
+	SidRetrievalStrategy sidRetrievalStrategy
 
 	/** Dependency injection for objectIdentityRetrievalStrategy. */
-	def objectIdentityRetrievalStrategy
+	ObjectIdentityRetrievalStrategyAndGenerator objectIdentityRetrievalStrategy
 
 	/**
 	 * Grant a permission. Used when you don't have the instance available.

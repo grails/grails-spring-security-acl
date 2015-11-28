@@ -14,25 +14,28 @@
  */
 package grails.plugin.springsecurity.acl.jdbc
 
-import java.lang.reflect.Field
-
+import grails.plugin.springsecurity.acl.AclEntry
+import grails.plugin.springsecurity.acl.AclObjectIdentity
+import grails.plugin.springsecurity.acl.model.StubAclParent
 import org.springframework.security.acls.domain.AccessControlEntryImpl
+import org.springframework.security.acls.domain.AclAuthorizationStrategy
 import org.springframework.security.acls.domain.AclImpl
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.ObjectIdentityImpl
+import org.springframework.security.acls.domain.PermissionFactory
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.jdbc.LookupStrategy
 import org.springframework.security.acls.model.Acl
+import org.springframework.security.acls.model.AclCache
 import org.springframework.security.acls.model.MutableAcl
 import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Permission
+import org.springframework.security.acls.model.PermissionGrantingStrategy
 import org.springframework.security.acls.model.Sid
 import org.springframework.util.Assert
 import org.springframework.util.ReflectionUtils
 
-import grails.plugin.springsecurity.acl.AclEntry
-import grails.plugin.springsecurity.acl.AclObjectIdentity
-import grails.plugin.springsecurity.acl.model.StubAclParent
+import java.lang.reflect.Field
 
 /**
  * GORM implementation of {@link LookupStrategy}. Ported from <code>BasicLookupStrategy</code>.
@@ -45,24 +48,24 @@ class GormAclLookupStrategy implements LookupStrategy {
 
 	protected /*HibernateProxyHandler*/ hibernateProxyHandler
 
+	/** Dependency injection for aclAuthorizationStrategy. */
+	AclAuthorizationStrategy aclAuthorizationStrategy
+
+	/** Dependency injection for aclCache. */
+	AclCache aclCache
+
+	/** Dependency injection for permissionFactory. */
+	PermissionFactory permissionFactory
+
+	/** Dependency injection for permissionGrantingStrategy. */
+	PermissionGrantingStrategy permissionGrantingStrategy
+
+	int batchSize = 50
+
 	GormAclLookupStrategy() {
 		findAceAclField()
 		createHibernateProxyHandler()
 	}
-
-	/** Dependency injection for aclAuthorizationStrategy. */
-	def aclAuthorizationStrategy
-
-	/** Dependency injection for aclCache. */
-	def aclCache
-
-	/** Dependency injection for permissionFactory. */
-	def permissionFactory
-
-	/** Dependency injection for permissionGrantingStrategy. */
-	def permissionGrantingStrategy
-
-	int batchSize = 50
 
 	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) {
 		Map<ObjectIdentity, Acl> result = [:]
