@@ -13,18 +13,13 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		String springSecurityVersion = '3.2.3.RELEASE'
+		String springSecurityVersion = '3.2.9.RELEASE'
 
 		compile "org.springframework.security:spring-security-acl:$springSecurityVersion", {
-			excludes 'aopalliance', 'commons-logging', 'ehcache', 'fest-assert', 'hsqldb',
+			excludes 'aopalliance', 'commons-logging', 'ehcache-core', 'fest-assert', 'hsqldb',
 			         'jcl-over-slf4j', 'junit', 'logback-classic', 'mockito-core', 'spring-aop',
 			         'spring-beans', 'spring-context', 'spring-context-support', 'spring-core',
 			         'spring-jdbc', 'spring-security-core', 'spring-test', 'spring-tx'
-		}
-
-		// temporary until release plugin v3.1.0 is released
-		compile 'commons-io:commons-io:2.1', {
-			export = false
 		}
 	}
 
@@ -35,7 +30,7 @@ grails.project.dependency.resolution = {
 			export = false
 		}
 
-		build ':release:3.0.1', ':rest-client-builder:2.0.3', {
+		build ':release:3.1.1', ':rest-client-builder:2.1.1', {
 			export = false
 		}
 	}
