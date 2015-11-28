@@ -14,17 +14,15 @@
  */
 package grails.plugin.springsecurity.acl
 
+import groovy.transform.ToString
+
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@ToString(excludes='version', includeNames=true)
 class AclClass {
 
 	String className
-
-	@Override
-	String toString() {
-		"AclClass id $id, className $className"
-	}
 
 	static mapping = {
 		className column: 'class'

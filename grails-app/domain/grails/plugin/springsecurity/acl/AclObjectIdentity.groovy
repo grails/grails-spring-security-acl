@@ -14,18 +14,15 @@
  */
 package grails.plugin.springsecurity.acl
 
+import groovy.transform.ToString
+
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@ToString(excludes='version', includeNames=true, includeSuper=true)
 class AclObjectIdentity extends AbstractAclObjectIdentity {
 
 	Long objectId
-
-	@Override
-	String toString() {
-		"AclObjectIdentity id $id, aclClass $aclClass?.className, " +
-		"objectId $objectId, entriesInheriting $entriesInheriting"
-	}
 
 	static mapping = {
 		version false
