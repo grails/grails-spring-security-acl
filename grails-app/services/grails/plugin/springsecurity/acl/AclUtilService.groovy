@@ -50,7 +50,7 @@ class AclUtilService {
 	 * @param recipient  the grantee; can be a username, role name, Sid, or Authentication
 	 * @param permission  the permission to grant
 	 */
-	void addPermission(Class<?> domainClass, long id, recipient, Permission permission) {
+	void addPermission(Class<?> domainClass, Serializable id, recipient, Permission permission) {
 		ObjectIdentity oid = objectIdentityRetrievalStrategy.createObjectIdentity(id, domainClass.name)
 		addPermission oid, recipient, permission
 	}
