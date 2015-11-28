@@ -23,7 +23,7 @@ import groovy.transform.ToString
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 @ToString(includeNames=true)
-abstract class AbstractAclObjectIdentity {
+abstract class AbstractAclObjectIdentity implements Serializable {
 
 	AclClass aclClass
 	AclObjectIdentity parent

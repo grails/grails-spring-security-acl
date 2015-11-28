@@ -22,6 +22,8 @@ import groovy.transform.ToString
 @ToString(excludes='version', includeNames=true, includeSuper=true)
 class AclObjectIdentity extends AbstractAclObjectIdentity {
 
+	private static final long serialVersionUID = 1
+
 	Long objectId
 
 	static mapping = {
