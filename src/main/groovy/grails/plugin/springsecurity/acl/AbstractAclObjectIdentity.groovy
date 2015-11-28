@@ -14,12 +14,15 @@
  */
 package grails.plugin.springsecurity.acl
 
+import groovy.transform.ToString
+
 /**
  * Abstract base class for the AclObjectIdentity domain class. The default implementation
  * assumes a long objectId but custom implementations may wish to use other PK types.
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@ToString(includeNames=true)
 abstract class AbstractAclObjectIdentity {
 
 	AclClass aclClass

@@ -14,9 +14,12 @@
  */
 package grails.plugin.springsecurity.acl
 
+import groovy.transform.ToString
+
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@ToString(excludes='version', includeNames=true)
 class AclEntry {
 
 	AclObjectIdentity aclObjectIdentity
@@ -26,12 +29,6 @@ class AclEntry {
 	boolean granting
 	boolean auditSuccess
 	boolean auditFailure
-
-	@Override
-	String toString() {
-		"AclEntry id $id, aceOrder $aceOrder, mask $mask, granting $granting, " +
-		"aclObjectIdentity $aclObjectIdentity"
-	}
 
 	static mapping = {
 		version false
