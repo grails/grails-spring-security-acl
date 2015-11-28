@@ -473,7 +473,7 @@ and we'll need to create the GSP for the `error403` action in `grails-app/views/
 </html>
 ----
 
-==== actionSubmit issues
+=== actionSubmit issues
 
 Grails has a convenient feature where it supports multiple submit actions per form via the `<g:actionSubmit>` tag. This is done by posting to the `index` action but with a special parameter that indicates which action to invoke. This is a problem in general for security since any URL rules for edit, delete, save, etc. will be bypassed. It's an even more significant issue with ACLs because of the way that the access denied exception interacts with the `actionSubmit` processing. If you don't make any adjustments for this, your users will see a blank page when they attempt to submit a form and the action is disallowed. The solution is to remove `actionSubmit` buttons and replace them with regular submit buttons. This requires one form per button, and without adjusting the CSS the buttons will look differently than if they were in-line `actionSubmit` buttons, but that is fixable with the appropriate CSS changes.
 
@@ -556,7 +556,7 @@ Finally, to make it easier to log out (by default POST is required, so typical l
 
 and you'll see a link to login if not authenticated, and a button to click to logout if you are.
 
-==== Testing
+=== Testing
 
 Now start the app:
 
