@@ -138,19 +138,22 @@ class AclService implements MutableAclService {
 		}
 
 		AclObjectIdentity oid = retrieveObjectIdentity(objectIdentity)
+		if (oid) {
+			// Delete this ACL's ACEs in the acl_entry table
+			deleteEntries oid
 
-		// Delete this ACL's ACEs in the acl_entry table
-		deleteEntries oid
-
-		// Delete this ACL's acl_object_identity row
-		oid.delete()
+			// Delete this ACL's acl_object_identity row
+			oid.delete()
+		}
 
 		// Clear the cache
 		aclCache.evictFromCache objectIdentity
 	}
 
 	protected void deleteEntries(AclObjectIdentity oid) {
-		AclEntry.where { aclObjectIdentity == oid }.deleteAll()
+		if (oid) {
+			AclEntry.where { aclObjectIdentity == oid }.deleteAll()
+		}
 	}
 
 	/**
