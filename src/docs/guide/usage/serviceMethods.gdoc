@@ -6,7 +6,7 @@ There are four annotations:
 * [@PostAuthorize|http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html]
 * [@PostFilter|http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostFilter.html]
 
-The annotations use security-specific Spring expression language (SpEL) expressions - see [the documentation|http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/el-access.html] for the available standard and method expressions.
+The annotations use security-specific Spring expression language (SpEL) expressions - see [the documentation|http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#el-access] for the available standard and method expressions.
 
 Here's an example service that manages a @Report@ domain class and uses these annotations and expressions:
 
