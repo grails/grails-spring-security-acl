@@ -20,7 +20,9 @@ import groovy.transform.ToString
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 @ToString(excludes='version', includeNames=true)
-class AclSid {
+class AclSid implements Serializable {
+
+	private static final long serialVersionUID = 1
 
 	String sid
 	boolean principal
