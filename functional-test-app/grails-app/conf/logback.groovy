@@ -1,9 +1,11 @@
 import grails.util.BuildSettings
 import grails.util.Environment
 
+String defaultPattern = '%-65(%.-2level %date{HH:mm:ss.SSS} %logger{32}) - %message%n'
+
 appender('STDOUT', ConsoleAppender) {
 	encoder(PatternLayoutEncoder) {
-		pattern = '%level %logger - %msg%n'
+		pattern = defaultPattern
 	}
 }
 
@@ -21,7 +23,7 @@ if (Environment.developmentMode && targetDir) {
 		file = "$targetDir/stacktrace.log"
 		append = true
 		encoder(PatternLayoutEncoder) {
-			pattern = '%level %logger - %msg%n'
+			pattern = defaultPattern
 		}
 	}
 
