@@ -199,7 +199,7 @@ class AclService implements MutableAclService {
 		for (AuditableAccessControlEntry entry in entries) {
 			Assert.isInstanceOf AccessControlEntryImpl, entry, 'Unknown ACE class'
 			save new AclEntry(
-					aclObjectIdentity: AclObjectIdentity.get(acl.id),
+					aclObjectIdentity: AclObjectIdentity.load(acl.id),
 					aceOrder: i++,
 					sid: createOrRetrieveSid(entry.sid, true),
 					mask: entry.permission.mask,
