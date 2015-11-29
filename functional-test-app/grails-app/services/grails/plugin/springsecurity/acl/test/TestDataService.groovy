@@ -1,3 +1,5 @@
+package grails.plugin.springsecurity.acl.test
+
 import com.testacl.Report
 import com.testacl.Role
 import com.testacl.User

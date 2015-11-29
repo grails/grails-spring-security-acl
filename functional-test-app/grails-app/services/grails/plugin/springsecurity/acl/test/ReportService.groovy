@@ -1,3 +1,5 @@
+package grails.plugin.springsecurity.acl.test
+
 import com.testacl.Report
 import grails.plugin.springsecurity.acl.AclUtilService
 import org.springframework.security.access.prepost.PostFilter
