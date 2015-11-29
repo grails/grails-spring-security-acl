@@ -16,11 +16,10 @@ package test
 
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
-import test.TestReport as Report
 
 /**
-* @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
-*/
+ * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
+ */
 class TestGrailsAnnotatedService {
 
 	@Secured(['ROLE_USER', 'AFTER_ACL_READ'])

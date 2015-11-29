@@ -18,8 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder as SCH
-
-import test.TestReport as Report
+import test.Report
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
@@ -29,14 +28,14 @@ abstract class AbstractAclSpec extends AbstractIntegrationSpec {
 	protected static final String USER = 'username'
 	protected static final String ADMIN = 'admin'
 
-	def aclUtilService
-
 	protected long report1Id
 	protected long report2Id
 
+	def aclUtilService
+
 	void setup() {
-		report1Id = new Report(name: 'r1').save().id
-		report2Id = new Report(name: 'r2').save().id
+		report1Id = new Report(name: 'r1').save(failOnError: true).id
+		report2Id = new Report(name: 'r2').save(failOnError: true).id
 		assert 2 == Report.count()
 	}
 

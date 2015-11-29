@@ -15,7 +15,6 @@
 package test
 
 import grails.transaction.Transactional
-import test.TestReport as Report
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>

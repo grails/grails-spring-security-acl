@@ -16,8 +16,7 @@ package grails.plugin.springsecurity.acl
 
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.CumulativePermission
-
-import test.TestReport as Report
+import test.Report
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>

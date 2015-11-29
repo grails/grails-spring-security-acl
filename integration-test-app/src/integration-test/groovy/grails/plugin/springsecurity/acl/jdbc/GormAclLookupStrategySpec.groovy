@@ -14,6 +14,11 @@
  */
 package grails.plugin.springsecurity.acl.jdbc
 
+import grails.plugin.springsecurity.acl.AbstractIntegrationSpec
+import grails.plugin.springsecurity.acl.AclClass
+import grails.plugin.springsecurity.acl.AclEntry
+import grails.plugin.springsecurity.acl.AclObjectIdentity
+import grails.plugin.springsecurity.acl.AclSid
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
@@ -22,13 +27,7 @@ import org.springframework.security.acls.model.MutableAcl
 import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
-
-import grails.plugin.springsecurity.acl.AbstractIntegrationSpec
-import grails.plugin.springsecurity.acl.AclClass
-import grails.plugin.springsecurity.acl.AclEntry
-import grails.plugin.springsecurity.acl.AclObjectIdentity
-import grails.plugin.springsecurity.acl.AclSid
-import test.TestReport as Report
+import test.Report
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
@@ -51,52 +50,52 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 
 		aclLookupStrategy.batchSize = 50
 
-		sid = new AclSid(sid: 'ben', principal: true).save()
+		sid = new AclSid(sid: 'ben', principal: true).save(failOnError: true)
 
-		aclClass = new AclClass(className: Report.name).save()
+		aclClass = new AclClass(className: Report.name).save(failOnError: true)
 
 		aclObjectIdentity = new AclObjectIdentity(
 				aclClass: aclClass,
 				objectId: 100L,
 				owner: sid,
-				entriesInheriting: true).save()
+				entriesInheriting: true).save(failOnError: true)
 
 		new AclEntry(
 				aclObjectIdentity: aclObjectIdentity,
 				sid: sid,
 				mask: 1,
-				granting: true).save()
+				granting: true).save(failOnError: true)
 
 		new AclEntry(
 				aclObjectIdentity: aclObjectIdentity,
 				aceOrder: 1,
 				sid: sid,
-				mask: 2).save()
+				mask: 2).save(failOnError: true)
 
 		def aclObjectIdentity2 = new AclObjectIdentity(
 				aclClass: aclClass,
 				objectId: 101L,
 				parent: aclObjectIdentity,
 				owner: sid,
-				entriesInheriting: true).save()
+				entriesInheriting: true).save(failOnError: true)
 
 		new AclEntry(
 				aclObjectIdentity: aclObjectIdentity2,
 				sid: sid,
 				mask: 8,
-				granting: true).save()
+				granting: true).save(failOnError: true)
 
 		def aclObjectIdentity3 = new AclObjectIdentity(
 				aclClass: aclClass,
 				objectId: 102L,
 				parent: aclObjectIdentity2,
 				owner: sid,
-				entriesInheriting: true).save()
+				entriesInheriting: true).save(failOnError: true)
 
 		new AclEntry(
 				aclObjectIdentity: aclObjectIdentity3,
 				sid: sid,
-				mask: 8).save()
+				mask: 8).save(failOnError: true)
 
 		flushAndClear()
 	}
@@ -156,7 +155,7 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 				objectId: 103L,
 				parent: aclObjectIdentity,
 				owner: sid,
-				entriesInheriting: true).save()
+				entriesInheriting: true).save(failOnError: true)
 		flushAndClear()
 
 		ObjectIdentity middleParent2Oid = new ObjectIdentityImpl(Report, 103L)
@@ -188,34 +187,34 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 				aclClass: aclClass,
 				objectId: 104L,
 				owner: sid,
-				entriesInheriting: true).save()
+				entriesInheriting: true).save(failOnError: true)
 
 		def aclObjectIdentity5 = new AclObjectIdentity(
 				aclClass: aclClass,
 				objectId: 105L,
 				parent: aclObjectIdentity4,
 				owner: sid,
-				entriesInheriting: true).save()
+				entriesInheriting: true).save(failOnError: true)
 
-		def aclObjectIdentity6 = new AclObjectIdentity(
+		new AclObjectIdentity(
 				aclClass: aclClass,
 				objectId: 106L,
 				parent: aclObjectIdentity4,
 				owner: sid,
-				entriesInheriting: true).save()
+				entriesInheriting: true).save(failOnError: true)
 
-		def aclObjectIdentity7 = new AclObjectIdentity(
+		new AclObjectIdentity(
 				aclClass: aclClass,
 				objectId: 107L,
 				parent: aclObjectIdentity5,
 				owner: sid,
-				entriesInheriting: true).save()
+				entriesInheriting: true).save(failOnError: true)
 
 		new AclEntry(
 				aclObjectIdentity: aclObjectIdentity4,
 				sid: sid,
 				mask: 1,
-				granting: true).save()
+				granting: true).save(failOnError: true)
 
 		flushAndClear()
 

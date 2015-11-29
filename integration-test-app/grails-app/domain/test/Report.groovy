@@ -17,8 +17,6 @@ package test
 import grails.plugin.springsecurity.acl.annotation.AclVoter
 import grails.plugin.springsecurity.acl.annotation.AclVoters
 
-// not packaged, for tests only
-
 @AclVoters([
 	@AclVoter(name='aclReportWriteVoter',
 	          configAttribute='ACL_REPORT_WRITE',
@@ -27,6 +25,6 @@ import grails.plugin.springsecurity.acl.annotation.AclVoters
 	          configAttribute='ACL_REPORT_DELETE',
 	          permissions=['ADMINISTRATION', 'DELETE'])
 ])
-class TestReport {
+class Report {
 	String name
 }

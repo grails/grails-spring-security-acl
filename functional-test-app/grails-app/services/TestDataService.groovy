@@ -1,21 +1,19 @@
-import static org.springframework.security.acls.domain.BasePermission.ADMINISTRATION
-import static org.springframework.security.acls.domain.BasePermission.READ
-import static org.springframework.security.acls.domain.BasePermission.WRITE
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.authority.AuthorityUtils
-import org.springframework.security.core.context.SecurityContextHolder as SCH
-
 import com.testacl.Report
 import com.testacl.Role
 import com.testacl.User
 import com.testacl.UserRole
-
 import grails.plugin.springsecurity.acl.AclClass
 import grails.plugin.springsecurity.acl.AclEntry
 import grails.plugin.springsecurity.acl.AclObjectIdentity
 import grails.plugin.springsecurity.acl.AclSid
 import grails.transaction.Transactional
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.AuthorityUtils
+import org.springframework.security.core.context.SecurityContextHolder as SCH
+
+import static org.springframework.security.acls.domain.BasePermission.ADMINISTRATION
+import static org.springframework.security.acls.domain.BasePermission.READ
+import static org.springframework.security.acls.domain.BasePermission.WRITE
 
 @Transactional
 class TestDataService {
@@ -52,16 +50,16 @@ class TestDataService {
 	}
 
 	private void createUsers() {
-		def roleAdmin = new Role('ROLE_ADMIN').save()
-		def roleUser = new Role('ROLE_USER').save()
+		def roleAdmin = new Role('ROLE_ADMIN').save(failOnError: true)
+		def roleUser = new Role('ROLE_USER').save(failOnError: true)
 
 		3.times {
 			long id = it + 1
-			def user = new User("user$id", "password$id").save()
+			def user = new User("user$id", "password$id").save(failOnError: true)
 			UserRole.create user, roleUser
 		}
 
-		def admin = new User('admin', 'admin123').save()
+		def admin = new User('admin', 'admin123').save(failOnError: true)
 
 		UserRole.create admin, roleUser
 		UserRole.create admin, roleAdmin, true
@@ -71,7 +69,7 @@ class TestDataService {
 		def reports = []
 		100.times {
 			int number = it + 1
-			def report = new Report("report$number", number).save()
+			def report = new Report("report$number", number).save(failOnError: true)
 			reports << report
 			aclService.createAcl objectIdentityRetrievalStrategy.getObjectIdentity(report)
 		}

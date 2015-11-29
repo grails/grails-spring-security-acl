@@ -15,8 +15,7 @@
 package grails.plugin.springsecurity.acl
 
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
-
-import test.TestReport as Report
+import test.Report
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>

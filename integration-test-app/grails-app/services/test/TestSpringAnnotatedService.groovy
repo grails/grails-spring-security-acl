@@ -14,10 +14,8 @@
  */
 package test
 
-import org.springframework.security.access.annotation.Secured
-
 import grails.transaction.Transactional
-import test.TestReport as Report
+import org.springframework.security.access.annotation.Secured
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
