@@ -20,7 +20,7 @@ class TestSecureService {
 
 	static transactional = false
 
-	@Secured(['ROLE_RUN_AS_SUPERUSER'])
+	@Secured('ROLE_RUN_AS_SUPERUSER')
 	String method1() {
 		'method1'
 	}
@@ -30,7 +30,7 @@ class TestSecureService {
 		'method2'
 	}
 
-	@Secured(['ROLE_SUPERUSER'])
+	@Secured('ROLE_SUPERUSER')
 	String method3() {
 		'method3'
 	}

@@ -26,7 +26,7 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 	void 'permissions let you do things'() {
 
 		when:
-		loginAsAdmin()
+		authenticateAsAdmin()
 
 		then:
 		0 == AclClass.count()
@@ -35,7 +35,7 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 		0 == AclSid.count()
 
 		when:
-		aclUtilService.addPermission(Report.get(report1Id), USER, BasePermission.READ)
+		aclUtilService.addPermission Report.get(report1Id), USER, BasePermission.READ
 
 		then:
 		1 == AclClass.count()
@@ -82,9 +82,9 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 
 		given:
 		def report = Report.get(report1Id)
-		loginAsAdmin()
+		authenticateAsAdmin()
 
-		def userAuth = createUserAuth()
+		def userAuth = authenticateAsUser(false)
 
 		when:
 		aclUtilService.addPermission(report, USER, BasePermission.READ)
@@ -107,9 +107,9 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 
 		given:
 		def report = Report.get(report1Id)
-		loginAsAdmin()
+		authenticateAsAdmin()
 
-		def userAuth = createUserAuth()
+		def userAuth = authenticateAsUser(false)
 
 		when:
 		aclUtilService.addPermission(report, USER, BasePermission.READ)
@@ -131,9 +131,9 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 
 		given:
 		def report = Report.get(report1Id)
-		loginAsAdmin()
+		authenticateAsAdmin()
 
-		def userAuth = createUserAuth()
+		def userAuth = authenticateAsUser(false)
 
 		when:
 

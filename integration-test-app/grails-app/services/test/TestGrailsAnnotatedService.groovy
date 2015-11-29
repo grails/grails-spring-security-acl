@@ -40,7 +40,7 @@ class TestGrailsAnnotatedService {
 	@Secured(['ROLE_USER', 'ROLE_ADMIN'])
 	String getReportName(long id) { Report.get(id).name }
 
-	@Secured(['ACL_REPORT_WRITE'])
+	@Secured('ACL_REPORT_WRITE')
 	@Transactional
 	Report updateReport(Report report, params) {
 		report.properties = params

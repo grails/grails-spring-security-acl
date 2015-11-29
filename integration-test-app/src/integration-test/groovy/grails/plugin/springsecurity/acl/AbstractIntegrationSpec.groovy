@@ -14,10 +14,14 @@
  */
 package grails.plugin.springsecurity.acl
 
-import org.springframework.transaction.annotation.Transactional
-
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
+import org.springframework.security.authentication.TestingAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.User
+import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
 /**
@@ -26,4 +30,33 @@ import spock.lang.Specification
 @Integration
 @Rollback
 @Transactional
-abstract class AbstractIntegrationSpec extends Specification {}
+abstract class AbstractIntegrationSpec extends Specification {
+
+	protected static final String USER = 'user'
+	protected static final String ADMIN = 'admin'
+	protected static final String ROLE_USER = 'ROLE_USER'
+	protected static final String ROLE_ADMIN = 'ROLE_ADMIN'
+
+	void cleanup() {
+		SecurityContextHolder.clearContext()
+	}
+
+	protected Authentication authenticateAsAdmin() {
+		authenticate ADMIN, ROLE_ADMIN
+	}
+
+	protected Authentication authenticateAsUser(boolean makeCurrent = true) {
+		authenticate USER, ROLE_USER, makeCurrent
+	}
+
+	protected Authentication authenticate(String username = 'username', String role, boolean makeCurrent = true) {
+		def authorities = [new SimpleGrantedAuthority(role)]
+		def principal = new User(username, 'password', true, true, true, true, authorities)
+		Authentication authentication = new TestingAuthenticationToken(principal, 'password', authorities)
+		authentication.authenticated = true
+		if (makeCurrent) {
+			SecurityContextHolder.context.authentication = authentication
+		}
+		authentication
+	}
+}

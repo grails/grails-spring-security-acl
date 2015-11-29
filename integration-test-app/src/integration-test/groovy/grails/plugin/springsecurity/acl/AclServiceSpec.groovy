@@ -14,6 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
+import net.sf.ehcache.Ehcache
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.CumulativePermission
 import org.springframework.security.acls.domain.GrantedAuthoritySid
@@ -21,15 +22,13 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.AccessControlEntry
 import org.springframework.security.acls.model.Acl
+import org.springframework.security.acls.model.AclCache
 import org.springframework.security.acls.model.AlreadyExistsException
 import org.springframework.security.acls.model.MutableAcl
 import org.springframework.security.acls.model.NotFoundException
 import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
-import org.springframework.security.authentication.TestingAuthenticationToken
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContextHolder as SCH
 import test.Report
 
 /**
@@ -37,32 +36,27 @@ import test.Report
  */
 class AclServiceSpec extends AbstractIntegrationSpec {
 
-	private final Authentication auth = new TestingAuthenticationToken('ben', 'ignored', 'ROLE_ADMIN')
-
-	private final ObjectIdentity topParentOid = new ObjectIdentityImpl(Report, 100L)
+	private final ObjectIdentity topParentOid =    new ObjectIdentityImpl(Report, 100L)
 	private final ObjectIdentity middleParentOid = new ObjectIdentityImpl(Report, 101L)
-	private final ObjectIdentity childOid = new ObjectIdentityImpl(Report, 102L)
+	private final ObjectIdentity childOid =        new ObjectIdentityImpl(Report, 102L)
 
-	private final List<Permission> read = [BasePermission.READ]
-	private final List<Permission> write = [BasePermission.WRITE]
-	private final List<Permission> delete = [BasePermission.DELETE]
+	private final List<Permission> read =           [BasePermission.READ]
+	private final List<Permission> write =          [BasePermission.WRITE]
+	private final List<Permission> delete =         [BasePermission.DELETE]
 	private final List<Permission> administration = [BasePermission.ADMINISTRATION]
-	private final List<Permission> create = [BasePermission.CREATE]
+	private final List<Permission> create =         [BasePermission.CREATE]
 
 	private PrincipalSid principalSid
 
-   def aclCache
-  	def aclService
-	def ehcacheAclCache
+	AclCache aclCache
+	AclService aclService
+	Ehcache ehcacheAclCache
 
 	void setup() {
-		auth.authenticated = true
-		principalSid = new PrincipalSid(auth)
-		SCH.context.authentication = auth
+		principalSid = new PrincipalSid(authenticate('ben', 'ROLE_ADMIN'))
 	}
 
 	void cleanup() {
-		SCH.clearContext()
 		ehcacheAclCache.removeAll()
 	}
 

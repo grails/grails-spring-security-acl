@@ -14,10 +14,6 @@
  */
 package grails.plugin.springsecurity.acl
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.context.SecurityContextHolder as SCH
 import test.Report
 
 /**
@@ -25,46 +21,14 @@ import test.Report
  */
 abstract class AbstractAclSpec extends AbstractIntegrationSpec {
 
-	protected static final String USER = 'username'
-	protected static final String ADMIN = 'admin'
-
 	protected long report1Id
 	protected long report2Id
 
-	def aclUtilService
+	AclUtilService aclUtilService
 
 	void setup() {
 		report1Id = new Report(name: 'r1').save(failOnError: true).id
 		report2Id = new Report(name: 'r2').save(failOnError: true).id
 		assert 2 == Report.count()
-	}
-
-	void cleanup() {
-		SCH.clearContext()
-	}
-
-	protected void loginAsAdmin() {
-		login createAdminAuth()
-	}
-
-	protected void loginAsUser() {
-		login createUserAuth()
-	}
-
-	protected void login(Authentication authentication) {
-		SCH.context.authentication = authentication
-	}
-
-	protected Authentication createAuth(String username, String role) {
-		new UsernamePasswordAuthenticationToken(
-				username, 'password', [new SimpleGrantedAuthority(role)])
-	}
-
-	protected createAdminAuth() {
-		createAuth ADMIN, 'ROLE_ADMIN'
-	}
-
-	protected createUserAuth() {
-		createAuth USER, 'ROLE_USER'
 	}
 }

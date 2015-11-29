@@ -19,6 +19,7 @@ import grails.plugin.springsecurity.acl.AclClass
 import grails.plugin.springsecurity.acl.AclEntry
 import grails.plugin.springsecurity.acl.AclObjectIdentity
 import grails.plugin.springsecurity.acl.AclSid
+import net.sf.ehcache.Ehcache
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
@@ -34,17 +35,17 @@ import test.Report
  */
 class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 
-	def aclLookupStrategy
-	def ehcacheAclCache
-	def sessionFactory
-
-	private aclClass
-	private sid
-	private aclObjectIdentity
 	private final Sid principalSid = new PrincipalSid('ben')
 	private final ObjectIdentity topParentOid = new ObjectIdentityImpl(Report, 100L)
 	private final ObjectIdentity middleParentOid = new ObjectIdentityImpl(Report, 101L)
 	private final ObjectIdentity childOid = new ObjectIdentityImpl(Report, 102L)
+
+	private AclClass aclClass
+	private AclSid sid
+	private AclObjectIdentity aclObjectIdentity
+
+	GormAclLookupStrategy aclLookupStrategy
+	Ehcache ehcacheAclCache
 
 	void setup() {
 
@@ -314,7 +315,9 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 	}
 
 	private void flushAndClear() {
-		sessionFactory.currentSession.flush()
-		sessionFactory.currentSession.clear()
+		Report.withSession { session ->
+			session.flush()
+			session.clear()
+		}
 	}
 }

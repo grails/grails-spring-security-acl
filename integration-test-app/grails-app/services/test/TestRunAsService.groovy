@@ -20,7 +20,7 @@ class TestRunAsService {
 
 	static transactional = false
 
-	def testSecureService
+	TestSecureService testSecureService
 
 	@Secured(['ROLE_ADMIN', 'RUN_AS_SUPERUSER'])
 	String method1() {

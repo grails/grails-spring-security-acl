@@ -15,11 +15,6 @@
 package grails.plugin.springsecurity.acl
 
 import org.springframework.security.access.AccessDeniedException
-import org.springframework.security.authentication.TestingAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder as SCH
-import org.springframework.security.core.userdetails.User
-
-import grails.plugin.springsecurity.SpringSecurityUtils
 import test.TestRunAsService
 import test.TestSecureService
 
@@ -32,10 +27,6 @@ class RunAsSpec extends AbstractIntegrationSpec {
 
 	TestRunAsService testRunAsService
 	TestSecureService testSecureService
-
-	void cleanup() {
-		SCH.clearContext()
-	}
 
 	void 'not authenticated'() {
 
@@ -76,7 +67,7 @@ class RunAsSpec extends AbstractIntegrationSpec {
 	void 'authenticated admin'() {
 
 		given:
-		authenticate 'ROLE_ADMIN'
+		authenticateAsAdmin()
 
 		when:
 		testSecureService.method1()
@@ -103,7 +94,7 @@ class RunAsSpec extends AbstractIntegrationSpec {
 	void 'authenticated user'() {
 
 		given:
-		authenticate 'ROLE_USER'
+		authenticateAsUser()
 
 		when:
 		testRunAsService.method1()
@@ -161,13 +152,5 @@ class RunAsSpec extends AbstractIntegrationSpec {
 
 		'method2' == testSecureService.method2()
 		'method3' == testSecureService.method3()
-	}
-
-	private void authenticate(roles) {
-		def authorities = SpringSecurityUtils.parseAuthoritiesString(roles)
-		def principal = new User('username', 'password', true, true, true, true, authorities)
-		def authentication = new TestingAuthenticationToken(principal, null, authorities)
-		authentication.authenticated = true
-		SCH.context.authentication = authentication
 	}
 }

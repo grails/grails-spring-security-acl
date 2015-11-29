@@ -157,7 +157,7 @@ class AclService implements MutableAclService {
 	MutableAcl updateAcl(MutableAcl acl) throws NotFoundException {
 		Assert.notNull acl.id, "Object Identity doesn't provide an identifier"
 
-		def aclObjectIdentity = retrieveObjectIdentity(acl.objectIdentity)
+		AclObjectIdentity aclObjectIdentity = retrieveObjectIdentity(acl.objectIdentity)
 
 		List<AclEntry> existingAces = AclEntry.findAllByAclObjectIdentity(aclObjectIdentity)
 
@@ -215,9 +215,8 @@ class AclService implements MutableAclService {
 
 		AclObjectIdentity parent
 		if (acl.parentAcl) {
-			def oii = acl.parentAcl.objectIdentity
-			Assert.isInstanceOf ObjectIdentityImpl, oii,
-				'Implementation only supports ObjectIdentityImpl'
+			ObjectIdentity oii = acl.parentAcl.objectIdentity
+			Assert.isInstanceOf ObjectIdentityImpl, oii, 'Implementation only supports ObjectIdentityImpl'
 			parent = retrieveObjectIdentity(oii)
 		}
 
@@ -235,7 +234,7 @@ class AclService implements MutableAclService {
 	}
 
 	List<ObjectIdentity> findChildren(ObjectIdentity parentOid) {
-		def children = AclObjectIdentity.withCriteria {
+		List<AclObjectIdentity> children = AclObjectIdentity.withCriteria {
 			parent {
 				eq 'objectId', parentOid.identifier
 				aclClass {

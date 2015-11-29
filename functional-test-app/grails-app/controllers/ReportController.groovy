@@ -8,7 +8,7 @@ import grails.plugin.springsecurity.acl.AclObjectIdentity
 import grails.plugin.springsecurity.acl.AclSid
 import grails.plugin.springsecurity.annotation.Secured
 
-@Secured(['ROLE_USER'])
+@Secured('ROLE_USER')
 class ReportController {
 
 	static defaultAction = 'list'

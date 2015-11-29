@@ -19,13 +19,13 @@ import grails.plugin.springsecurity.annotation.Secured
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-@Secured(['ROLE_ADMIN'])
+@Secured('ROLE_ADMIN')
 class TestClassAnnotatedService {
 
 	static transactional = false
 
 	void notAnnotated() {}
 
-	@Secured(['ROLE_USER'])
+	@Secured('ROLE_USER')
 	void userAnnotated() {}
 }

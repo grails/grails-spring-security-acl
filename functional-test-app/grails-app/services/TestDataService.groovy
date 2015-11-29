@@ -5,10 +5,13 @@ import com.testacl.UserRole
 import grails.plugin.springsecurity.acl.AclClass
 import grails.plugin.springsecurity.acl.AclEntry
 import grails.plugin.springsecurity.acl.AclObjectIdentity
+import grails.plugin.springsecurity.acl.AclService
 import grails.plugin.springsecurity.acl.AclSid
+import grails.plugin.springsecurity.acl.AclUtilService
 import grails.transaction.Transactional
+import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.authority.AuthorityUtils
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 
 import static org.springframework.security.acls.domain.BasePermission.ADMINISTRATION
@@ -18,10 +21,9 @@ import static org.springframework.security.acls.domain.BasePermission.WRITE
 @Transactional
 class TestDataService {
 
-	def aclService
-	def aclUtilService
-	def objectIdentityRetrievalStrategy
-	def sessionFactory
+	AclService aclService
+	AclUtilService aclUtilService
+	ObjectIdentityRetrievalStrategy objectIdentityRetrievalStrategy
 
 	void reset() {
 		deleteAll()
@@ -30,7 +32,7 @@ class TestDataService {
 
 	void deleteAll() {
 		[AclEntry, AclObjectIdentity, AclSid, AclClass, UserRole, User, Role, Report].each {
-			it.executeUpdate 'delete from ' + it.simpleName
+			it.list()*.delete()
 		}
 	}
 
@@ -39,11 +41,11 @@ class TestDataService {
 
 		// Set a user account that will initially own all the created data
 		SCH.context.authentication = new UsernamePasswordAuthenticationToken('admin', 'admin123',
-				AuthorityUtils.createAuthorityList('ROLE_IGNORED'))
+				[new SimpleGrantedAuthority('ROLE_IGNORED')])
 
 		grantPermissions()
 
-		sessionFactory.currentSession.flush()
+		transactionStatus.flush()
 
 		// logout
 		SCH.clearContext()
@@ -62,7 +64,7 @@ class TestDataService {
 		def admin = new User('admin', 'admin123').save(failOnError: true)
 
 		UserRole.create admin, roleUser
-		UserRole.create admin, roleAdmin, true
+		UserRole.create admin, roleAdmin
 	}
 
 	private void grantPermissions() {

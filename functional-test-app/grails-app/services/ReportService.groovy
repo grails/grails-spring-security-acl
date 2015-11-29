@@ -1,16 +1,15 @@
+import com.testacl.Report
+import grails.plugin.springsecurity.acl.AclUtilService
 import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.acls.domain.BasePermission
+import org.springframework.security.acls.domain.PermissionFactory
 import org.springframework.security.acls.model.Permission
 import org.springframework.transaction.annotation.Transactional
 
-import com.testacl.Report
-
-import grails.plugin.springsecurity.acl.AclUtilService
-
 class ReportService {
 
-	def aclPermissionFactory
+	PermissionFactory aclPermissionFactory
 	AclUtilService aclUtilService
 	def springSecurityService
 

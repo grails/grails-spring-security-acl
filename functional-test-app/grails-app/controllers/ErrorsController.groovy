@@ -1,6 +1,6 @@
 import grails.plugin.springsecurity.annotation.Secured
 
-@Secured(['permitAll'])
+@Secured('permitAll')
 class ErrorsController {
 
 	def error403() {}
