@@ -110,7 +110,7 @@ public class AclAutoProxyCreator extends AbstractAutoProxyCreator implements Ini
 
 		boolean hasSpringSecurityACL = GrailsClassUtils.isStaticProperty(c, "springSecurityACL");
 		if (hasSpringSecurityACL || beanIsAnnotated(c)) {
-			if (log.isDebugEnabled()) log.debug("Secure '{0}' instances of {1}", new Object[] { beanName, c.getName() });
+			log.debug("Secure '{}' instances of {}", beanName, c.getName());
 			return true;
 		}
 		return false;
