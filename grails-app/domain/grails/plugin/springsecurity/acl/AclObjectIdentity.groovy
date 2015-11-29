@@ -14,11 +14,13 @@
  */
 package grails.plugin.springsecurity.acl
 
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@EqualsAndHashCode(includes='objectId', callSuper=true)
 @ToString(excludes='version', includeNames=true, includeSuper=true)
 class AclObjectIdentity extends AbstractAclObjectIdentity {
 

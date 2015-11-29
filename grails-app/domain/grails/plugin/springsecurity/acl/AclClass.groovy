@@ -14,11 +14,13 @@
  */
 package grails.plugin.springsecurity.acl
 
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@EqualsAndHashCode(includes='className')
 @ToString(excludes='version', includeNames=true)
 class AclClass implements Serializable {
 

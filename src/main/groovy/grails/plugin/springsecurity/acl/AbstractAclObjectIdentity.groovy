@@ -14,6 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 /**
@@ -22,6 +23,7 @@ import groovy.transform.ToString
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@EqualsAndHashCode(includes=['aclClass', 'parent', 'owner', 'entriesInheriting'])
 @ToString(includeNames=true)
 abstract class AbstractAclObjectIdentity implements Serializable {
 
