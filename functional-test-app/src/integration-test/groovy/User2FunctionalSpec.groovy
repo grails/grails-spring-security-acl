@@ -10,11 +10,11 @@ class User2FunctionalSpec extends AbstractSecuritySpec {
 
 	// user2 has read on 1-5, write on 5
 
-	def setup() {
+	void setup() {
 		login 'user2', 'password2'
 	}
 
-	def 'view all (1-5)'() {
+	void 'view all (1-5)'() {
 		when:
 		go "report/show?number=$i"
 
@@ -25,7 +25,7 @@ class User2FunctionalSpec extends AbstractSecuritySpec {
 		i << (1..5)
 	}
 
-	def 'view all (6-100)'() {
+	void 'view all (6-100)'() {
 		when:
 		go "report/show?number=$i"
 
@@ -36,7 +36,7 @@ class User2FunctionalSpec extends AbstractSecuritySpec {
 		i << (6..100)
 	}
 
-	def 'edit report 11'() {
+	void 'edit report 11'() {
 
 		when:
 		go 'report/edit?number=11'
@@ -45,7 +45,7 @@ class User2FunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains 'Access Denied'
 	}
 
-	def 'delete report 1'() {
+	void 'delete report 1'() {
 		when:
 		go 'report/delete?number=1'
 
@@ -53,7 +53,7 @@ class User2FunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains 'Access Denied'
 	}
 
-	def 'grant edit 2'() {
+	void 'grant edit 2'() {
 		when:
 		go 'report/grant?number=2'
 
@@ -70,7 +70,7 @@ class User2FunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains 'Access Denied'
 	}
 
-	def 'edit report 5'() {
+	void 'edit report 5'() {
 		when:
 		go 'report/edit?number=5'
 
@@ -87,7 +87,7 @@ class User2FunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains 'report5_new'
 	}
 
-	def 'list is filtered'() {
+	void 'list is filtered'() {
 
 		when:
 		go 'report/list'
@@ -104,7 +104,7 @@ class User2FunctionalSpec extends AbstractSecuritySpec {
 		assertContentDoesNotContain 'report85'
 	}
 
-	def 'check tags'() {
+	void 'check tags'() {
 		when:
 		go 'tagLibTest/test'
 

@@ -21,7 +21,7 @@ class TestSpringAnnotatedServiceSpec extends AbstractAclMappedServiceSpec {
 
 	def testSpringAnnotatedService
 
-	def setup() {
+	void setup() {
 		service = testSpringAnnotatedService
 	}
 }

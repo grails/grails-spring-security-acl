@@ -37,11 +37,6 @@ public class SecuredAnnotationSecurityMetadataSource extends AbstractFallbackMet
 
 	protected Collection<String> serviceClassNames;
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource#findAttributes(
-	 * 	java.lang.Class)
-	 */
 	@Override
 	protected Collection<ConfigAttribute> findAttributes(final Class<?> clazz) {
 
@@ -54,11 +49,6 @@ public class SecuredAnnotationSecurityMetadataSource extends AbstractFallbackMet
 		return processAnnotation(actualClass.getAnnotation(Secured.class));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource#findAttributes(
-	 * 	java.lang.reflect.Method, java.lang.Class)
-	 */
 	@Override
 	protected Collection<ConfigAttribute> findAttributes(final Method method, final Class<?> targetClass) {
 		Method actualMethod = ProxyUtils.unproxy(method);
@@ -70,10 +60,6 @@ public class SecuredAnnotationSecurityMetadataSource extends AbstractFallbackMet
 		return processAnnotation(actualMethod.getAnnotation(Secured.class));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.SecurityMetadataSource#getAllConfigAttributes()
-	 */
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
 		return null;
 	}

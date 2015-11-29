@@ -33,134 +33,134 @@ class RunAsSpec extends AbstractIntegrationSpec {
 	TestRunAsService testRunAsService
 	TestSecureService testSecureService
 
-	def cleanup() {
+	void cleanup() {
 		SCH.clearContext()
 	}
 
-	def 'not authenticated'() {
+	void 'not authenticated'() {
 
 		given:
-			authenticate 'ROLE_ANONYMOUS'
+		authenticate 'ROLE_ANONYMOUS'
 
 		when:
-			testRunAsService.method1()
+		testRunAsService.method1()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testRunAsService.method2()
+		testRunAsService.method2()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testSecureService.method1()
+		testSecureService.method1()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testSecureService.method2()
+		testSecureService.method2()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testSecureService.method3()
+		testSecureService.method3()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 	}
 
-	def 'authenticated admin'() {
+	void 'authenticated admin'() {
 
 		given:
-			authenticate 'ROLE_ADMIN'
+		authenticate 'ROLE_ADMIN'
 
 		when:
-			testSecureService.method1()
+		testSecureService.method1()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testSecureService.method2()
+		testSecureService.method2()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testSecureService.method3()
+		testSecureService.method3()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
-			'method1' == testRunAsService.method1()
-			'method2' == testRunAsService.method2()
+		'method1' == testRunAsService.method1()
+		'method2' == testRunAsService.method2()
 	}
 
-	def 'authenticated user'() {
+	void 'authenticated user'() {
 
 		given:
-			authenticate 'ROLE_USER'
+		authenticate 'ROLE_USER'
 
 		when:
-			testRunAsService.method1()
+		testRunAsService.method1()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testRunAsService.method2()
+		testRunAsService.method2()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testSecureService.method1()
+		testSecureService.method1()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testSecureService.method2()
+		testSecureService.method2()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testSecureService.method3()
+		testSecureService.method3()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 	}
 
-	def 'authenticated superuser'() {
+	void 'authenticated superuser'() {
 
 		given:
-			authenticate 'ROLE_SUPERUSER'
+		authenticate 'ROLE_SUPERUSER'
 
 		when:
-			testRunAsService.method1()
+		testRunAsService.method1()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testRunAsService.method2()
+		testRunAsService.method2()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			testSecureService.method1()
+		testSecureService.method1()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
-			'method2' == testSecureService.method2()
-			'method3' == testSecureService.method3()
+		'method2' == testSecureService.method2()
+		'method3' == testSecureService.method3()
 	}
 
 	private void authenticate(roles) {

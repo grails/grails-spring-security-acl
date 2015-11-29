@@ -11,11 +11,11 @@ class User1FunctionalSpec extends AbstractSecuritySpec {
 
 	// user1 has admin on 11,12 and read on 1-67
 
-	def setup() {
+	void setup() {
 		login 'user1', 'password1'
 	}
 
-	def 'check tags'() {
+	void 'check tags'() {
 		when:
 		go 'tagLibTest/test'
 
@@ -42,7 +42,7 @@ class User1FunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains 'test 6 false 80'
 	}
 
-	def 'view all (1-67)'() {
+	void 'view all (1-67)'() {
 		when:
 		go "report/show?number=$i"
 
@@ -53,7 +53,7 @@ class User1FunctionalSpec extends AbstractSecuritySpec {
 		i << (1..67)
 	}
 
-	def 'view all (68-100)'() {
+	void 'view all (68-100)'() {
 		when:
 		go "report/show?number=$i"
 
@@ -64,7 +64,7 @@ class User1FunctionalSpec extends AbstractSecuritySpec {
 		i << (68..100)
 	}
 
-	def 'edit report 11'() {
+	void 'edit report 11'() {
 		when:
 		go 'report/edit?number=11'
 
@@ -81,7 +81,7 @@ class User1FunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains 'report11_new'
 	}
 
-	def 'delete report 11'() {
+	void 'delete report 11'() {
 		when:
 		go 'report/delete?number=11'
 
@@ -91,7 +91,7 @@ class User1FunctionalSpec extends AbstractSecuritySpec {
 		reportRows.size() == 66
 	}
 
-	def 'grant edit 12'() {
+	void 'grant edit 12'() {
 		when:
 		go 'report/grant?number=12'
 
@@ -125,7 +125,7 @@ class User1FunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains "Permission $BasePermission.WRITE.mask granted on Report 12 to user2"
 	}
 
-	def 'grant edit 13'() {
+	void 'grant edit 13'() {
 		when:
 		go 'report/grant?number=13'
 
@@ -142,7 +142,7 @@ class User1FunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains 'Access Denied'
 	}
 
-	def 'edit report 20'() {
+	void 'edit report 20'() {
 		when:
 		go 'report/edit?number=20'
 

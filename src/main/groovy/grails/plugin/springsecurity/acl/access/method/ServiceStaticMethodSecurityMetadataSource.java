@@ -39,21 +39,11 @@ public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackM
 	protected final Map<String, List<ConfigAttribute>> classConfigs =
 		new HashMap<String, List<ConfigAttribute>>();
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource#findAttributes(
-	 * 	java.lang.Class)
-	 */
 	@Override
 	protected Collection<ConfigAttribute> findAttributes(final Class<?> clazz) {
 		return classConfigs.get(ProxyUtils.unproxy(clazz).getName());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource#findAttributes(
-	 * 	java.lang.reflect.Method, java.lang.Class)
-	 */
 	@Override
 	protected Collection<ConfigAttribute> findAttributes(final Method method, final Class<?> targetClass) {
 		Class<?> actualClass = ProxyUtils.unproxy(targetClass);
@@ -62,10 +52,6 @@ public class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackM
 		return configs == null ? null : configs.get(actualMethod.getName());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.SecurityMetadataSource#getAllConfigAttributes()
-	 */
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
 		return null;
 	}

@@ -25,101 +25,101 @@ abstract class AbstractAclMappedServiceSpec extends AbstractAclSpec {
 
 	protected service
 
-	def 'getReport() fails when not authenticated'() {
+	void 'getReport() fails when not authenticated'() {
 		when:
-			def report = Report.get(report1Id)
+		def report = Report.get(report1Id)
 
 		then:
-			report
+		report
 
 		when:
-			println "\nSERVICE ${service.getClass().name} ${service.getClass().superclass.name}"
-			println "\nREPORT " + service.getReport(report1Id)
+		println "\nSERVICE ${service.getClass().name} ${service.getClass().superclass.name}"
+		println "\nREPORT " + service.getReport(report1Id)
 
 		then:
-			thrown AuthenticationCredentialsNotFoundException
+		thrown AuthenticationCredentialsNotFoundException
 	}
 //
-//	def 'getReport() fails when authenticated if the user has no grants for the instance'() {
+//	void 'getReport() fails when authenticated if the user has no grants for the instance'() {
 //
 //		given:
-//			loginAsUser()
+//		loginAsUser()
 //
 //		when:
-//			service.getReport report1Id
+//		service.getReport report1Id
 //
 //		then:
-//			def e = thrown(AccessDeniedException)
-//			e.message.startsWith 'Authentication username has NO permissions to the domain object '
+//		def e = thrown(AccessDeniedException)
+//		e.message.startsWith 'Authentication username has NO permissions to the domain object '
 //	}
 //
-//	def 'getReport() succeeds when authenticated if the user has grants for the instance'() {
+//	void 'getReport() succeeds when authenticated if the user has grants for the instance'() {
 //
 //		given:
-//			loginAsAdmin()
-//			aclUtilService.addPermission(Report, report1Id, USER, BasePermission.READ)
-//			loginAsUser()
+//		loginAsAdmin()
+//		aclUtilService.addPermission(Report, report1Id, USER, BasePermission.READ)
+//		loginAsUser()
 //
 //		when:
-//			def report = service.getReport(report1Id)
+//		def report = service.getReport(report1Id)
 //
 //		then:
-//			report
-//			report1Id == report.id
+//		report
+//		report1Id == report.id
 //	}
 //
-//	def 'getAllReports() succeeds when authenticated if the user has appropriate grants'() {
+//	void 'getAllReports() succeeds when authenticated if the user has appropriate grants'() {
 //
 //		given:
-//			loginAsAdmin()
-//			aclUtilService.addPermission(Report, report1Id, USER, BasePermission.READ)
-//			loginAsUser()
+//		loginAsAdmin()
+//		aclUtilService.addPermission(Report, report1Id, USER, BasePermission.READ)
+//		loginAsUser()
 //
 //		when:
-//			def reports = service.getAllReports()
+//		def reports = service.getAllReports()
 //
 //		then:
-//			1 == reports.size()
-//			report1Id == reports[0].id
+//		1 == reports.size()
+//		report1Id == reports[0].id
 //	}
 //
-//	def 'updateReport() succeeds when authenticated if the user has appropriate grants'() {
+//	void 'updateReport() succeeds when authenticated if the user has appropriate grants'() {
 //
 //		when:
-//			String newName = 'new_name'
-//			Report report = Report.get(report1Id)
+//		String newName = 'new_name'
+//		Report report = Report.get(report1Id)
 //
 //		then:
-//			!report.name.equals(newName)
+//		!report.name.equals(newName)
 //
 //		when:
-//			service.updateReport(report, [name: newName])
+//		service.updateReport(report, [name: newName])
 //
 //		then:
-//			// not logged in
-//			thrown AuthenticationCredentialsNotFoundException
+//		// not logged in
+//		thrown AuthenticationCredentialsNotFoundException
 //
 //		when:
-//			loginAsAdmin()
-//			aclUtilService.addPermission(Report, report1Id, USER, BasePermission.READ)
+//		loginAsAdmin()
+//		aclUtilService.addPermission(Report, report1Id, USER, BasePermission.READ)
 //
-//			loginAsUser()
-//			service.updateReport(report, [name: newName])
+//		loginAsUser()
+//		service.updateReport(report, [name: newName])
 //
 //		then:
-//			// no grant for write
-//			thrown AccessDeniedException
+//		// no grant for write
+//		thrown AccessDeniedException
 //
 //		when:
-//			loginAsAdmin()
-//			aclUtilService.addPermission(Report, report1Id, USER, BasePermission.WRITE)
+//		loginAsAdmin()
+//		aclUtilService.addPermission(Report, report1Id, USER, BasePermission.WRITE)
 //
-//			loginAsUser()
+//		loginAsUser()
 //
-//			service.updateReport(report, [name: newName])
-//			report = Report.get(report1Id)
+//		service.updateReport(report, [name: newName])
+//		report = Report.get(report1Id)
 //
 //		then:
-//			newName == report.name
+//		newName == report.name
 //	}
 }

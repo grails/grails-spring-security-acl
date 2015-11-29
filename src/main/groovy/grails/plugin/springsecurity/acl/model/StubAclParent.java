@@ -50,60 +50,31 @@ public class StubAclParent implements Acl {
 		return id;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.Acl#getEntries()
-	 */
 	public List<AccessControlEntry> getEntries() {
 		throw new UnsupportedOperationException("Stub only");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.Acl#getObjectIdentity()
-	 */
 	public ObjectIdentity getObjectIdentity() {
 		return new ObjectIdentityImpl(getClass(), 0);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.Acl#getOwner()
-	 */
 	public Sid getOwner() {
 		throw new UnsupportedOperationException("Stub only");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.Acl#getParentAcl()
-	 */
 	public Acl getParentAcl() {
 		throw new UnsupportedOperationException("Stub only");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.Acl#isEntriesInheriting()
-	 */
 	public boolean isEntriesInheriting() {
 		throw new UnsupportedOperationException("Stub only");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.Acl#isGranted(
-	 * 	java.util.List, java.util.List, boolean)
-	 */
 	public boolean isGranted(final List<Permission> permission, final List<Sid> sids,
 			final boolean administrativeMode) {
 		throw new UnsupportedOperationException("Stub only");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.Acl#isSidLoaded(java.util.List)
-	 */
 	public boolean isSidLoaded(final List<Sid> sids) {
 		throw new UnsupportedOperationException("Stub only");
 	}

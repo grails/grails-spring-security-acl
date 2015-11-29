@@ -21,7 +21,7 @@ class TestGrailsAnnotatedServiceSpec extends AbstractAclMappedServiceSpec {
 
 	def testGrailsAnnotatedService
 
-	def setup() {
+	void setup() {
 		service = testGrailsAnnotatedService
 	}
 }

@@ -24,127 +24,127 @@ import test.TestReport as Report
  */
 class AclUtilServiceSpec extends AbstractAclSpec {
 
-	def 'permissions let you do things'() {
+	void 'permissions let you do things'() {
 
 		when:
-			loginAsAdmin()
+		loginAsAdmin()
 
 		then:
-			0 == AclClass.count()
-			0 == AclEntry.count()
-			0 == AclObjectIdentity.count()
-			0 == AclSid.count()
+		0 == AclClass.count()
+		0 == AclEntry.count()
+		0 == AclObjectIdentity.count()
+		0 == AclSid.count()
 
 		when:
-			aclUtilService.addPermission(Report.get(report1Id), USER, BasePermission.READ)
+		aclUtilService.addPermission(Report.get(report1Id), USER, BasePermission.READ)
 
 		then:
-			1 == AclClass.count()
+		1 == AclClass.count()
 
 		when:
-			def aclClass = AclClass.list()[0]
+		def aclClass = AclClass.list()[0]
 
 		then:
-			Report.name == aclClass.className
+		Report.name == aclClass.className
 
-			2 == AclSid.count()
+		2 == AclSid.count()
 
 		when:
-			def adminSid = AclSid.list()[0]
-			def userSid = AclSid.list()[1]
+		def adminSid = AclSid.list()[0]
+		def userSid = AclSid.list()[1]
 
 		then:
-			ADMIN == adminSid.sid
-			USER == userSid.sid
+		ADMIN == adminSid.sid
+		USER == userSid.sid
 
-			1 == AclObjectIdentity.count()
+		1 == AclObjectIdentity.count()
 
 		when:
-			def identity = AclObjectIdentity.list()[0]
+		def identity = AclObjectIdentity.list()[0]
 
 		then:
-			aclClass == identity.aclClass
-			report1Id == identity.objectId
+		aclClass == identity.aclClass
+		report1Id == identity.objectId
 
-			1 == AclEntry.count()
+		1 == AclEntry.count()
 
 		when:
-			def entry = AclEntry.list()[0]
+		def entry = AclEntry.list()[0]
 
 		then:
-			userSid == entry.sid
-			identity == entry.aclObjectIdentity
-			0 == entry.aceOrder
-			entry.granting
-			1 == entry.mask
+		userSid == entry.sid
+		identity == entry.aclObjectIdentity
+		0 == entry.aceOrder
+		entry.granting
+		1 == entry.mask
 	}
 
-	def 'has permission'() {
+	void 'has permission'() {
 
 		given:
-			def report = Report.get(report1Id)
-			loginAsAdmin()
+		def report = Report.get(report1Id)
+		loginAsAdmin()
 
-			def userAuth = createUserAuth()
-
-		when:
-			aclUtilService.addPermission(report, USER, BasePermission.READ)
-
-		then:
-			aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
-			!aclUtilService.hasPermission(userAuth, report, BasePermission.WRITE)
-			!aclUtilService.hasPermission(userAuth, Report.get(report2Id), BasePermission.READ)
+		def userAuth = createUserAuth()
 
 		when:
-			aclUtilService.addPermission(report, USER, BasePermission.WRITE)
+		aclUtilService.addPermission(report, USER, BasePermission.READ)
 
 		then:
-			aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
-			aclUtilService.hasPermission(userAuth, report, BasePermission.WRITE)
-			!aclUtilService.hasPermission(userAuth, Report.get(report2Id), BasePermission.READ)
+		aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
+		!aclUtilService.hasPermission(userAuth, report, BasePermission.WRITE)
+		!aclUtilService.hasPermission(userAuth, Report.get(report2Id), BasePermission.READ)
+
+		when:
+		aclUtilService.addPermission(report, USER, BasePermission.WRITE)
+
+		then:
+		aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
+		aclUtilService.hasPermission(userAuth, report, BasePermission.WRITE)
+		!aclUtilService.hasPermission(userAuth, Report.get(report2Id), BasePermission.READ)
 	}
 
-	def 'delete permission'() {
+	void 'delete permission'() {
 
 		given:
-			def report = Report.get(report1Id)
-			loginAsAdmin()
+		def report = Report.get(report1Id)
+		loginAsAdmin()
 
-			def userAuth = createUserAuth()
-
-		when:
-			aclUtilService.addPermission(report, USER, BasePermission.READ)
-			aclUtilService.addPermission(report, USER, BasePermission.WRITE)
-
-		then:
-			aclUtilService.hasPermission userAuth, report, BasePermission.READ
-			aclUtilService.hasPermission userAuth, report, BasePermission.WRITE
+		def userAuth = createUserAuth()
 
 		when:
-			aclUtilService.deletePermission(report, USER, BasePermission.READ)
+		aclUtilService.addPermission(report, USER, BasePermission.READ)
+		aclUtilService.addPermission(report, USER, BasePermission.WRITE)
 
 		then:
-			!aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
-			aclUtilService.hasPermission userAuth, report, BasePermission.WRITE
+		aclUtilService.hasPermission userAuth, report, BasePermission.READ
+		aclUtilService.hasPermission userAuth, report, BasePermission.WRITE
+
+		when:
+		aclUtilService.deletePermission(report, USER, BasePermission.READ)
+
+		then:
+		!aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
+		aclUtilService.hasPermission userAuth, report, BasePermission.WRITE
 	}
 
-	def 'cumulative permission'() {
+	void 'cumulative permission'() {
 
 		given:
-			def report = Report.get(report1Id)
-			loginAsAdmin()
+		def report = Report.get(report1Id)
+		loginAsAdmin()
 
-			def userAuth = createUserAuth()
+		def userAuth = createUserAuth()
 
 		when:
 
-			aclUtilService.addPermission(report, USER, new CumulativePermission()
+		aclUtilService.addPermission(report, USER, new CumulativePermission()
 				.set(BasePermission.READ)
 				.set(BasePermission.WRITE))
 
 		then:
-			!aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
-			!aclUtilService.hasPermission(userAuth, report, BasePermission.WRITE)
-			!aclUtilService.hasPermission(userAuth, Report.get(report2Id), BasePermission.READ)
+		!aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
+		!aclUtilService.hasPermission(userAuth, report, BasePermission.WRITE)
+		!aclUtilService.hasPermission(userAuth, Report.get(report2Id), BasePermission.READ)
 	}
 }

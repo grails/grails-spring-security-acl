@@ -21,7 +21,7 @@ class TestStaticConfiguredServiceSpec extends AbstractAclMappedServiceSpec {
 
 	def testStaticConfiguredService
 
-	def setup() {
+	void setup() {
 		service = testStaticConfiguredService
 	}
 }

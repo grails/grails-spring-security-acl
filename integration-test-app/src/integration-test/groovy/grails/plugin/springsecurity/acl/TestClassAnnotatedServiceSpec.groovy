@@ -24,49 +24,49 @@ class TestClassAnnotatedServiceSpec extends AbstractAclSpec {
 
 	def testClassAnnotatedService
 
-	def 'check that the notAnnotated method inherits ROLE_ADMIN from the class annotation'() {
+	void 'check that the notAnnotated method inherits ROLE_ADMIN from the class annotation'() {
 
 		when:
-			testClassAnnotatedService.notAnnotated()
+		testClassAnnotatedService.notAnnotated()
 
 		then:
-			thrown AuthenticationCredentialsNotFoundException
+		thrown AuthenticationCredentialsNotFoundException
 
 		when:
-			loginAsUser()
-			testClassAnnotatedService.notAnnotated()
+		loginAsUser()
+		testClassAnnotatedService.notAnnotated()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			loginAsAdmin()
-			testClassAnnotatedService.notAnnotated()
+		loginAsAdmin()
+		testClassAnnotatedService.notAnnotated()
 
 		then:
-			notThrown()
+		notThrown()
 	}
 
-	def 'check that the userAnnotated method overides the class annotation and requires ROLE_USER'() {
+	void 'check that the userAnnotated method overides the class annotation and requires ROLE_USER'() {
 
 		when:
-			testClassAnnotatedService.userAnnotated()
+		testClassAnnotatedService.userAnnotated()
 
 		then:
-			thrown AuthenticationCredentialsNotFoundException
+		thrown AuthenticationCredentialsNotFoundException
 
 		when:
-			loginAsAdmin()
-			testClassAnnotatedService.userAnnotated()
+		loginAsAdmin()
+		testClassAnnotatedService.userAnnotated()
 
 		then:
-			thrown AccessDeniedException
+		thrown AccessDeniedException
 
 		when:
-			loginAsUser()
-			testClassAnnotatedService.userAnnotated()
+		loginAsUser()
+		testClassAnnotatedService.userAnnotated()
 
 		then:
-			notThrown()
+		notThrown()
 	}
 }

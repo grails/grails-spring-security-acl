@@ -34,13 +34,13 @@ abstract class AbstractAclSpec extends AbstractIntegrationSpec {
 	protected long report1Id
 	protected long report2Id
 
-	def setup() {
+	void setup() {
 		report1Id = new Report(name: 'r1').save().id
 		report2Id = new Report(name: 'r2').save().id
 		assert 2 == Report.count()
 	}
 
-	def cleanup() {
+	void cleanup() {
 		SCH.clearContext()
 	}
 

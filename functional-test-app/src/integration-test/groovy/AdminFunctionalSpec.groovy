@@ -12,11 +12,11 @@ class AdminFunctionalSpec extends AbstractSecuritySpec {
 
 	// admin has admin on all
 
-	def setup() {
+	void setup() {
 		login 'admin', 'admin123'
 	}
 
-	def 'check tags'() {
+	void 'check tags'() {
 		when:
 		go 'tagLibTest/test'
 
@@ -43,7 +43,7 @@ class AdminFunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains 'test 6 true 80'
 	}
 
-	def 'view all'() {
+	void 'view all'() {
 		when:
 		go "report/show?number=$i"
 
@@ -54,7 +54,7 @@ class AdminFunctionalSpec extends AbstractSecuritySpec {
 		i << (1..100)
 	}
 
-	def 'edit report 15'() {
+	void 'edit report 15'() {
 
 		when:
 		go 'report/edit?number=15'
@@ -72,7 +72,7 @@ class AdminFunctionalSpec extends AbstractSecuritySpec {
 		assertContentContains 'report15_new'
 	}
 
-	def 'delete report 15'() {
+	void 'delete report 15'() {
 		when:
 		go 'report/delete?number=15'
 
@@ -82,7 +82,7 @@ class AdminFunctionalSpec extends AbstractSecuritySpec {
 		reportRows.size() == 99
 	}
 
-	def 'grant edit 16'() {
+	void 'grant edit 16'() {
 		when:
 		go 'report/grant?number=16'
 

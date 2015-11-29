@@ -7,11 +7,11 @@ import pages.LoginPage
 @Rollback
 abstract class AbstractSecuritySpec extends GebReportingSpec {
 
-	def setupSpec() {
+	void setupSpec() {
 		go browser.baseUrl + 'testData/reset'
 	}
 
-	def setup() {
+	void setup() {
 		logout()
 	}
 
