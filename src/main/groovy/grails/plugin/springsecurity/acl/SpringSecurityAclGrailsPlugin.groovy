@@ -252,9 +252,8 @@ class SpringSecurityAclGrailsPlugin extends Plugin {
 			debug "created AclEntryVoter $beanName for domain class $voterData.domainObjectClass.name with configAttribute $voterData.configAttribute and permissions $voterData.permissions"
 		}
 
-		aclAccessDecisionManager(AffirmativeBased) {
+		aclAccessDecisionManager(AffirmativeBased, aclAccessDecisionManagerDecisionVoters) {
 			allowIfAllAbstainDecisions = false
-			decisionVoters = aclAccessDecisionManagerDecisionVoters
 		}
 
 		// processes AFTER_ACL_COLLECTION_READ configuration settings;

@@ -57,9 +57,9 @@ dependencies {
 	provided 'org.grails:grails-dependencies'
 	provided 'org.grails:grails-web-boot'
 
-	compile 'org.grails.plugins:spring-security-core:3.0.0.M1'
+	compile 'org.grails.plugins:spring-security-core:3.0.0.M3'
 
-	String springSecurityVersion = '3.2.8.RELEASE'
+	String springSecurityVersion = '4.0.3.RELEASE'
 	compile "org.springframework.security:spring-security-acl:$springSecurityVersion", {
 		['aopalliance', 'commons-logging', 'ehcache-core', 'fest-assert', 'hsqldb', 'jcl-over-slf4j', 'junit',
 		 'logback-classic', 'mockito-core', 'spring-aop', 'spring-beans', 'spring-context', 'spring-context-support',
