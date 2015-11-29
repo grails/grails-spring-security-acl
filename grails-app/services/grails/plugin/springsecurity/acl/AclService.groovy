@@ -151,6 +151,7 @@ class AclService implements MutableAclService {
 	protected void deleteEntries(List<AclEntry> entries) {
 		log.debug 'Deleting entries: {}', entries
 		entries*.delete()
+		AclEntry.withSession { it.flush() }
 	}
 
 	@Transactional
@@ -301,7 +302,7 @@ class AclService implements MutableAclService {
 						message << '\n\t' << messageSource.getMessage(error, locale)
 					}
 				}
-				log.warn message
+				log.warn message.toString()
 			}
 		}
 
