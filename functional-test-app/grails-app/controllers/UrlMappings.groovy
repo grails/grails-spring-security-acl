@@ -4,7 +4,7 @@ import org.springframework.security.acls.model.NotFoundException
 class UrlMappings {
 
 	static mappings = {
-		"/$controller/$action?/$id?" {}
+		"/$controller/$action?/$id?(.$format)?"{}
 
 		"/"(view: '/index')
 

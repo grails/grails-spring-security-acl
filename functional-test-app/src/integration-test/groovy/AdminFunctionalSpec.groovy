@@ -13,7 +13,7 @@ class AdminFunctionalSpec extends AbstractSecuritySpec {
 	// admin has admin on all
 
 	void setup() {
-		login 'admin', 'admin123'
+		login 'admin'
 	}
 
 	void 'check tags'() {
@@ -107,7 +107,7 @@ class AdminFunctionalSpec extends AbstractSecuritySpec {
 		at IndexPage
 
 		when:
-		login 'user2', 'password2'
+		login 'user2'
 
 		then:
 		at IndexPage

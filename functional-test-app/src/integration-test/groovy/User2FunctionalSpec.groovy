@@ -11,7 +11,7 @@ class User2FunctionalSpec extends AbstractSecuritySpec {
 	// user2 has read on 1-5, write on 5
 
 	void setup() {
-		login 'user2', 'password2'
+		login 'user2'
 	}
 
 	void 'view all (1-5)'() {

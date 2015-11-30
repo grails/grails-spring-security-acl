@@ -1,9 +1,8 @@
 package com.testacl
 
-import org.apache.commons.lang.builder.HashCodeBuilder
-
 import grails.gorm.DetachedCriteria
 import groovy.transform.ToString
+import org.apache.commons.lang.builder.HashCodeBuilder
 
 @ToString(cache=true, includeNames=true, includePackage=false)
 class UserRole implements Serializable {
@@ -14,7 +13,6 @@ class UserRole implements Serializable {
 	Role role
 
 	UserRole(User u, Role r) {
-		this()
 		user = u
 		role = r
 	}
@@ -52,7 +50,7 @@ class UserRole implements Serializable {
 	}
 
 	static UserRole create(User user, Role role, boolean flush = false) {
-		def instance = new UserRole(user, role)
+		def instance = new UserRole(user: user, role: role)
 		instance.save(flush: flush, insert: true)
 		instance
 	}

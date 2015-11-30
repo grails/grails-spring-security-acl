@@ -8,17 +8,17 @@ import pages.LoginPage
 abstract class AbstractSecuritySpec extends GebReportingSpec {
 
 	void setupSpec() {
-		go browser.baseUrl + 'testData/reset'
+		go 'testData/reset'
 	}
 
 	void setup() {
 		logout()
 	}
 
-	protected void login(String user, String pwd) {
+	protected void login(String user) {
 		to LoginPage
 		username = user
-		password = pwd
+		password = 'password'
 		loginButton.click()
 	}
 

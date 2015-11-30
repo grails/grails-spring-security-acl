@@ -12,7 +12,7 @@ class User1FunctionalSpec extends AbstractSecuritySpec {
 	// user1 has admin on 11,12 and read on 1-67
 
 	void setup() {
-		login 'user1', 'password1'
+		login 'user1'
 	}
 
 	void 'check tags'() {

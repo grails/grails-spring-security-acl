@@ -70,6 +70,6 @@ dependencies {
 	console 'org.grails:grails-console'
 }
 
-task wrapper(type: Wrapper) {
-	gradleVersion = gradleWrapperVersion
+integrationTest {
+	beforeTest { descriptor -> logger.lifecycle " -- $descriptor" }
 }
