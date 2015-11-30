@@ -14,9 +14,13 @@
  */
 package grails.plugin.springsecurity.acl
 
-import org.springframework.security.acls.domain.BasePermission
+import grails.plugin.springsecurity.acl.util.ProxyUtils
 import org.springframework.security.acls.domain.CumulativePermission
+import spock.lang.Issue
 import test.Report
+
+import static org.springframework.security.acls.domain.BasePermission.READ
+import static org.springframework.security.acls.domain.BasePermission.WRITE
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
@@ -35,7 +39,7 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 		0 == AclSid.count()
 
 		when:
-		aclUtilService.addPermission Report.get(report1Id), USER, BasePermission.READ
+		aclUtilService.addPermission Report.get(report1Id), USER, READ
 
 		then:
 		1 == AclClass.count()
@@ -87,20 +91,20 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 		def userAuth = authenticateAsUser(false)
 
 		when:
-		aclUtilService.addPermission(report, USER, BasePermission.READ)
+		aclUtilService.addPermission(report, USER, READ)
 
 		then:
-		aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
-		!aclUtilService.hasPermission(userAuth, report, BasePermission.WRITE)
-		!aclUtilService.hasPermission(userAuth, Report.get(report2Id), BasePermission.READ)
+		aclUtilService.hasPermission(userAuth, report, READ)
+		!aclUtilService.hasPermission(userAuth, report, WRITE)
+		!aclUtilService.hasPermission(userAuth, Report.get(report2Id), READ)
 
 		when:
-		aclUtilService.addPermission(report, USER, BasePermission.WRITE)
+		aclUtilService.addPermission(report, USER, WRITE)
 
 		then:
-		aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
-		aclUtilService.hasPermission(userAuth, report, BasePermission.WRITE)
-		!aclUtilService.hasPermission(userAuth, Report.get(report2Id), BasePermission.READ)
+		aclUtilService.hasPermission(userAuth, report, READ)
+		aclUtilService.hasPermission(userAuth, report, WRITE)
+		!aclUtilService.hasPermission(userAuth, Report.get(report2Id), READ)
 	}
 
 	void 'delete permission'() {
@@ -112,19 +116,19 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 		def userAuth = authenticateAsUser(false)
 
 		when:
-		aclUtilService.addPermission(report, USER, BasePermission.READ)
-		aclUtilService.addPermission(report, USER, BasePermission.WRITE)
+		aclUtilService.addPermission(report, USER, READ)
+		aclUtilService.addPermission(report, USER, WRITE)
 
 		then:
-		aclUtilService.hasPermission userAuth, report, BasePermission.READ
-		aclUtilService.hasPermission userAuth, report, BasePermission.WRITE
+		aclUtilService.hasPermission userAuth, report, READ
+		aclUtilService.hasPermission userAuth, report, WRITE
 
 		when:
-		aclUtilService.deletePermission(report, USER, BasePermission.READ)
+		aclUtilService.deletePermission(report, USER, READ)
 
 		then:
-		!aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
-		aclUtilService.hasPermission userAuth, report, BasePermission.WRITE
+		!aclUtilService.hasPermission(userAuth, report, READ)
+		aclUtilService.hasPermission userAuth, report, WRITE
 	}
 
 	void 'cumulative permission'() {
@@ -137,13 +141,29 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 
 		when:
 
-		aclUtilService.addPermission(report, USER, new CumulativePermission()
-				.set(BasePermission.READ)
-				.set(BasePermission.WRITE))
+		aclUtilService.addPermission(report, USER, new CumulativePermission().set(READ).set(WRITE))
 
 		then:
-		!aclUtilService.hasPermission(userAuth, report, BasePermission.READ)
-		!aclUtilService.hasPermission(userAuth, report, BasePermission.WRITE)
-		!aclUtilService.hasPermission(userAuth, Report.get(report2Id), BasePermission.READ)
+		!aclUtilService.hasPermission(userAuth, report, READ)
+		!aclUtilService.hasPermission(userAuth, report, WRITE)
+		!aclUtilService.hasPermission(userAuth, Report.get(report2Id), READ)
+	}
+
+	@Issue('GPSPRINGSECURITYACL-23')
+	void foo() {
+		when:
+		String name = 'Report 1'
+		Report report = new Report(name: name).save(failOnError: true)
+		long reportId = report.id
+
+		and:
+		authenticateAsAdmin()
+		aclUtilService.addPermission Report.findByName(name), USER, WRITE
+		flushAndClear()
+		report = Report.load(reportId)
+
+		then:
+		ProxyUtils.isProxy report.getClass()
+		aclUtilService.hasPermission(authenticateAsUser(false), report, WRITE)
 	}
 }

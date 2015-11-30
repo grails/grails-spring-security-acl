@@ -313,11 +313,4 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 
 		true
 	}
-
-	private void flushAndClear() {
-		Report.withSession { session ->
-			session.flush()
-			session.clear()
-		}
-	}
 }

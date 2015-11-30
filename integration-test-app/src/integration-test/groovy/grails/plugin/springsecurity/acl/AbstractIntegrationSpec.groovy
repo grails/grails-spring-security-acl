@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
+import test.Report
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
@@ -58,5 +59,12 @@ abstract class AbstractIntegrationSpec extends Specification {
 			SecurityContextHolder.context.authentication = authentication
 		}
 		authentication
+	}
+
+	protected void flushAndClear() {
+		Report.withSession { session ->
+			session.flush()
+			session.clear()
+		}
 	}
 }

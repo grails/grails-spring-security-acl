@@ -88,7 +88,7 @@ public class ProxyUtils {
 		return null;
 	}
 
-	protected static boolean isProxy(Class<?> clazz) {
+	public static boolean isProxy(Class<?> clazz) {
 		if (clazz.getSuperclass() == Object.class) {
 			return false;
 		}
