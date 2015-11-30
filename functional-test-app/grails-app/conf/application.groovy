@@ -17,13 +17,11 @@ grails {
 
 			authority.className = 'com.testacl.Role'
 			debug.useFilter = true
-			fii.rejectPublicInvocations = false
 			gsp {
 				layoutAuth = 'application'
 				layoutDenied = 'application'
 			}
 			logout.postOnly = false
-			rejectIfNoRule = false
 			roleHierarchy = 'ROLE_ADMIN > ROLE_USER'
 			userLookup {
 				authorityJoinClassName = 'com.testacl.UserRole'
