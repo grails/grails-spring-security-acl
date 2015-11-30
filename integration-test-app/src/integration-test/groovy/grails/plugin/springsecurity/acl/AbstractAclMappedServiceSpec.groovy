@@ -14,111 +14,113 @@
  */
 package grails.plugin.springsecurity.acl
 
+import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
 import test.Report
+import test.TestService
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 abstract class AbstractAclMappedServiceSpec extends AbstractAclSpec {
 
-	protected service
+	protected TestService service
 
 	void 'getReport() fails when not authenticated'() {
 		when:
-		def report = Report.get(report1Id)
+		Report report = Report.get(report1Id)
 
 		then:
 		report
 
 		when:
-		println "\nSERVICE ${service.getClass().name} ${service.getClass().superclass.name}"
-		println "\nREPORT " + service.getReport(report1Id)
+		service.getReport report1Id
 
 		then:
 		thrown AuthenticationCredentialsNotFoundException
 	}
-//
-//	void 'getReport() fails when authenticated if the user has no grants for the instance'() {
-//
-//		given:
-//		loginAsUser()
-//
-//		when:
-//		service.getReport report1Id
-//
-//		then:
-//		def e = thrown(AccessDeniedException)
-//		e.message.startsWith 'Authentication username has NO permissions to the domain object '
-//	}
-//
-//	void 'getReport() succeeds when authenticated if the user has grants for the instance'() {
-//
-//		given:
-//		loginAsAdmin()
-//		aclUtilService.addPermission(Report, report1Id, USER, BasePermission.READ)
-//		loginAsUser()
-//
-//		when:
-//		def report = service.getReport(report1Id)
-//
-//		then:
-//		report
-//		report1Id == report.id
-//	}
-//
-//	void 'getAllReports() succeeds when authenticated if the user has appropriate grants'() {
-//
-//		given:
-//		loginAsAdmin()
-//		aclUtilService.addPermission(Report, report1Id, USER, BasePermission.READ)
-//		loginAsUser()
-//
-//		when:
-//		def reports = service.getAllReports()
-//
-//		then:
-//		1 == reports.size()
-//		report1Id == reports[0].id
-//	}
-//
-//	void 'updateReport() succeeds when authenticated if the user has appropriate grants'() {
-//
-//		when:
-//		String newName = 'new_name'
-//		Report report = Report.get(report1Id)
-//
-//		then:
-//		!report.name.equals(newName)
-//
-//		when:
-//		service.updateReport(report, [name: newName])
-//
-//		then:
-//		// not logged in
-//		thrown AuthenticationCredentialsNotFoundException
-//
-//		when:
-//		loginAsAdmin()
-//		aclUtilService.addPermission(Report, report1Id, USER, BasePermission.READ)
-//
-//		loginAsUser()
-//		service.updateReport(report, [name: newName])
-//
-//		then:
-//		// no grant for write
-//		thrown AccessDeniedException
-//
-//		when:
-//		loginAsAdmin()
-//		aclUtilService.addPermission(Report, report1Id, USER, BasePermission.WRITE)
-//
-//		loginAsUser()
-//
-//		service.updateReport(report, [name: newName])
-//		report = Report.get(report1Id)
-//
-//		then:
-//		newName == report.name
-//	}
+
+	void 'getReport() fails when authenticated if the user has no grants for the instance'() {
+
+		given:
+		authenticateAsUser()
+
+		when:
+		service.getReport report1Id
+
+		then:
+		def e = thrown(AccessDeniedException)
+		e.message.startsWith "Authentication user has NO permissions to the domain object Report $report1Id r1"
+	}
+
+	void 'getReport() succeeds when authenticated if the user has grants for the instance'() {
+
+		given:
+		authenticateAsAdmin()
+		aclUtilService.addPermission Report, report1Id, USER, BasePermission.READ
+		authenticateAsUser()
+
+		when:
+		Report report = service.getReport(report1Id)
+
+		then:
+		report
+		report1Id == report.id
+	}
+
+	void 'getAllReports() succeeds when authenticated if the user has appropriate grants'() {
+
+		given:
+		authenticateAsAdmin()
+		aclUtilService.addPermission Report, report1Id, USER, BasePermission.READ
+		authenticateAsUser()
+
+		when:
+		List<Report> reports = service.getAllReports()
+
+		then:
+		1 == reports.size()
+		report1Id == reports[0].id
+	}
+
+	void 'updateReport() succeeds when authenticated if the user has appropriate grants'() {
+
+		when:
+		String newName = 'new_name'
+		Report report = Report.get(report1Id)
+
+		then:
+		report.name != newName
+
+		when:
+		service.updateReport(report, [name: newName])
+
+		then:
+		// not logged in
+		thrown AuthenticationCredentialsNotFoundException
+
+		when:
+		authenticateAsAdmin()
+		aclUtilService.addPermission Report, report1Id, USER, BasePermission.READ
+
+		authenticateAsUser()
+		service.updateReport(report, [name: newName])
+
+		then:
+		// no grant for write
+		thrown AccessDeniedException
+
+		when:
+		authenticateAsAdmin()
+		aclUtilService.addPermission Report, report1Id, USER, BasePermission.WRITE
+
+		authenticateAsUser()
+
+		service.updateReport(report, [name: newName])
+		report = Report.get(report1Id)
+
+		then:
+		newName == report.name
+	}
 }

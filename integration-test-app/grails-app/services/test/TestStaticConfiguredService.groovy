@@ -20,7 +20,7 @@ import grails.transaction.Transactional
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 @Transactional
-class TestStaticConfiguredService {
+class TestStaticConfiguredService implements TestService {
 
 	static springSecurityACL = [
 		getReportName: ['ROLE_USER', 'ROLE_ADMIN'],

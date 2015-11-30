@@ -1,4 +1,4 @@
-/* Copyright 2009-2015 the original author or authors.
+/* Copyright 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,17 @@
  */
 package test
 
-import grails.plugin.springsecurity.acl.annotation.AclVoter
-import grails.plugin.springsecurity.acl.annotation.AclVoters
+/**
+ * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
+ */
+interface TestService {
+	Report getReport(long id)
 
-@AclVoters([
-	@AclVoter(name='aclReportWriteVoter',
-	          configAttribute='ACL_REPORT_WRITE',
-	          permissions=['ADMINISTRATION', 'WRITE']),
-	@AclVoter(name='aclReportDeleteVoter',
-	          configAttribute='ACL_REPORT_DELETE',
-	          permissions=['ADMINISTRATION', 'DELETE'])
-])
-class Report {
-	String name
+	Report createReport(params)
 
-	String toString() {
-		"Report $id $name"
-	}
+	List<Report> getAllReports()
+
+	String getReportName(long id)
+
+	Report updateReport(Report report, params)
 }

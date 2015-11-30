@@ -20,7 +20,7 @@ import org.springframework.security.access.annotation.Secured
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class TestSpringAnnotatedService {
+class TestSpringAnnotatedService implements TestService {
 
 	@Secured(['ROLE_USER', 'AFTER_ACL_READ'])
 	Report getReport(long id) {

@@ -20,7 +20,7 @@ import grails.transaction.Transactional
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class TestGrailsAnnotatedService {
+class TestGrailsAnnotatedService implements TestService {
 
 	@Secured(['ROLE_USER', 'AFTER_ACL_READ'])
 	Report getReport(long id) {
