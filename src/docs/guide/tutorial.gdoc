@@ -519,13 +519,3 @@ Verify that user1 doesn't have admin permission on report #13 by trying to editi
 Logout (by navigating to [http://localhost:8080/acltest/logout|http://localhost:8080/acltest/logout]) and login as user2/password2. You should only see the first five reports. Verify that you can edit #5 but not any of the others, and that you can't delete any.
 
 Finally. logout and login as admin/admin123. You should be able to view, edit, and delete all instances.
-
-h4. Database tables
-
-{code}
-select e.id, e.ace_order, c.class, oi.object_id_identity, e.audit_failure, e.audit_success, e.granting, e.mask, s.sid
-from acl_entry e
-join acl_object_identity oi on e.acl_object_identity=oi.id
-join acl_class c on oi.object_id_class=c.id
-join acl_sid s on e.sid=s.id
-{code}
