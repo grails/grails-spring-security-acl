@@ -1,6 +1,8 @@
 *.iml
 *.log
 /.idea
+/.classpath
+/.project
 /.settings
 /docs
 /target
