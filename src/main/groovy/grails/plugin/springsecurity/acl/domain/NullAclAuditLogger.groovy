@@ -12,19 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package grails.plugin.springsecurity.acl.domain;
+package grails.plugin.springsecurity.acl.domain
 
-import org.springframework.security.acls.domain.AuditLogger;
-import org.springframework.security.acls.model.AccessControlEntry;
+import groovy.transform.CompileStatic
+import org.springframework.security.acls.domain.AuditLogger
+import org.springframework.security.acls.model.AccessControlEntry
 
 /**
  * No-op logger that gets registered as the logger so there's a bean to override.
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-public class NullAclAuditLogger implements AuditLogger {
-
-	public void logIfNeeded(final boolean granted, final AccessControlEntry ace) {
+@CompileStatic
+class NullAclAuditLogger implements AuditLogger {
+	void logIfNeeded(boolean granted, AccessControlEntry ace) {
 		// do nothing
 	}
 }

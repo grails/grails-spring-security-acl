@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package grails.plugin.springsecurity.acl;
+package grails.plugin.springsecurity.acl
 
-import grails.plugin.springsecurity.acl.util.ProxyUtils;
+import grails.plugin.springsecurity.acl.util.ProxyUtils
+import groovy.transform.CompileStatic
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import java.lang.reflect.Constructor
+import java.lang.reflect.Method
 
 /**
  * CGLIB proxies confuse parameter name discovery since the classes aren't compiled with
@@ -27,15 +27,16 @@ import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-public class ProxyAwareParameterNameDiscoverer extends LocalVariableTableParameterNameDiscoverer {
+@CompileStatic
+class ProxyAwareParameterNameDiscoverer extends LocalVariableTableParameterNameDiscoverer {
 
 	@Override
-	public String[] getParameterNames(final Method method) {
-		return super.getParameterNames(ProxyUtils.unproxy(method));
+	String[] getParameterNames(Method method) {
+		super.getParameterNames ProxyUtils.unproxy(method)
 	}
 
 	@Override
-	public String[] getParameterNames(@SuppressWarnings("rawtypes") final Constructor constructor) {
-		return super.getParameterNames(ProxyUtils.unproxy(constructor));
+	String[] getParameterNames(Constructor<?> constructor) {
+		super.getParameterNames ProxyUtils.unproxy(constructor)
 	}
 }
