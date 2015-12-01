@@ -70,7 +70,7 @@ class SpringSecurityAclGrailsPlugin extends Plugin {
 	String documentation = 'http://grails-plugins.github.io/grails-spring-security-acl/'
 	String license = 'APACHE'
 	def organization = [name: 'Grails', url: 'http://www.grails.org/']
-	def issueManagement = [url: 'https://github.com/grails-plugins/grails-spring-security-acl']
+	def issueManagement = [url: 'https://github.com/grails-plugins/grails-spring-security-acl/issues']
 	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-acl']
 	def loadAfter = ['springSecurityCore']
 	def profiles = ['web']
