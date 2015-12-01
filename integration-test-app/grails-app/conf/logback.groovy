@@ -9,8 +9,8 @@ appender('STDOUT', ConsoleAppender) {
 	}
 }
 
-logger 'grails.plugin.springsecurity', TRACE
-logger 'org.springframework.security', DEBUG
+// logger 'grails.plugin.springsecurity', TRACE
+// logger 'org.springframework.security', DEBUG
 // logger 'org.hibernate.SQL', DEBUG
 // logger 'org.hibernate.type.descriptor.sql.BasicBinder', TRACE
 

@@ -16,6 +16,7 @@ package grails.plugin.springsecurity.acl.jdbc
 
 import grails.plugin.springsecurity.acl.AclEntry
 import grails.plugin.springsecurity.acl.AclObjectIdentity
+import grails.plugin.springsecurity.acl.AclSid
 import grails.plugin.springsecurity.acl.model.StubAclParent
 import org.springframework.security.acls.domain.AccessControlEntryImpl
 import org.springframework.security.acls.domain.AclAuthorizationStrategy
@@ -249,7 +250,7 @@ class GormAclLookupStrategy implements LookupStrategy {
 		AclImpl acl = acls[id]
 		if (!acl) {
 			// Make an AclImpl and pop it into the Map
-			def objectIdentity = new ObjectIdentityImpl(
+			ObjectIdentity objectIdentity = new ObjectIdentityImpl(
 					lookupClass(aclObjectIdentity.aclClass.className),
 					aclObjectIdentity.objectId)
 			Acl parentAcl
@@ -257,7 +258,7 @@ class GormAclLookupStrategy implements LookupStrategy {
 				parentAcl = new StubAclParent(aclObjectIdentity.parent.id)
 			}
 
-			def ownerSid = aclObjectIdentity.owner
+			AclSid ownerSid = aclObjectIdentity.owner
 			Sid owner = ownerSid.principal ?
 					new PrincipalSid(ownerSid.sid) :
 					new GrantedAuthoritySid(ownerSid.sid)

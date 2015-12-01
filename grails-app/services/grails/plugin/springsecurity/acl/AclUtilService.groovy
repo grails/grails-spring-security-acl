@@ -19,6 +19,7 @@ import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.Acl
+import org.springframework.security.acls.model.MutableAcl
 import org.springframework.security.acls.model.NotFoundException
 import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Permission
@@ -81,7 +82,7 @@ class AclUtilService {
 
 		Sid sid = createSid(recipient)
 
-		def acl
+		MutableAcl acl
 		try {
 			acl = aclService.readAclById(oid)
 		}
@@ -102,7 +103,7 @@ class AclUtilService {
 	 * @param newOwnerUsername  the new username
 	 */
 	void changeOwner(domainObject, String newUsername) {
-		def acl = readAcl(domainObject)
+		MutableAcl acl = readAcl(domainObject)
 		acl.owner = new PrincipalSid(newUsername)
 		aclService.updateAcl acl
 	}
@@ -128,7 +129,7 @@ class AclUtilService {
 	 */
 	void deletePermission(Class<?> domainClass, long id, recipient, Permission permission) {
 		Sid sid = createSid(recipient)
-		def acl = readAcl(domainClass, id)
+		MutableAcl acl = readAcl(domainClass, id)
 
 		acl.entries.eachWithIndex { entry, i ->
 			if (entry.sid.equals(sid) && entry.permission.equals(permission)) {
