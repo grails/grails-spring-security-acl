@@ -80,7 +80,7 @@ class SpringSecurityAclGrailsPlugin {
 
 	String license = 'APACHE'
 	def organization = [name: 'Grails', url: 'http://www.grails.org/']
-	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYACL']
+	def issueManagement = [url: 'https://github.com/grails-plugins/grails-spring-security-acl/issues']
 	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-acl']
 
 	def doWithSpring = {
