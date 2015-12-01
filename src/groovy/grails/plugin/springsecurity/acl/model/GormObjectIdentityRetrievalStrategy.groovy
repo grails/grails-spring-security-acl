@@ -28,20 +28,10 @@ import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy
  */
 class GormObjectIdentityRetrievalStrategy implements ObjectIdentityRetrievalStrategy, ObjectIdentityGenerator {
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy#getObjectIdentity(
-	 * 	java.lang.Object)
-	 */
 	ObjectIdentity getObjectIdentity(domainObject) {
 		createObjectIdentity domainObject.id, ProxyUtils.unproxy(domainObject.getClass()).name
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.ObjectIdentityGenerator#createObjectIdentity(
-	 * 	java.io.Serializable, java.lang.String)
-	 */
 	ObjectIdentity createObjectIdentity(Serializable id, String type) {
 	   new ObjectIdentityImpl(type, id)
 	}

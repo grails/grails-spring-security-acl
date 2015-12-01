@@ -23,12 +23,6 @@ import org.springframework.security.acls.model.AccessControlEntry;
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 public class NullAclAuditLogger implements AuditLogger {
-
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.domain.AuditLogger#logIfNeeded(
-	 * 	boolean, org.springframework.security.acls.model.AccessControlEntry)
-	 */
 	public void logIfNeeded(final boolean granted, final AccessControlEntry ace) {
 		// do nothing
 	}

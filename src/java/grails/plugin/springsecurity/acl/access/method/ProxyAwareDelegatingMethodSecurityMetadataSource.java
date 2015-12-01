@@ -54,11 +54,6 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 	protected final Map<DefaultCacheKey, Collection<ConfigAttribute>> cache =
 		new HashMap<DefaultCacheKey, Collection<ConfigAttribute>>();
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.method.MethodSecurityMetadataSource#getAttributes(
-	 * 	java.lang.reflect.Method, java.lang.Class)
-	 */
 	public Collection<ConfigAttribute> getAttributes(final Method m, final Class<?> tc) {
 
 		Method method = ProxyUtils.unproxy(m);
@@ -101,10 +96,6 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.access.SecurityMetadataSource#getAllConfigAttributes()
-	 */
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
 		Set<ConfigAttribute> set = new HashSet<ConfigAttribute>();
 		for (MethodSecurityMetadataSource s : methodSecurityMetadataSources) {
@@ -124,10 +115,6 @@ public class ProxyAwareDelegatingMethodSecurityMetadataSource
 		methodSecurityMetadataSources = sources;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-	 */
 	public void afterPropertiesSet() {
 		Assert.notEmpty(methodSecurityMetadataSources, "A list of MethodSecurityMetadataSources is required");
 	}

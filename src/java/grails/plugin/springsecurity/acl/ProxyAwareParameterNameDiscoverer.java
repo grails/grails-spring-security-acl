@@ -29,23 +29,13 @@ import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
  */
 public class ProxyAwareParameterNameDiscoverer extends LocalVariableTableParameterNameDiscoverer {
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.core.LocalVariableTableParameterNameDiscoverer#getParameterNames(
-	 * 	java.lang.reflect.Method)
-	 */
 	@Override
 	public String[] getParameterNames(final Method method) {
 		return super.getParameterNames(ProxyUtils.unproxy(method));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.core.LocalVariableTableParameterNameDiscoverer#getParameterNames(
-	 * 	java.lang.reflect.Constructor)
-	 */
 	@Override
-	public String[] getParameterNames(@SuppressWarnings("rawtypes") final Constructor constructor) {
+	public String[] getParameterNames(final Constructor<?> constructor) {
 		return super.getParameterNames(ProxyUtils.unproxy(constructor));
 	}
 }

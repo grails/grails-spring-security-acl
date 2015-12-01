@@ -56,11 +56,6 @@ class AclService implements MutableAclService {
 	/** Dependency injection for messageSource. */
 	def messageSource
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.MutableAclService#createAcl(
-	 * 	org.springframework.security.acls.model.ObjectIdentity)
-	 */
 	@Transactional
 	MutableAcl createAcl(ObjectIdentity objectIdentity) throws AlreadyExistsException {
 		Assert.notNull objectIdentity, 'Object Identity required'
@@ -121,11 +116,6 @@ class AclService implements MutableAclService {
 		return aclClass
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.MutableAclService#deleteAcl(
-	 * 	org.springframework.security.acls.model.ObjectIdentity, boolean)
-	 */
 	@Transactional
 	void deleteAcl(ObjectIdentity objectIdentity, boolean deleteChildren) throws ChildrenExistException {
 
@@ -162,11 +152,6 @@ class AclService implements MutableAclService {
 		entries*.delete()
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.MutableAclService#updateAcl(
-	 * 	org.springframework.security.acls.model.MutableAcl)
-	 */
 	@Transactional
 	MutableAcl updateAcl(MutableAcl acl) throws NotFoundException {
 		Assert.notNull acl.id, "Object Identity doesn't provide an identifier"
@@ -248,11 +233,6 @@ class AclService implements MutableAclService {
 		aclCache.evictFromCache(objectIdentity)
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.AclService#findChildren(
-	 * 	org.springframework.security.acls.model.ObjectIdentity)
-	 */
 	List<ObjectIdentity> findChildren(ObjectIdentity parentOid) {
 		def children = AclObjectIdentity.withCriteria {
 			parent {
@@ -280,20 +260,10 @@ class AclService implements MutableAclService {
 		return Class.forName(className, true, Thread.currentThread().contextClassLoader)
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.AclService#readAclById(
-	 * 	org.springframework.security.acls.model.ObjectIdentity)
-	 */
 	Acl readAclById(ObjectIdentity object) throws NotFoundException {
 		readAclById object, null
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.AclService#readAclById(
-	 * 	org.springframework.security.acls.model.ObjectIdentity, java.util.List)
-	 */
 	Acl readAclById(ObjectIdentity object, List<Sid> sids) throws NotFoundException {
 		Map<ObjectIdentity, Acl> map = readAclsById([object], sids)
 		Assert.isTrue map.containsKey(object),
@@ -301,19 +271,10 @@ class AclService implements MutableAclService {
 		map[object]
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.AclService#readAclsById(java.util.List)
-	 */
 	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects) throws NotFoundException {
 		readAclsById objects, null
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.model.AclService#readAclsById(
-	 * 	java.util.List, java.util.List)
-	 */
 	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) throws NotFoundException {
 		Map<ObjectIdentity, Acl> result = aclLookupStrategy.readAclsById(objects, sids)
 		// Check every requested object identity was found (throw NotFoundException if needed)

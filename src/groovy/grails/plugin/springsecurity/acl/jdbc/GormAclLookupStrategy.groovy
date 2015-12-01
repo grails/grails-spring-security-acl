@@ -67,10 +67,6 @@ class GormAclLookupStrategy implements LookupStrategy {
 
 	int batchSize = 50
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.acls.jdbc.LookupStrategy#readAclsById(java.util.List, java.util.List)
-	 */
 	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) {
 		Map<ObjectIdentity, Acl> result = [:]
 		Set<ObjectIdentity> currentBatchToLoad = []
