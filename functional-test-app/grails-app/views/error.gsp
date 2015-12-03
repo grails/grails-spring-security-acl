@@ -2,7 +2,6 @@
 <html>
 	<head>
 		<title>Grails Runtime Exception</title>
-		<asset:stylesheet src="errors.css"/>
 	</head>
 	<body>
         <g:if test="${Throwable.isInstance(exception)}">
