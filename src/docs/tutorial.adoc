@@ -22,8 +22,9 @@ dependencies {
 
 and run the `compile` command to resolve the dependencies:
 
-bc.
+....
 $ grails compile
+....
 
 This will transitively install the http://grails.org/plugin/spring-security-core[Spring Security Core] plugin, so you'll need to configure that by running the `s2-quickstart` script:
 
@@ -564,7 +565,7 @@ Now start the app:
 $ grails run-app
 ....
 
-and open http://localhost:8080/report[http://localhost:8080/report]
+and open http://localhost:8080/report.
 
 [NOTE]
 ====
@@ -573,12 +574,12 @@ If you see the error `NoSuchMethodError: org.springframework.cache.ehcache.EhCac
 
 Login as user1/password1 and you should see the first page of results. But if you click on page 7 or higher, you'll see that you can only see a subset of the ``Report``s. This illustrates one issue with using ACLs to restrict view access to instances; you would have to add joins in your query to the ACL database tables to get an accurate count of the total number of visible instances.
 
-Click on any of the report instance links (e.g. http://localhost:8080/report/show/63[http://localhost:8080/report/show/63]) to verify that you can view the instance. You can test that you have no view access to the filtered instances by navigating to http://localhost:8080/report/show/83[http://localhost:8080/report/show/83].
+Click on any of the report instance links (e.g. http://localhost:8080/report/show/63) to verify that you can view the instance. You can test that you have no view access to the filtered instances by navigating to http://localhost:8080/report/show/83.
 
 Verify that user1 has admin permission on report #11 by editing it and deleting it.
 
 Verify that user1 doesn't have admin permission on report #13 by trying to editing or delete it and you should see the error page when you submit the form.
 
-Logout (by navigating to http://localhost:8080/logout[http://localhost:8080/logout]) and login as user2/password2. You should only see the first five reports. Verify that you can edit #5 but not any of the others, and that you can't delete any.
+Logout (by navigating to http://localhost:8080/logout) and login as user2/password2. You should only see the first five reports. Verify that you can edit #5 but not any of the others, and that you can't delete any.
 
 Finally. logout and login as admin/admin123. You should be able to view, edit, and delete all instances.

@@ -9,4 +9,4 @@ Clone or fork the repo and start the app:
 $ grails run-app
 ....
 
-Open http://localhost:8080/[http://localhost:8080/] in a browser to get started. The main functionality is at http://localhost:8080/secure[http://localhost:8080/secure]. The login page lists the various configured users and their passwords; the "rod" user is an admin and has full access and the other users have various grants and ownership.
+Open http://localhost:8080/ in a browser to get started. The main functionality is at http://localhost:8080/secure. The login page lists the various configured users and their passwords; the "rod" user is an admin and has full access and the other users have various grants and ownership.
