@@ -2,7 +2,7 @@ Working with ACLs in Spring Security is complex but it will be easier to underst
 
 Unpack the zip file, for example in @/opt/workspace/grails-contacts@
 
-Upgrade the application to make sure it's compatible with the version of Grails you're using (note that all of the Spring Security plugins require at least version 2.0 of Grails) and start the app:
+Upgrade the application to make sure it's compatible with the version of Grails you're using (note that all of the Spring Security plugins require at least version 2.3 of Grails) and start the app:
 
 bc.
 $ grails run-app
