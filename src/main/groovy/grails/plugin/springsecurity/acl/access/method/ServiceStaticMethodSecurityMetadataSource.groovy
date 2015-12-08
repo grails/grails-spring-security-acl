@@ -71,7 +71,7 @@ class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackMethodSe
 
 	protected void populateMap(Map<String, List<ConfigAttribute>> dest, Map<String, List<String>> source) {
 		source.each { String key, List<String> value ->
-			dest[key] = value.collect { String config -> new SecurityConfig(config) }
+			dest[key] = value.collect { String config -> new SecurityConfig(config) } as List
 		}
 	}
 }
