@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2.1 Securing Service Methods 2.0-RC2</title>
+    <title>2.1 Securing Service Methods 2.0.0</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -74,7 +74,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 2.0-RC2</p>
+                    <p><strong>Version:</strong> 2.0.0</p>
 
                     
                 </div>
@@ -90,7 +90,7 @@ There are two primary use cases for ACL security: determining whether a user is 
 <li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PreFilter.html" target="blank">@PreFilter</a></li>
 <li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html" target="blank">@PostAuthorize</a></li>
 <li><a href="http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/access/prepost/PostFilter.html" target="blank">@PostFilter</a></li>
-</ul><p class="paragraph"/>The annotations use security-specific Spring expression language (SpEL) expressions - see <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/html/el-access.html" target="blank">the documentation</a> for the available standard and method expressions.<p class="paragraph"/>Here's an example service that manages a <code>Report</code> domain class and uses these annotations and expressions:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> org.springframework.security.access.prepost.PostFilter
+</ul><p class="paragraph"/>The annotations use security-specific Spring expression language (SpEL) expressions - see <a href="http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#el-access" target="blank">the documentation</a> for the available standard and method expressions.<p class="paragraph"/>Here's an example service that manages a <code>Report</code> domain class and uses these annotations and expressions:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> org.springframework.security.access.prepost.PostFilter
 <span class="java&#45;keyword">import</span> org.springframework.security.access.prepost.PreAuthorize
 <span class="java&#45;keyword">import</span> org.springframework.transaction.annotation.Transactional<p class="paragraph"/><span class="java&#45;keyword">import</span> com.yourapp.Report<p class="paragraph"/>class ReportService &#123;<p class="paragraph"/>   @PreAuthorize(<span class="java&#45;quote">"hasPermission(&#35;id, 'com.yourapp.Report', read) or "</span> +
                  <span class="java&#45;quote">"hasPermission(&#35;id, 'com.yourapp.Report', admin)"</span>)
