@@ -57,7 +57,7 @@ dependencies {
 	provided 'org.grails:grails-dependencies'
 	provided 'org.grails:grails-web-boot'
 
-	compile 'org.grails.plugins:spring-security-core:3.0.0.M3'
+	compile 'org.grails.plugins:spring-security-core:3.0.0'
 
 	String springSecurityVersion = '4.0.3.RELEASE'
 	compile "org.springframework.security:spring-security-acl:$springSecurityVersion", {
