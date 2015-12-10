@@ -56,5 +56,5 @@ dependencies {
 }
 
 integrationTest {
-	beforeTest { descriptor -> logger.lifecycle " -- $descriptor" }
+	beforeTest { descriptor -> logger.quiet " -- $descriptor" }
 }
