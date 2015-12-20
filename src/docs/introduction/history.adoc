@@ -1,5 +1,7 @@
 === History
 
+* December 20, 2015
+** 3.0.1 release
 * December 8, 2015
 ** 3.0.0 release
 * August 25, 2015
