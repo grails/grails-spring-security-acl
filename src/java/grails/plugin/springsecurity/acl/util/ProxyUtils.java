@@ -18,7 +18,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import org.springframework.aop.support.AopUtils;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -104,8 +104,7 @@ public class ProxyUtils {
 	   return false;
    }
 
-	@SuppressWarnings("deprecation") // needs to work in Spring 3.1 and earlier
-	private static boolean isCglibProxyClass(Class<?> clazz) {
-		return AopUtils.isCglibProxyClass(clazz);
+	protected static boolean isCglibProxyClass(Class<?> clazz) {
+		return ClassUtils.isCglibProxyClass(clazz);
 	}
 }
