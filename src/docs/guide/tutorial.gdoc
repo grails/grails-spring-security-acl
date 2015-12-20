@@ -9,7 +9,7 @@ Install the plugin by adding it to the plugins section in BuildConfig.groovy:
 {code}
 plugins {
    ...
-   runtime ':spring-security-acl:2.0.0'
+   runtime ':spring-security-acl:2.0.1'
 }
 {code}
 
