@@ -17,6 +17,7 @@ package grails.plugin.springsecurity.acl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.MessageSource
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.security.acls.domain.AccessControlEntryImpl
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.ObjectIdentityImpl
@@ -296,7 +297,7 @@ class AclService implements MutableAclService {
 		if (!bean.save()) {
 			if (log.warnEnabled) {
 				def message = new StringBuilder("problem creating ${bean.getClass().simpleName}: $bean")
-				def locale = Locale.getDefault()
+				def locale = LocaleContextHolder.getLocale()
 				for (fieldErrors in bean.errors) {
 					for (error in fieldErrors.allErrors) {
 						message << '\n\t' << messageSource.getMessage(error, locale)
