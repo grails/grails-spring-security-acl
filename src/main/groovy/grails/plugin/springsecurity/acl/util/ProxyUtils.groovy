@@ -15,7 +15,7 @@
 package grails.plugin.springsecurity.acl.util
 
 import groovy.transform.CompileStatic
-import org.springframework.aop.support.AopUtils
+import org.springframework.util.ClassUtils
 import org.springframework.util.ReflectionUtils
 
 import java.lang.reflect.Constructor
@@ -94,16 +94,10 @@ class ProxyUtils {
    }
 
 	protected static boolean isJavassistProxy(Class<?> clazz) {
-		for (Class<?> i in clazz.interfaces) {
-			if (i.name.contains('org.hibernate.proxy.HibernateProxy')) {
-				return true
-			}
-		}
-	   return false
+		clazz.interfaces.any { Class<?> c -> c.name.contains('org.hibernate.proxy.HibernateProxy') }
    }
 
-	@SuppressWarnings('deprecation') // needs to work in Spring 3.1 and earlier
-	private static boolean isCglibProxyClass(Class<?> clazz) {
-		AopUtils.isCglibProxyClass clazz
+	protected static boolean isCglibProxyClass(Class<?> clazz) {
+		ClassUtils.isCglibProxyClass clazz
 	}
 }
