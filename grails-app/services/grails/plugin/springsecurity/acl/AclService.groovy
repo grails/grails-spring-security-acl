@@ -146,6 +146,7 @@ class AclService implements MutableAclService {
 	protected void deleteEntries(AclObjectIdentity oid) {
 		if (oid) {
 			AclEntry.where { aclObjectIdentity == oid }.deleteAll()
+			AclEntry.withSession { it.flush() }
 		}
 	}
 
