@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3 Tutorial 2.0.0</title>
+    <title>3 Tutorial 2.0.1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -74,7 +74,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 2.0.0</p>
+                    <p><strong>Version:</strong> 2.0.1</p>
 
                     
                 </div>
@@ -88,7 +88,7 @@ First create a test application:<p class="paragraph"/><pre class="bq"><code>
 $ grails create-app acltest
 $ cd acltest</code></pre><p class="paragraph"/>Install the plugin by adding it to the plugins section in BuildConfig.groovy:<p class="paragraph"/><div class="code"><pre>plugins &#123;
    &#8230;
-   runtime ':spring&#45;security&#45;acl:2.0.0'
+   runtime ':spring&#45;security&#45;acl:2.0.1'
 &#125;</pre></div><p class="paragraph"/>This will install the <a href="http://grails.org/plugin/spring-security-core" target="blank">Spring Security Core</a> plugin, so you'll need to configure that by running the <code>s2-quickstart</code> script:<p class="paragraph"/><pre class="bq"><code>
 $ grails s2-quickstart com.testacl User Role</code></pre><p class="paragraph"/>The ACL support uses domain classes but to allow customizing the domain classes (e.g. to enable Hibernate 2nd-level caching) there's a script that copies the domain classes into your application, <code>s2-create-acl-domains</code>. This script is run when the plugin is installed (otherwise the plugin code wouldn't compile) but you can run it again to re-create the domain classes:
 <pre class="bq"><code>
