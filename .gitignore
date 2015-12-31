@@ -1,4 +1,5 @@
 *.iml
+*.ipr
 *.iws
 *.log
 *.sublime-workspace
@@ -7,3 +8,4 @@
 .gradle
 .idea
 build
+cobertura.ser
