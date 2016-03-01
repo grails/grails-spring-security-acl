@@ -165,17 +165,17 @@ class AclService implements MutableAclService {
 		List<AclEntry> existingAces = AclEntry.findAllByAclObjectIdentity(aclObjectIdentity)
 
 		List<AclEntry> toDelete = existingAces.findAll { AclEntry ace ->
-			log.trace 'Checking ace for delete: {}', ace
+			log.trace 'Checking ace for delete: {}'
 			!acl.entries.find { AccessControlEntry entry ->
-				log.trace 'Checking entry for delete: {}', entry
+				log.trace 'Checking entry for delete: {}'
 				entry.permission.mask == ace.mask && entry.sid == ace.sid.sid
 			}
 		}
 
 		List<AccessControlEntry> toCreate = acl.entries.findAll { AccessControlEntry entry ->
-			log.trace 'Checking entry for create: {}', entry
+			log.trace 'Checking entry for create: {}'
 			!existingAces.find { AclEntry ace ->
-				log.trace 'Checking ace for create: {}', ace
+				log.trace 'Checking ace for create: {}'
 				entry.permission.mask == ace.mask && entry.sid == ace.sid.sid
 			}
 		}
