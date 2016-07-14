@@ -28,4 +28,11 @@ dependencies {
 
 	String springSecurityVersion = '4.0.3.RELEASE'
 	compile "org.springframework.security:spring-security-acl:$springSecurityVersion"
+
+	String gormVersion = '5.0.4.RELEASE'
+	compile "org.grails:grails-datastore-core:$gormVersion"
+	compile "org.grails:grails-datastore-gorm-support:$gormVersion"
+	compile "org.grails:grails-datastore-gorm:$gormVersion"
+	compile "org.grails:grails-datastore-simple:$gormVersion"
+
 }
