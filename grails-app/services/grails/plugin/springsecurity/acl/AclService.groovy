@@ -35,7 +35,7 @@ import org.springframework.security.acls.model.NotFoundException
 import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Sid
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.transaction.annotation.Transactional
+import grails.transaction.Transactional
 import org.springframework.util.Assert
 
 /**
