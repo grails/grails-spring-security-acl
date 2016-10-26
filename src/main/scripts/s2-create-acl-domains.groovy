@@ -27,6 +27,6 @@ description 'Copies ACL domain classes to the project', {
 
 ['AclClass', 'AclEntry', 'AclObjectIdentity', 'AclSid'].each { String name ->
 	render template: template('_' + name + '.groovy'),
-	       destination: file("domain/grails/plugin/springsecurity/acl/${name}.groovy"),
+	       destination: file("grails-app/domain/grails/plugin/springsecurity/acl/${name}.groovy"),
 	       overwrite: false
 }

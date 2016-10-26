@@ -12,8 +12,8 @@ class AclEntry {
 
 	@Override
 	String toString() {
-		"AclEntry id $id, aceOrder $aceOrder, mask $mask, granting $granting, " +
-		"aclObjectIdentity $aclObjectIdentity"
+		"AclEntry id \$id, aceOrder \$aceOrder, mask \$mask, granting \$granting, " +
+		"aclObjectIdentity \$aclObjectIdentity"
 	}
 
 	static mapping = {
