@@ -17,7 +17,6 @@ package grails.plugin.springsecurity.acl.access.method
 import grails.plugin.springsecurity.acl.util.ProxyUtils
 import grails.plugin.springsecurity.annotation.Secured
 import groovy.transform.CompileStatic
-import jdk.nashorn.internal.runtime.regexp.joni.Config
 import org.springframework.security.access.ConfigAttribute
 import org.springframework.security.access.SecurityConfig
 import org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource
