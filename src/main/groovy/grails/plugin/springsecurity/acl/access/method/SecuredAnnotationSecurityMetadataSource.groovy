@@ -17,6 +17,7 @@ package grails.plugin.springsecurity.acl.access.method
 import grails.plugin.springsecurity.acl.util.ProxyUtils
 import grails.plugin.springsecurity.annotation.Secured
 import groovy.transform.CompileStatic
+import jdk.nashorn.internal.runtime.regexp.joni.Config
 import org.springframework.security.access.ConfigAttribute
 import org.springframework.security.access.SecurityConfig
 import org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource
@@ -55,7 +56,7 @@ class SecuredAnnotationSecurityMetadataSource extends AbstractFallbackMethodSecu
 
 	protected List<ConfigAttribute> processAnnotation(Annotation a) {
 		if (a instanceof Secured) {
-			a.value().collect { String token -> new SecurityConfig(token) }
+			a.value().collect { String token -> ((ConfigAttribute)new SecurityConfig(token)) }
 		}
 	}
 
