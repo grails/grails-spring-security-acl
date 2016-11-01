@@ -7,7 +7,7 @@ class AclSid {
 
 	@Override
 	String toString() {
-		"AclSid id $id, sid $sid, principal $principal"
+		"AclSid id \$id, sid \$sid, principal \$principal"
 	}
 
 	static mapping = {

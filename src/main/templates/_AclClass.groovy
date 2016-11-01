@@ -6,7 +6,7 @@ class AclClass {
 
 	@Override
 	String toString() {
-		"AclClass id $id, className $className"
+		"AclClass id \$id, className \$className"
 	}
 
 	static mapping = {

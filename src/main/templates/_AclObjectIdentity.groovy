@@ -6,8 +6,8 @@ class AclObjectIdentity extends AbstractAclObjectIdentity {
 
 	@Override
 	String toString() {
-		"AclObjectIdentity id $id, aclClass $aclClass.className, " +
-		"objectId $objectId, entriesInheriting $entriesInheriting"
+		"AclObjectIdentity id \$id, aclClass \$aclClass.className, " +
+		"objectId \$objectId, entriesInheriting \$entriesInheriting"
 	}
 
 	static mapping = {
