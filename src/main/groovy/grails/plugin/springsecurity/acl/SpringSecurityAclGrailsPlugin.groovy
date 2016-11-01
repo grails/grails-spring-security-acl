@@ -14,7 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
-import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
+import grails.util.GrailsClassUtils as GCU
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 import org.springframework.expression.spel.standard.SpelExpressionParser
