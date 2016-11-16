@@ -1,0 +1,12 @@
+language: groovy
+sudo: false
+cache:
+  directories:
+  - $HOME/.gradle
+jdk:
+- openjdk7
+script: ./travis-build.sh
+env:
+  global:
+  - GIT_NAME="Jeff Scott Brown"
+  - GIT_EMAIL="brownj@ociweb.com"
