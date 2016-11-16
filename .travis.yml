@@ -10,3 +10,8 @@ env:
   global:
   - GIT_NAME="Jeff Scott Brown"
   - GIT_EMAIL="brownj@ociweb.com"
+  - secure: FEnY59/fPLziKCpEifF75kbhLTiY7Jdg06lCppMYD19ixGgN/N1n9XAy2NPWQ7rGLLrXQ12X1n/Ut7w/WjgGRkbC2XcvxtZidT4p2WFVU0F2t+eTrQEZOnivY4v2zDEugJbf1BUk7qtGHoVQnB0h765B7BOUoTRT71KJZKXUx+s=
+  - secure: GacPOKE1ZeET5migfOPwxXfMgKpNEQkTFpRbp4Jiw+9K7IZ+QxTzktHKYFeHAY7vAjnEdOfkPUckhqI70XvziOsoxdUhYOgOuR2/46Qowd6JGDxUehizxqIJ/o7ywFa7OZjV1wRVJL/RK+1zJJj8qUTc2hfpZAWFMb/P8wQrBB4=
+  - secure: LCof5rPIcMjY9xzv4F/5sEt1KuLBz9//wbR4L9XntNYHIQUuV91by2PV/OYTgot2y2NXpi3XL8RJ4284+e0Z73lTRWoM8ROwytwO6k5jOcHVoXdXxaCRFqzY4NTEk0oqhxCnelm4aih0LgpXQqT3S7YwMwGjL58X6gV4+l3/WNk=
+  - secure: Zzpcc1y86oBd+4Z+QyKi+u8scUdaAVauaC9G73z+NM6UdSwFnjFF/9/z4R6dHFVFHyNVpAxqM77EvidOnXPGS1kmfF/DRLzlviGAGQy1PewsH3v2FlFqOVgK1OH7PIbTHhzaz7tkh6IRkctKLSIxJ/nX+U/Im8f8BnLsvPqKVp4=
+  - secure: ZpQyVDmueaTplqTL1fkZvH/Ow5MsrFFarevT+U+CG0UdK+iT1pJsHH+XbnXJwt+fOkw9+/TW/uhTokytZHQxfyaHi9HBiYSNdOjlebxwqb3TAmZV72louJ5MpqsGH8CJFPl1LiaO5mpE7S6aGNn+F2m9CfpLANiG+nAI2BMMVVI=
