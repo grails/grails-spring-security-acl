@@ -11,8 +11,7 @@ echo "Publishing archives for branch $TRAVIS_BRANCH"
 if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
 
   if [[ -n $TRAVIS_TAG ]]; then
-      # ./gradlew bintrayUpload || EXIT_STATUS=$?
-      echo "Bintray Upload Not yet Configured"
+      ./gradlew bintrayUpload || EXIT_STATUS=$?
   else
       ./gradlew publish || EXIT_STATUS=$?
   fi
