@@ -18,8 +18,6 @@ import grails.plugin.springsecurity.annotation.Secured
 
 class TestSecureService {
 
-	static transactional = false
-
 	@Secured('ROLE_RUN_AS_SUPERUSER')
 	String method1() {
 		'method1'

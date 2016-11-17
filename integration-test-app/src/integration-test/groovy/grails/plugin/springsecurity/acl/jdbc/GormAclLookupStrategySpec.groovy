@@ -29,10 +29,14 @@ import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
 import test.Report
+import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@Integration
+@Rollback
 class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 
 	private final Sid principalSid = new PrincipalSid('ben')
@@ -47,7 +51,7 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 	GormAclLookupStrategy aclLookupStrategy
 	Ehcache ehcacheAclCache
 
-	void setup() {
+	void buildData() {
 
 		aclLookupStrategy.batchSize = 50
 
@@ -106,6 +110,8 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 	}
 
 	void 'acls retrieval with default batch size'() {
+		given:
+		buildData()
 
 		when:
 		// Deliberately use an integer for the child, to reproduce bug report in SEC-819
@@ -118,6 +124,8 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 	}
 
 	void 'acls retrieval from cache-only'() {
+		given:
+		buildData()
 
 		when:
 		// Objects were put in cache
@@ -138,6 +146,9 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 	}
 
 	void 'acls retrieval with custom batch size'() {
+		given:
+		buildData()
+
 		when:
 		// Set a batch size to allow multiple database queries in order to retrieve all acls
 		aclLookupStrategy.batchSize = 1
@@ -149,6 +160,8 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 	}
 
 	void 'all parents are retrieved when child is loaded'() {
+		given:
+		buildData()
 
 		when:
 		new AclObjectIdentity(
@@ -182,6 +195,8 @@ class GormAclLookupStrategySpec extends AbstractIntegrationSpec {
 	 * Test created from SEC-590.
 	 */
 	void 'read all ObjectIdentities when last element is already cached'() {
+		given:
+		buildData()
 
 		when:
 		def aclObjectIdentity4 = new AclObjectIdentity(

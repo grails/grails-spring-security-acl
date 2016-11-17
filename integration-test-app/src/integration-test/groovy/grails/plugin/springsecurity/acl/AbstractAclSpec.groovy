@@ -26,7 +26,7 @@ abstract class AbstractAclSpec extends AbstractIntegrationSpec {
 
 	AclUtilService aclUtilService
 
-	void setup() {
+	void buildReports() {
 		report1Id = new Report(name: 'r1').save(failOnError: true).id
 		report2Id = new Report(name: 'r2').save(failOnError: true).id
 		assert 2 == Report.count()

@@ -17,15 +17,21 @@ package grails.plugin.springsecurity.acl
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
 import test.TestClassAnnotatedService
+import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@Integration
+@Rollback
 class TestClassAnnotatedServiceSpec extends AbstractAclSpec {
 
 	TestClassAnnotatedService testClassAnnotatedService
 
 	void 'check that the notAnnotated method inherits ROLE_ADMIN from the class annotation'() {
+		given:
+		buildReports()
 
 		when:
 		testClassAnnotatedService.notAnnotated()
@@ -49,6 +55,8 @@ class TestClassAnnotatedServiceSpec extends AbstractAclSpec {
 	}
 
 	void 'check that the userAnnotated method overides the class annotation and requires ROLE_USER'() {
+		given:
+		buildReports()
 
 		when:
 		testClassAnnotatedService.userAnnotated()

@@ -21,13 +21,19 @@ import test.Report
 
 import static org.springframework.security.acls.domain.BasePermission.READ
 import static org.springframework.security.acls.domain.BasePermission.WRITE
+import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@Integration
+@Rollback
 class AclUtilServiceSpec extends AbstractAclSpec {
 
 	void 'permissions let you do things'() {
+		given:
+		buildReports()
 
 		when:
 		authenticateAsAdmin()
@@ -83,8 +89,8 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 	}
 
 	void 'has permission'() {
-
 		given:
+		buildReports()
 		def report = Report.get(report1Id)
 		authenticateAsAdmin()
 
@@ -108,8 +114,8 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 	}
 
 	void 'delete permission'() {
-
 		given:
+		buildReports()
 		def report = Report.get(report1Id)
 		authenticateAsAdmin()
 
@@ -132,8 +138,8 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 	}
 
 	void 'cumulative permission'() {
-
 		given:
+		buildReports()
 		def report = Report.get(report1Id)
 		authenticateAsAdmin()
 
@@ -151,6 +157,9 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 
 	@Issue('GPSPRINGSECURITYACL-23')
 	void foo() {
+		given:
+		buildReports()
+
 		when:
 		String name = 'Report 1'
 		Report report = new Report(name: name).save(failOnError: true)

@@ -30,10 +30,14 @@ import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
 import test.Report
+import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@Integration
+@Rollback
 class AclServiceSpec extends AbstractIntegrationSpec {
 
 	private final ObjectIdentity topParentOid =    new ObjectIdentityImpl(Report, 100L)

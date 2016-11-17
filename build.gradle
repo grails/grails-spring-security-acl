@@ -24,12 +24,12 @@ apply from: 'gradle/plugin.gradle'
 
 dependencies {
 
-	compile 'org.grails.plugins:spring-security-core:3.0.0'
+	compile 'org.grails.plugins:spring-security-core:3.0.4'
 
 	String springSecurityVersion = '4.0.3.RELEASE'
 	compile "org.springframework.security:spring-security-acl:$springSecurityVersion"
 
-	String gormVersion = '5.0.4.RELEASE'
+	String gormVersion = '5.0.11.RELEASE'
 	compile "org.grails:grails-datastore-core:$gormVersion"
 	compile "org.grails:grails-datastore-gorm-support:$gormVersion"
 	compile "org.grails:grails-datastore-gorm:$gormVersion"

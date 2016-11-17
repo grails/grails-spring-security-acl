@@ -19,7 +19,7 @@ apply plugin: 'spring-boot'
 apply from: '../gradle/testapp.gradle'
 
 dependencies {
-	compile 'org.grails.plugins:hibernate'
+	compile 'org.grails.plugins:hibernate4'
 }
 
 integrationTest {

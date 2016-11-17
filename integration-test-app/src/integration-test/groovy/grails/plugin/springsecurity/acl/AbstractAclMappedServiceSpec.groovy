@@ -19,15 +19,22 @@ import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
 import test.Report
 import test.TestService
+import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@Integration
+@Rollback
 abstract class AbstractAclMappedServiceSpec extends AbstractAclSpec {
 
 	protected TestService service
 
 	void 'getReport() fails when not authenticated'() {
+        given:
+        buildReports()
+
 		when:
 		Report report = Report.get(report1Id)
 
@@ -42,8 +49,8 @@ abstract class AbstractAclMappedServiceSpec extends AbstractAclSpec {
 	}
 
 	void 'getReport() fails when authenticated if the user has no grants for the instance'() {
-
 		given:
+        buildReports()
 		authenticateAsUser()
 
 		when:
@@ -55,8 +62,8 @@ abstract class AbstractAclMappedServiceSpec extends AbstractAclSpec {
 	}
 
 	void 'getReport() succeeds when authenticated if the user has grants for the instance'() {
-
 		given:
+        buildReports()
 		authenticateAsAdmin()
 		aclUtilService.addPermission Report, report1Id, USER, BasePermission.READ
 		authenticateAsUser()
@@ -70,8 +77,8 @@ abstract class AbstractAclMappedServiceSpec extends AbstractAclSpec {
 	}
 
 	void 'getAllReports() succeeds when authenticated if the user has appropriate grants'() {
-
 		given:
+        buildReports()
 		authenticateAsAdmin()
 		aclUtilService.addPermission Report, report1Id, USER, BasePermission.READ
 		authenticateAsUser()
@@ -85,6 +92,8 @@ abstract class AbstractAclMappedServiceSpec extends AbstractAclSpec {
 	}
 
 	void 'updateReport() succeeds when authenticated if the user has appropriate grants'() {
+        given:
+        buildReports()
 
 		when:
 		String newName = 'new_name'

@@ -14,23 +14,17 @@
  */
 package grails.plugin.springsecurity.acl
 
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
 import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
-import grails.transaction.Transactional
 import spock.lang.Specification
 import test.Report
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-@Integration
-@Rollback
-@Transactional
 abstract class AbstractIntegrationSpec extends Specification {
 
 	protected static final String USER = 'user'

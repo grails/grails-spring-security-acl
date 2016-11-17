@@ -1,6 +1,9 @@
 ---
 grails:
    profile: web
+   spring:
+       transactionManagement:
+           proxies: false
 info:
    app:
       name: '@info.app.name@'

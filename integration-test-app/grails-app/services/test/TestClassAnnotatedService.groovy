@@ -22,8 +22,6 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured('ROLE_ADMIN')
 class TestClassAnnotatedService {
 
-	static transactional = false
-
 	void notAnnotated() {}
 
 	@Secured('ROLE_USER')
