@@ -24,7 +24,7 @@ apply from: 'gradle/plugin.gradle'
 
 dependencies {
 
-	compile 'org.grails.plugins:spring-security-core:3.0.4'
+	compile 'org.grails.plugins:spring-security-core:3.1.2'
 
 	String springSecurityVersion = '4.0.3.RELEASE'
 	compile "org.springframework.security:spring-security-acl:$springSecurityVersion"
