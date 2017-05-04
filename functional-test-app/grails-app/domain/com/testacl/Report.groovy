@@ -2,7 +2,9 @@ package com.testacl
 
 import grails.plugin.springsecurity.acl.annotation.AclVoter
 import grails.plugin.springsecurity.acl.annotation.AclVoters
+import groovy.transform.CompileStatic
 
+@CompileStatic
 @AclVoters([
 	@AclVoter(name='aclReportWriteVoter',
 	          configAttribute='ACL_REPORT_WRITE',

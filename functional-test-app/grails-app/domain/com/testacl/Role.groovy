@@ -1,8 +1,10 @@
 package com.testacl
 
+import grails.compiler.GrailsCompileStatic
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
+@GrailsCompileStatic
 @EqualsAndHashCode(includes='authority')
 @ToString(includes='authority', includeNames=true, includePackage=false)
 class Role implements Serializable {

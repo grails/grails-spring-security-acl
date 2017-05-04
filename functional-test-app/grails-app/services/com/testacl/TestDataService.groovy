@@ -1,9 +1,5 @@
-package grails.plugin.springsecurity.acl.test
+package com.testacl
 
-import com.testacl.Report
-import com.testacl.Role
-import com.testacl.User
-import com.testacl.UserRole
 import grails.gorm.DetachedCriteria
 import grails.plugin.springsecurity.acl.AclClass
 import grails.plugin.springsecurity.acl.AclEntry
@@ -78,11 +74,11 @@ class TestDataService {
 
 		3.times {
 			long id = it + 1
-			def user = new User("user$id", 'password').save(failOnError: true)
+			def user = new User(username:"user$id", password: 'password').save(failOnError: true)
 			UserRole.create user, roleUser
 		}
 
-		def admin = new User('admin', 'password').save(failOnError: true)
+		def admin = new User(username: 'admin', password:'password').save(failOnError: true)
 
 		UserRole.create admin, roleUser
 		UserRole.create admin, roleAdmin

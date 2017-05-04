@@ -1,12 +1,15 @@
-import com.testacl.Report
+package com.testacl
+
 import grails.plugin.springsecurity.acl.AclClass
 import grails.plugin.springsecurity.acl.AclEntry
 import grails.plugin.springsecurity.acl.AclObjectIdentity
 import grails.plugin.springsecurity.acl.AclSid
-import grails.plugin.springsecurity.acl.test.ReportService
 import grails.plugin.springsecurity.annotation.Secured
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import org.springframework.dao.DataIntegrityViolationException
 
+@CompileStatic
 @Secured('ROLE_USER')
 class ReportController {
 
@@ -109,7 +112,7 @@ class ReportController {
 	}
 
 	private Report find(Integer number) {
-		def report = number ? reportService.get(idForNumber(number)) : null
+		Report report = number ? reportService.get(idForNumber(number)) : null
 		if (!report) {
 			flash.message = "Report not found with number $number"
 			redirect action: 'list'
@@ -130,6 +133,7 @@ class ReportController {
 		false
 	}
 
+	@CompileDynamic
 	private Long idForNumber(int number) {
 		Report.findByNumber(number)?.id
 	}

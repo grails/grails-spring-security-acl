@@ -1,5 +1,9 @@
-import grails.plugin.springsecurity.annotation.Secured
+package com.testacl
 
+import grails.plugin.springsecurity.annotation.Secured
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class SecureController {
 
 	@Secured('ROLE_ADMIN')
