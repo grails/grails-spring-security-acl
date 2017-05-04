@@ -1,4 +1,4 @@
-import grails.plugin.springsecurity.acl.test.TestDataService
+package com.testacl
 
 class BootStrap {
 

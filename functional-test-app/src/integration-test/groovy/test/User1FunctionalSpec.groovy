@@ -1,3 +1,5 @@
+package test
+
 import org.springframework.security.acls.domain.BasePermission
 
 import pages.EditReportPage

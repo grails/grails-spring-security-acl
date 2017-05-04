@@ -1,6 +1,9 @@
-import grails.plugin.springsecurity.acl.test.TestDataService
-import grails.plugin.springsecurity.annotation.Secured
+package com.testacl
 
+import grails.plugin.springsecurity.annotation.Secured
+import groovy.transform.CompileStatic
+
+@CompileStatic
 @Secured('permitAll')
 class TestDataController {
 

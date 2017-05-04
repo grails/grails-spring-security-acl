@@ -1,4 +1,4 @@
-package grails.plugin.springsecurity.acl.test
+package com.testacl
 
 import com.testacl.Report
 import grails.plugin.springsecurity.acl.AclUtilService
