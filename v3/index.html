@@ -419,7 +419,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>Spring Security ACL Plugin - Reference Documentation</h1>
 <div class="details">
 <span id="author" class="author">Burt Beckwith</span><br>
-<span id="revnumber">version 3.1.0</span>
+<span id="revnumber">version 3.1.1</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -492,6 +492,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="history">1.1. History</h3>
 <div class="ulist">
 <ul>
+<li>
+<p>May 4, 2017</p>
+<div class="ulist">
+<ul>
+<li>
+<p>3.1.1 release</p>
+</li>
+</ul>
+</div>
+</li>
 <li>
 <p>December 20, 2015</p>
 <div class="ulist">
@@ -903,23 +913,25 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">class AclClass {
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package grails.plugin.springsecurity.acl
 
-   String className
+class AclClass {
 
-   @Override
-   String toString() {
-      "AclClass id $id, className $className"
-   }
+	String className
 
-   static mapping = {
-      className column: 'class'
-      version false
-   }
+	@Override
+	String toString() {
+		"AclClass id $id, className $className"
+	}
 
-   static constraints = {
-      className unique: true
-   }
+	static mapping = {
+		className column: 'class'
+		version false
+	}
+
+	static constraints = {
+		className unique: true, blank: false
+	}
 }</code></pre>
 </div>
 </div>
@@ -931,23 +943,26 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">class AclSid {
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package grails.plugin.springsecurity.acl
 
-   String sid
-   boolean principal
+class AclSid {
 
-   @Override
-   String toString() {
-      "AclSid id $id, sid $sid, principal $principal"
-   }
+	String sid
+	boolean principal
 
-   static mapping = {
-      version false
-   }
+	@Override
+	String toString() {
+		"AclSid id $id, sid $sid, principal $principal"
+	}
 
-   static constraints = {
-      principal unique: 'sid'
-   }
+	static mapping = {
+		version false
+	}
+
+	static constraints = {
+		principal unique: 'sid'
+		sid blank: false, size: 1..255
+	}
 }</code></pre>
 </div>
 </div>
@@ -959,27 +974,29 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">class AclObjectIdentity extends AbstractAclObjectIdentity {
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package grails.plugin.springsecurity.acl
 
-   Long objectId
+class AclObjectIdentity extends AbstractAclObjectIdentity {
 
-   @Override
-   String toString() {
-      "AclObjectIdentity id $id, aclClass $aclClass.className, " +
-      "objectId $objectId, entriesInheriting $entriesInheriting"
-   }
+	Long objectId
 
-   static mapping = {
-      version false
-      aclClass column: 'object_id_class'
-      owner column: 'owner_sid'
-      parent column: 'parent_object'
-      objectId column: 'object_id_identity'
-   }
+	@Override
+	String toString() {
+		"AclObjectIdentity id $id, aclClass $aclClass.className, " +
+		"objectId $objectId, entriesInheriting $entriesInheriting"
+	}
 
-   static constraints = {
-      objectId unique: 'aclClass'
-   }
+	static mapping = {
+		version false
+		aclClass column: 'object_id_class'
+		owner column: 'owner_sid'
+		parent column: 'parent_object'
+		objectId column: 'object_id_identity'
+	}
+
+	static constraints = {
+		objectId unique: 'aclClass'
+	}
 }</code></pre>
 </div>
 </div>
@@ -1016,31 +1033,33 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">class AclEntry {
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package grails.plugin.springsecurity.acl
 
-   AclObjectIdentity aclObjectIdentity
-   int aceOrder
-   AclSid sid
-   int mask
-   boolean granting
-   boolean auditSuccess
-   boolean auditFailure
+class AclEntry {
 
-   @Override
-   String toString() {
-      "AclEntry id $id, aceOrder $aceOrder, mask $mask, " +
-      "granting $granting, aclObjectIdentity $aclObjectIdentity"
-   }
+	AclObjectIdentity aclObjectIdentity
+	int aceOrder
+	AclSid sid
+	int mask
+	boolean granting
+	boolean auditSuccess
+	boolean auditFailure
 
-   static mapping = {
-      version false
-      sid column: 'sid'
-      aclObjectIdentity column: 'acl_object_identity'
-   }
+	@Override
+	String toString() {
+		"AclEntry id $id, aceOrder $aceOrder, mask $mask, granting $granting, " +
+		"aclObjectIdentity $aclObjectIdentity"
+	}
 
-   static constraints = {
-      aceOrder unique: 'aclObjectIdentity'
-   }
+	static mapping = {
+		version false
+		sid column: 'sid'
+		aclObjectIdentity column: 'acl_object_identity'
+	}
+
+	static constraints = {
+		aceOrder unique: 'aclObjectIdentity'
+	}
 }</code></pre>
 </div>
 </div>
@@ -1246,7 +1265,7 @@ $ cd acltest</pre>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">dependencies {
    ...
-   compile 'org.grails.plugins:spring-security-acl:3.1.0'
+   compile 'org.grails.plugins:spring-security-acl:3.1.1'
    ...
 }</code></pre>
 </div>
@@ -2353,8 +2372,8 @@ the body content
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 3.1.0<br>
-Last updated 2016-10-21 11:38:59 -04:00
+Version 3.1.1<br>
+Last updated 2017-05-04 11:09:55 UTC
 </div>
 </div>
 </body>
