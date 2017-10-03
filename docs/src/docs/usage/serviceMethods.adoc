@@ -18,7 +18,7 @@ Here's an example service that manages a `Report` domain class and uses these an
 ----
 import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 
 import com.yourapp.Report
 
