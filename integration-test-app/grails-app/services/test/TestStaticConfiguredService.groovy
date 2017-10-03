@@ -14,7 +14,7 @@
  */
 package test
 
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>

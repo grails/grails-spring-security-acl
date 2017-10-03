@@ -7,7 +7,7 @@ import grails.plugin.springsecurity.acl.AclObjectIdentity
 import grails.plugin.springsecurity.acl.AclService
 import grails.plugin.springsecurity.acl.AclSid
 import grails.plugin.springsecurity.acl.AclUtilService
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

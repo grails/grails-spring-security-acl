@@ -14,7 +14,7 @@
  */
 package test
 
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 import org.springframework.security.access.annotation.Secured
 
 /**

@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.PermissionFactory
 import org.springframework.security.acls.model.Permission
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 
 class ReportService {
 
