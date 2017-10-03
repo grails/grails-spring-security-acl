@@ -19,7 +19,7 @@ import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
 import test.Report
 import test.TestService
-import grails.test.mixin.integration.Integration
+import grails.testing.mixin.integration.Integration
 import grails.transaction.Rollback
 
 /**

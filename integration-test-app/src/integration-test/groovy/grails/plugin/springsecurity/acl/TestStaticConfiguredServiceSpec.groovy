@@ -14,7 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
-import grails.test.mixin.integration.Integration
+import grails.testing.mixin.integration.Integration
 import grails.transaction.Rollback
 
 /**
