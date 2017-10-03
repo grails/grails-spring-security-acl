@@ -72,7 +72,8 @@ class GormAclLookupStrategy implements LookupStrategy {
 		Map<ObjectIdentity, Acl> result = [:]
 		Set<ObjectIdentity> currentBatchToLoad = []
 
-		objects.eachWithIndex { object, i ->
+		for ( int i = 0; i < objects.size(); i++ ) {
+			ObjectIdentity object = objects.get(i)
 			// Check we don't already have this ACL in the results
 			boolean aclFound = result.containsKey(object)
 

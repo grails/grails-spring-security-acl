@@ -35,7 +35,7 @@ import org.springframework.security.acls.model.NotFoundException
 import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Sid
 import org.springframework.security.core.context.SecurityContextHolder
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 import org.springframework.util.Assert
 
 /**
@@ -127,7 +127,8 @@ class AclService implements MutableAclService {
 		Assert.notNull objectIdentity.identifier, "Object Identity doesn't provide an identifier"
 
 		if (deleteChildren) {
-			findChildren(objectIdentity).each { deleteAcl it, true }
+			List<ObjectIdentity> children = findChildren(objectIdentity)
+			children.each { deleteAcl it, true }
 		}
 
 		AclObjectIdentity oid = retrieveObjectIdentity(objectIdentity)
