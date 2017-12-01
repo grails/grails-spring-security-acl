@@ -11,9 +11,32 @@ if [[ $EXIT_STATUS -ne 0 ]]; then
   exit $EXIT_STATUS
 fi
 
+./gradlew install --stacktrace || EXIT_STATUS=$?
+if [[ $EXIT_STATUS -ne 0 ]]; then
+    echo "install failed"
+    exit $EXIT_STATUS
+fi
+
 # Only publish if the branch is on master, and it is not a PR
 if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
   echo "Publishing archives for branch $TRAVIS_BRANCH"
+
+  if [[ -n $TRAVIS_TAG ]]; then
+      echo "Pushing build to Bintray"
+      ./gradlew :spring-security-acl:bintrayUpload || EXIT_STATUS=$?
+      if [[ $EXIT_STATUS -ne 0 ]]; then
+        echo "Publishing to Bintray Failed"
+        exit $EXIT_STATUS
+      fi
+  else
+      echo "Publishing snapshot to OJO"
+      ./gradlew :spring-security-acl:artifactoryPublish || EXIT_STATUS=$?
+      if [[ $EXIT_STATUS -ne 0 ]]; then
+        echo "Publishing to OJO Failed"
+        exit $EXIT_STATUS
+      fi
+  fi
+
 
   ./gradlew :docs:docs || EXIT_STATUS=$?
   if [[ $EXIT_STATUS -ne 0 ]]; then
