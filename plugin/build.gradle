@@ -9,8 +9,8 @@ buildscript {
     }
 }
 
-version "0.1"
-group "grails.plugin.springsecurity"
+version projectVersion
+group "org.grails.plugins"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
