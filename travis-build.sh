@@ -11,9 +11,9 @@ if [[ $EXIT_STATUS -ne 0 ]]; then
   exit $EXIT_STATUS
 fi
 
-./gradlew install --stacktrace || EXIT_STATUS=$?
+./gradlew :spring-security-acl:assemble --stacktrace || EXIT_STATUS=$?
 if [[ $EXIT_STATUS -ne 0 ]]; then
-    echo "install failed"
+    echo ":spring-security-acl:assemble failed"
     exit $EXIT_STATUS
 fi
 
