@@ -19,12 +19,11 @@ import grails.core.GrailsClass
 import grails.util.GrailsClassUtils
 import grails.util.GrailsNameUtils
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.grails.compiler.injection.GrailsAwareClassLoader
 import org.grails.core.artefact.ControllerArtefactHandler
 import org.grails.core.artefact.ServiceArtefactHandler
 import org.grails.spring.TypeSpecifyableTransactionProxyFactoryBean
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.aop.TargetSource
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator
 import org.springframework.aop.target.SingletonTargetSource
@@ -46,12 +45,11 @@ import java.lang.reflect.Method
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  * @author Predrag Knezevic
  */
+@Slf4j
 @CompileStatic
 class AclAutoProxyCreator extends AbstractAutoProxyCreator implements InitializingBean {
 
 	private static final long serialVersionUID = 1
-
-	protected final Logger log = LoggerFactory.getLogger(getClass())
 
 	protected GrailsApplication grailsApplication
 	protected ClassLoader baseLoader

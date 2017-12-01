@@ -14,8 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import groovy.util.logging.Slf4j
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.security.acls.domain.AccessControlEntryImpl
@@ -47,9 +46,9 @@ import org.springframework.util.Assert
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@Slf4j
 class AclService implements MutableAclService {
 
-	protected final Logger log = LoggerFactory.getLogger(getClass())
 	AclSidGormService aclSidGormService
 	AclEntryGormService aclEntryGormService
 	AclClassGormService aclClassGormService

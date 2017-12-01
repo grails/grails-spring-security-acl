@@ -15,6 +15,7 @@
 package grails.plugin.springsecurity.acl
 
 import grails.plugin.springsecurity.acl.model.ObjectIdentityRetrievalStrategyAndGenerator
+import groovy.util.logging.Slf4j
 import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.PrincipalSid
@@ -32,6 +33,7 @@ import org.springframework.security.core.Authentication
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@Slf4j
 class AclUtilService {
 
 	/** Dependency injection for aclService. */
