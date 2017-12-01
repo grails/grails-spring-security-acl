@@ -50,6 +50,10 @@ import org.springframework.util.Assert
 class AclService implements MutableAclService {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass())
+	AclSidGormService aclSidGormService
+	AclEntryGormService aclEntryGormService
+	AclClassGormService aclClassGormService
+	AclObjectIdentityGormService aclObjectIdentityGormService
 
 	/** Dependency injection for aclLookupStrategy. */
 	LookupStrategy aclLookupStrategy
@@ -65,7 +69,7 @@ class AclService implements MutableAclService {
 		Assert.notNull objectIdentity, 'Object Identity required'
 
 		// Check this object identity hasn't already been persisted
-		if (retrieveObjectIdentity(objectIdentity)) {
+		if ( aclObjectIdentityGormService.findByObjectIdentity(objectIdentity) ) {
 			throw new AlreadyExistsException("Object identity '$objectIdentity' already exists")
 		}
 
@@ -105,7 +109,7 @@ class AclService implements MutableAclService {
 			throw new IllegalArgumentException('Unsupported implementation of Sid')
 		}
 
-		AclSid aclSid = AclSid.findBySidAndPrincipal(sidName, principal)
+		AclSid aclSid = aclSidGormService.findBySidAndPrincipal(sidName, principal)
 		if (!aclSid && allowCreate) {
 			aclSid = save(new AclSid(sid: sidName, principal: principal))
 		}
@@ -113,7 +117,7 @@ class AclService implements MutableAclService {
 	}
 
 	protected AclClass createOrRetrieveClass(String className, boolean allowCreate) {
-		AclClass aclClass = AclClass.findByClassName(className)
+		AclClass aclClass = aclClassGormService.findByClassName(className)
 		if (!aclClass && allowCreate) {
 			aclClass = save(new AclClass(className: className))
 		}
@@ -131,8 +135,8 @@ class AclService implements MutableAclService {
 			children.each { deleteAcl it, true }
 		}
 
-		AclObjectIdentity oid = retrieveObjectIdentity(objectIdentity)
-		if (oid) {
+		AclObjectIdentity oid = aclObjectIdentityGormService.findByObjectIdentity(objectIdentity)
+		if ( oid ) {
 			// Delete this ACL's ACEs in the acl_entry table
 			deleteEntries oid
 
@@ -145,10 +149,10 @@ class AclService implements MutableAclService {
 	}
 
 	protected void deleteEntries(AclObjectIdentity oid) {
-		if (oid) {
-			deleteEntries(AclEntry.where { aclObjectIdentity == oid }.id().list().collect {
-				AclEntry.load(it)
-			})
+		if ( oid ) {
+			List<Serializable> aclEntryIdList = aclEntryGormService.findAllIdByAclObjectIdentity(oid)
+			List<AclEntry> entries = aclEntryIdList.collect { Serializable id -> AclEntry.load(id) }
+			deleteEntries(entries)
 		}
 	}
 
@@ -162,9 +166,9 @@ class AclService implements MutableAclService {
 	MutableAcl updateAcl(MutableAcl acl) throws NotFoundException {
 		Assert.notNull acl.id, "Object Identity doesn't provide an identifier"
 
-		AclObjectIdentity aclObjectIdentity = retrieveObjectIdentity(acl.objectIdentity)
+		AclObjectIdentity aclObjectIdentity = aclObjectIdentityGormService.findByObjectIdentity(acl.objectIdentity)
 
-		List<AclEntry> existingAces = AclEntry.findAllByAclObjectIdentity(aclObjectIdentity)
+		List<AclEntry> existingAces = aclEntryGormService.findAllByAclObjectIdentity(aclObjectIdentity)
 
 		List<AclEntry> toDelete = existingAces.findAll { AclEntry ace ->
 			log.trace 'Checking ace for delete: {}', ace
@@ -216,13 +220,13 @@ class AclService implements MutableAclService {
 	protected void updateObjectIdentity(MutableAcl acl) {
 		Assert.notNull acl.owner, "Owner is required in this implementation"
 
-		AclObjectIdentity aclObjectIdentity = AclObjectIdentity.get(acl.id)
+		AclObjectIdentity aclObjectIdentity = aclObjectIdentityGormService.findById(acl.id)
 
 		AclObjectIdentity parent
 		if (acl.parentAcl) {
 			ObjectIdentity oii = acl.parentAcl.objectIdentity
 			Assert.isInstanceOf ObjectIdentityImpl, oii, 'Implementation only supports ObjectIdentityImpl'
-			parent = retrieveObjectIdentity(oii)
+			parent = aclObjectIdentityGormService.findByObjectIdentity(oii)
 		}
 
 		aclObjectIdentity.parent = parent
@@ -239,13 +243,7 @@ class AclService implements MutableAclService {
 	}
 
 	List<ObjectIdentity> findChildren(ObjectIdentity parentOid) {
-		List<AclObjectIdentity> children = AclObjectIdentity.withCriteria {
-			parent {
-				eq 'objectId', parentOid.identifier
-				aclClass {
-					eq 'className', parentOid.type
-				}
-			}
+		List<AclObjectIdentity> children = aclObjectIdentityGormService.findAllByParentObjectIdAndParentAclClassName((parentOid?.identifier as Long), parentOid.type)
 		}
 
 		if (!children) {
@@ -284,16 +282,6 @@ class AclService implements MutableAclService {
 			}
 		}
 		return result
-	}
-
-	protected AclObjectIdentity retrieveObjectIdentity(ObjectIdentity oid) {
-		AclObjectIdentity.withCriteria {
-			eq 'objectId', oid.identifier
-			aclClass {
-				eq 'className', oid.type
-			}
-			maxResults 1
-		}[0]
 	}
 
 	protected save(bean) {
