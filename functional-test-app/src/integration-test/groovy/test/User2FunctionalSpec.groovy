@@ -6,7 +6,9 @@ import pages.EditReportPage
 import pages.ReportGrantPage
 import pages.ShowReportPage
 import spock.lang.Stepwise
+import spock.lang.IgnoreIf
 
+@IgnoreIf( { !System.getProperty('geb.env') })
 @Stepwise
 class User2FunctionalSpec extends AbstractSecuritySpec {
 
