@@ -5,16 +5,14 @@ addons:
 sudo: false
 cache:
   directories:
-  - $HOME/.gradle
+  - "$HOME/.gradle"
 jdk:
 - openjdk8
-script: ./travis-build.sh
+script: "./travis-build.sh"
 env:
   global:
-  - GIT_NAME="Jeff Scott Brown"
-  - GIT_EMAIL="brownj@ociweb.com"
-  - secure: FEnY59/fPLziKCpEifF75kbhLTiY7Jdg06lCppMYD19ixGgN/N1n9XAy2NPWQ7rGLLrXQ12X1n/Ut7w/WjgGRkbC2XcvxtZidT4p2WFVU0F2t+eTrQEZOnivY4v2zDEugJbf1BUk7qtGHoVQnB0h765B7BOUoTRT71KJZKXUx+s=
-  - secure: GacPOKE1ZeET5migfOPwxXfMgKpNEQkTFpRbp4Jiw+9K7IZ+QxTzktHKYFeHAY7vAjnEdOfkPUckhqI70XvziOsoxdUhYOgOuR2/46Qowd6JGDxUehizxqIJ/o7ywFa7OZjV1wRVJL/RK+1zJJj8qUTc2hfpZAWFMb/P8wQrBB4=
-  - secure: LCof5rPIcMjY9xzv4F/5sEt1KuLBz9//wbR4L9XntNYHIQUuV91by2PV/OYTgot2y2NXpi3XL8RJ4284+e0Z73lTRWoM8ROwytwO6k5jOcHVoXdXxaCRFqzY4NTEk0oqhxCnelm4aih0LgpXQqT3S7YwMwGjL58X6gV4+l3/WNk=
-  - secure: Zzpcc1y86oBd+4Z+QyKi+u8scUdaAVauaC9G73z+NM6UdSwFnjFF/9/z4R6dHFVFHyNVpAxqM77EvidOnXPGS1kmfF/DRLzlviGAGQy1PewsH3v2FlFqOVgK1OH7PIbTHhzaz7tkh6IRkctKLSIxJ/nX+U/Im8f8BnLsvPqKVp4=
-  - secure: ZpQyVDmueaTplqTL1fkZvH/Ow5MsrFFarevT+U+CG0UdK+iT1pJsHH+XbnXJwt+fOkw9+/TW/uhTokytZHQxfyaHi9HBiYSNdOjlebxwqb3TAmZV72louJ5MpqsGH8CJFPl1LiaO5mpE7S6aGNn+F2m9CfpLANiG+nAI2BMMVVI=
+  - secure: JI9eT4Jvlm9UtN05e4Ul7vcjemDaQcEedk6PkDWgaWEjAqGbdWG8m+Os1MjrwGy2XqJF1GcLUa/ND7Apqn1OMUoBRL9T28f2PdEAO9Fc54arQ0EWbwXO7u+d3tbtsMMXDvMf3UxlRfti3TPmSrcwz7CWK0qE0IJX7i3q8CCHHTk=
+  - secure: MylsdRDE8OI08MA6B3mC2xE+5elrU5vfmFbecBrwmeL0kAK8B4w+zNcL/Axt0PN49fw1c8tQTDJA+TFIBMEW8YiDbozb9CLYcsF5bhxwPfO3jYO18mCao+EXaz0LEigiptTIhCpEtLobEvi9KwQhb4W+ESuILekz3IWYpfK4kVw=
+  - secure: DO1jUSjYPv9qzPC0R+n9EBi5PMNVhuuq/Lz13/RvWahcaLb3khGREbxVxY8V9A91X2ktU3fOSfbkwutvOVK4gMxxa0L9HhhR31cnAr9eM0LEmM7J/U39/Uo04wHwTflV1KYk9DMHa+0p5CnVQNHE5345SjFJt2jeOnxQE+flJ8o=
+  - secure: UAZ4sSFAXo0vWlEfIC5E89O9qf8Ixwg+qySEaUb79Xf5bEljUtMqy2KrzhFAN+RDlTIYKMb23SVpZmKrBsh8glMbliFE4H/PlkD0qwbEwnAp1LrLmnfaTEFdSUYFZCrOcdBluiHtrYpyj+TrVkgm8++g3sblpIK5Wqspsism1VI=
+  - secure: Xua7mlpZjG+KD/EGeKE0IsmweXso3A0HXCSXmBcJks7mS3ktt+JfxQtY+hEBS9K9bNydXA2ZdtYWvGBGLcvk4jszZenWcYIF7OxBMHi+1HSQeyzIcOMTWj3cSpm51+R1QqLVDFiWnF1sZwNunJ3pAE/eJLSjpqxoms+xA9RJL+g=
