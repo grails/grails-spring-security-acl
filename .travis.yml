@@ -1,10 +1,13 @@
+dist: trusty
 language: groovy
+addons:
+  chrome: stable
 sudo: false
 cache:
   directories:
   - $HOME/.gradle
 jdk:
-- openjdk7
+- openjdk8
 script: ./travis-build.sh
 env:
   global:

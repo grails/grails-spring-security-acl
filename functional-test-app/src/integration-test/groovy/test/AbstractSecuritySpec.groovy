@@ -1,8 +1,7 @@
 package test
 
-import com.testacl.TestDataService
 import geb.spock.GebReportingSpec
-import grails.test.mixin.integration.Integration
+import grails.testing.mixin.integration.Integration
 import grails.transaction.Rollback
 import pages.LoginPage
 import spock.lang.Shared

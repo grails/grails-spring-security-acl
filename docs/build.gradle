@@ -1,0 +1,76 @@
+buildscript {
+    repositories {
+        maven { url 'https://repo.grails.org/grails/core' }
+    }
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+        classpath 'org.asciidoctor:asciidoctorj-epub3:1.5.0-alpha.6'
+        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.11'
+    }
+}
+
+import org.apache.tools.ant.taskdefs.condition.Os
+apply plugin: 'org.asciidoctor.convert'
+
+def asciidoctorAttributes = [
+        copyright           : 'Apache License, Version 2.0',
+        docinfo1            : 'true',
+        doctype             : 'book',
+        encoding            : 'utf-8',
+        icons               : 'font',
+        id                  : project.name + ':' + project.version,
+        idprefix            : '',
+        idseparator         : '-',
+        lang                : 'en',
+        linkattrs           : true,
+        numbered            : '',
+        producer            : 'Asciidoctor',
+        revnumber           : project.version,
+        setanchors          : true,
+        'source-highlighter' : 'prettify',
+        toc                 : 'left',
+        toc2                : '',
+        toclevels           : '2',
+        projectVersion      : project.projectVersion,
+]
+
+
+import org.apache.tools.ant.taskdefs.condition.Os
+import org.asciidoctor.gradle.AsciidoctorTask
+
+tasks.withType(AsciidoctorTask) {
+    attributes asciidoctorAttributes
+    outputDir new File(buildDir, 'docs')
+    separateOutputDirs = false
+    sourceDir = file('src/docs')
+    sources {
+        include 'index.adoc'
+    }
+}
+
+
+task asciidoc(type: AsciidoctorTask, description: 'Generates single-page HTML, PDF, and EPUB3') {
+    group 'documentation'
+    backends 'html5', 'pdf', 'epub3'
+}
+
+task docs(dependsOn: [asciidoc]) {
+    group 'documentation'
+    doLast {
+        File dir = new File(buildDir, 'docs')
+        ['epub', 'pdf'].each { String ext ->
+            File f = new File(dir, 'index.' + ext)
+            if (f.exists()) {
+                f.renameTo new File(dir, project.name + '.' + ext)
+            }
+        }
+
+        new File(buildDir, 'docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
+
+        copy {
+            from 'src/docs'
+            into new File(buildDir, 'docs').path
+            include '**/*.png'
+        }
+    }
+}

@@ -36,8 +36,8 @@ import grails.transaction.Rollback
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-@Integration
 @Rollback
+@Integration
 class AclServiceSpec extends AbstractIntegrationSpec {
 
 	private final ObjectIdentity topParentOid =    new ObjectIdentityImpl(Report, 100L)

@@ -10,3 +10,4 @@ classes/
 .idea
 build
 cobertura.ser
+out

@@ -14,9 +14,11 @@
  */
 package grails.plugin.springsecurity.acl
 
+import grails.gorm.transactions.ReadOnly
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.context.MessageSource
-import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.security.acls.domain.AccessControlEntryImpl
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.ObjectIdentityImpl
@@ -46,8 +48,9 @@ import org.springframework.util.Assert
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@CompileStatic
 @Slf4j
-class AclService implements MutableAclService {
+class AclService implements MutableAclService, WarnErros {
 
 	AclSidGormService aclSidGormService
 	AclEntryGormService aclEntryGormService
@@ -78,19 +81,25 @@ class AclService implements MutableAclService {
 		// Create the acl_object_identity row
 		createObjectIdentity objectIdentity, sid
 
-		readAclById objectIdentity
+		readAclById(objectIdentity) as MutableAcl
 	}
 
-	protected void createObjectIdentity(ObjectIdentity object, Sid owner) {
+	@Transactional
+	protected AclObjectIdentity createObjectIdentity(ObjectIdentity object, Sid owner) {
 		AclSid ownerSid = createOrRetrieveSid(owner, true)
 		AclClass aclClass = createOrRetrieveClass(object.type, true)
-		save new AclObjectIdentity(
+		AclObjectIdentity aclObjectIdentity = new AclObjectIdentity(
 				aclClass: aclClass,
-				objectId: object.identifier,
+				objectId: object.identifier as Long,
 				owner: ownerSid,
 				entriesInheriting: true)
+		if ( !aclObjectIdentity.save() ) {
+			log.error '{}', errorsBeanBeingSaved(messageSource, aclObjectIdentity)
+		}
+		aclObjectIdentity
 	}
 
+	@Transactional
 	protected AclSid createOrRetrieveSid(Sid sid, boolean allowCreate) {
 		Assert.notNull sid, 'Sid required'
 
@@ -110,28 +119,40 @@ class AclService implements MutableAclService {
 
 		AclSid aclSid = aclSidGormService.findBySidAndPrincipal(sidName, principal)
 		if (!aclSid && allowCreate) {
-			aclSid = save(new AclSid(sid: sidName, principal: principal))
+			aclSid = new AclSid(sid: sidName, principal: principal)
+			if ( !aclSid.save() ) {
+				log.error '{}', errorsBeanBeingSaved(messageSource, aclSid)
+			}
 		}
 		aclSid
 	}
 
+	@Transactional
 	protected AclClass createOrRetrieveClass(String className, boolean allowCreate) {
 		AclClass aclClass = aclClassGormService.findByClassName(className)
 		if (!aclClass && allowCreate) {
-			aclClass = save(new AclClass(className: className))
+			aclClass = new AclClass(className: className)
+			if ( !aclClass.save() ) {
+				log.error '{}', errorsBeanBeingSaved(messageSource, aclClass)
+			}
 		}
 		aclClass
 	}
 
+	@CompileDynamic
 	@Transactional
 	void deleteAcl(ObjectIdentity objectIdentity, boolean deleteChildren) throws ChildrenExistException {
 
 		Assert.notNull objectIdentity, 'Object Identity required'
 		Assert.notNull objectIdentity.identifier, "Object Identity doesn't provide an identifier"
 
-		if (deleteChildren) {
+		if ( deleteChildren ) {
 			List<ObjectIdentity> children = findChildren(objectIdentity)
-			children.each { deleteAcl it, true }
+			if ( children !=  null ) {
+				for ( ObjectIdentity child : children ) {
+					deleteAcl(child, true)
+				}
+			}
 		}
 
 		AclObjectIdentity oid = aclObjectIdentityGormService.findByObjectIdentity(objectIdentity)
@@ -140,13 +161,16 @@ class AclService implements MutableAclService {
 			deleteEntries oid
 
 			// Delete this ACL's acl_object_identity row
-			oid.delete()
+			oid.delete(failOnError:true)
+
+			AclEntry.withSession { it.flush() }
 		}
 
 		// Clear the cache
 		aclCache.evictFromCache objectIdentity
 	}
 
+	@Transactional
 	protected void deleteEntries(AclObjectIdentity oid) {
 		if ( oid ) {
 			List<Serializable> aclEntryIdList = aclEntryGormService.findAllIdByAclObjectIdentity(oid)
@@ -155,10 +179,18 @@ class AclService implements MutableAclService {
 		}
 	}
 
+	@CompileDynamic
+	@Transactional
 	protected void deleteEntries(List<AclEntry> entries) {
 		log.debug 'Deleting entries: {}', entries
-		entries*.delete()
-		AclEntry.withSession { it.flush() }
+		if ( entries ) {
+			for ( AclEntry entry : entries ) {
+
+				entry.delete(failOnError:true)
+
+			}
+			AclEntry.withSession { it.flush() }
+		}
 	}
 
 	@Transactional
@@ -189,7 +221,7 @@ class AclService implements MutableAclService {
 		deleteEntries toDelete
 
 		// Create this ACL's ACEs in the acl_entry table
-		createEntries acl, toCreate
+		createEntries(acl, toCreate as List<AuditableAccessControlEntry>)
 
 		// Change the mutable columns in acl_object_identity
 		updateObjectIdentity acl
@@ -197,15 +229,16 @@ class AclService implements MutableAclService {
 		// Clear the cache, including children
 		clearCacheIncludingChildren acl.objectIdentity
 
-		readAclById acl.objectIdentity
+		readAclById(acl.objectIdentity) as MutableAcl
 	}
 
+	@Transactional
 	protected void createEntries(MutableAcl acl, List<AuditableAccessControlEntry> entries = null) {
-		entries = entries ?: acl.entries
+		List<AuditableAccessControlEntry> entryList = entries ?: acl.entries as List<AuditableAccessControlEntry>
 		int i = 0
-		for (AuditableAccessControlEntry entry in entries) {
+		for (AuditableAccessControlEntry entry in entryList) {
 			Assert.isInstanceOf AccessControlEntryImpl, entry, 'Unknown ACE class'
-			save new AclEntry(
+			AclEntry aclEntryInstance = new AclEntry(
 					aclObjectIdentity: AclObjectIdentity.load(acl.id),
 					aceOrder: i++,
 					sid: createOrRetrieveSid(entry.sid, true),
@@ -213,43 +246,55 @@ class AclService implements MutableAclService {
 					granting: entry.isGranting(),
 					auditSuccess: entry.isAuditSuccess(),
 					auditFailure: entry.isAuditFailure())
+			if ( !aclEntryInstance.save() ) {
+				log.error "{}", errorsBeanBeingSaved(messageSource, aclEntryInstance)
+			}
 		}
 	}
 
+	@CompileDynamic
+	@Transactional
 	protected void updateObjectIdentity(MutableAcl acl) {
 		Assert.notNull acl.owner, "Owner is required in this implementation"
 
 		AclObjectIdentity aclObjectIdentity = aclObjectIdentityGormService.findById(acl.id)
 
-		AclObjectIdentity parent
+		AclObjectIdentity parent = null
 		if (acl.parentAcl) {
 			ObjectIdentity oii = acl.parentAcl.objectIdentity
 			Assert.isInstanceOf ObjectIdentityImpl, oii, 'Implementation only supports ObjectIdentityImpl'
 			parent = aclObjectIdentityGormService.findByObjectIdentity(oii)
 		}
-
 		aclObjectIdentity.parent = parent
 		aclObjectIdentity.owner = createOrRetrieveSid(acl.owner, true)
 		aclObjectIdentity.entriesInheriting = acl.isEntriesInheriting()
+		if ( !aclObjectIdentity.save() ) {
+			log.error "{}", errorsBeanBeingSaved(messageSource, aclObjectIdentity)
+		}
+		AclObjectIdentity.withSession { it.flush() }
 	}
 
 	protected void clearCacheIncludingChildren(ObjectIdentity objectIdentity) {
 		Assert.notNull objectIdentity, 'ObjectIdentity required'
-		for (child in findChildren(objectIdentity)) {
+
+		List<ObjectIdentity> children = findChildren(objectIdentity)
+		for (ObjectIdentity child in children) {
 			clearCacheIncludingChildren child
 		}
 		aclCache.evictFromCache objectIdentity
 	}
 
+	@ReadOnly
 	List<ObjectIdentity> findChildren(ObjectIdentity parentOid) {
 		List<AclObjectIdentity> children = aclObjectIdentityGormService.findAllByParentObjectIdAndParentAclClassName((parentOid?.identifier as Long), parentOid.type)
+
+		if ( !children ) {
+			return []
 		}
 
-		if (!children) {
-			return null
+		children.collect { AclObjectIdentity aoi ->
+			new ObjectIdentityImpl(lookupClass(aoi.aclClass.className), aoi.objectId)
 		}
-
-		children.collect { AclObjectIdentity aoi -> new ObjectIdentityImpl(lookupClass(aoi.aclClass.className), aoi.objectId) }
 	}
 
 	protected Class<?> lookupClass(String className) {
@@ -257,10 +302,12 @@ class AclService implements MutableAclService {
 		Class.forName className, true, Thread.currentThread().contextClassLoader
 	}
 
+	@ReadOnly
 	Acl readAclById(ObjectIdentity object) throws NotFoundException {
 		readAclById object, null
 	}
 
+	@ReadOnly
 	Acl readAclById(ObjectIdentity object, List<Sid> sids) throws NotFoundException {
 		Map<ObjectIdentity, Acl> map = readAclsById([object], sids)
 		Assert.isTrue map.containsKey(object),
@@ -268,10 +315,12 @@ class AclService implements MutableAclService {
 		map[object]
 	}
 
+	@ReadOnly
 	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects) throws NotFoundException {
 		readAclsById objects, null
 	}
 
+	@ReadOnly
 	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) throws NotFoundException {
 		Map<ObjectIdentity, Acl> result = aclLookupStrategy.readAclsById(objects, sids)
 		// Check every requested object identity was found (throw NotFoundException if needed)
@@ -281,22 +330,5 @@ class AclService implements MutableAclService {
 			}
 		}
 		return result
-	}
-
-	protected save(bean) {
-		if (!bean.save()) {
-			if (log.warnEnabled) {
-				def message = new StringBuilder("problem creating ${bean.getClass().simpleName}: $bean")
-				def locale = LocaleContextHolder.getLocale()
-				for (fieldErrors in bean.errors) {
-					for (error in fieldErrors.allErrors) {
-						message << '\n\t' << messageSource.getMessage(error, locale)
-					}
-				}
-				log.warn message.toString()
-			}
-		}
-
-		bean
 	}
 }
