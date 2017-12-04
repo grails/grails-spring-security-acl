@@ -425,54 +425,60 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>Spring Security ACL Plugin - Reference Documentation</h1>
 <div class="details">
 <span id="author" class="author">Burt Beckwith</span><br>
-<span id="revnumber">version unspecified</span>
+<span id="revnumber">version 3.2.0.BUILD-SNAPSHOT</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#introduction">1. Introduction to the Spring Security ACL Plugin</a>
+<li><a href="#introduction">1. Introduction to the Spring Security ACL Plugin</a></li>
+<li><a href="#Installing">2. Installing</a>
 <ul class="sectlevel2">
-<li><a href="#history">1.1. History</a></li>
-<li><a href="#authors">1.2. Authors</a></li>
-<li><a href="#previous-work">1.3. Previous work</a></li>
+<li><a href="#Distribution">2.1. Distribution</a></li>
+<li><a href="#Snapshots">2.2. Snapshots</a></li>
 </ul>
 </li>
-<li><a href="#usage">2. Usage</a>
+<li><a href="#usage">3. Usage</a>
 <ul class="sectlevel2">
-<li><a href="#serviceMethods">2.1. Securing Service Methods</a></li>
-<li><a href="#acls">2.2. Working with ACLs</a></li>
-<li><a href="#domainClasses">2.3. Domain Classes</a></li>
-<li><a href="#configuration">2.4. Configuration</a></li>
-<li><a href="#runAs">2.5. Run-As Authentication Replacement</a></li>
-<li><a href="#customPermissions">2.6. Custom Permissions</a></li>
+<li><a href="#serviceMethods">3.1. Securing Service Methods</a></li>
+<li><a href="#acls">3.2. Working with ACLs</a></li>
+<li><a href="#domainClasses">3.3. Domain Classes</a></li>
+<li><a href="#configuration">3.4. Configuration</a></li>
+<li><a href="#runAs">3.5. Run-As Authentication Replacement</a></li>
+<li><a href="#customPermissions">3.6. Custom Permissions</a></li>
 </ul>
 </li>
-<li><a href="#tutorial">3. Tutorial</a>
+<li><a href="#tutorial">4. Tutorial</a>
 <ul class="sectlevel2">
-<li><a href="#actionsubmit-issues">3.1. actionSubmit issues</a></li>
-<li><a href="#testing">3.2. Testing</a></li>
+<li><a href="#actionsubmit-issues">4.1. actionSubmit issues</a></li>
+<li><a href="#testing">4.2. Testing</a></li>
 </ul>
 </li>
-<li><a href="#sampleApp">4. Sample Application</a></li>
-<li><a href="#AclUtilService">5. AclUtilService</a>
+<li><a href="#sampleApp">5. Sample Application</a></li>
+<li><a href="#AclUtilService">6. AclUtilService</a>
 <ul class="sectlevel2">
-<li><a href="#addPermission">5.1. addPermission</a></li>
-<li><a href="#changeOwner">5.2. changeOwner</a></li>
-<li><a href="#deleteAcl">5.3. deleteAcl</a></li>
-<li><a href="#deletePermission">5.4. deletePermission</a></li>
-<li><a href="#hasPermission">5.5. hasPermission</a></li>
-<li><a href="#readAcl">5.6. readAcl</a></li>
+<li><a href="#addPermission">6.1. addPermission</a></li>
+<li><a href="#changeOwner">6.2. changeOwner</a></li>
+<li><a href="#deleteAcl">6.3. deleteAcl</a></li>
+<li><a href="#deletePermission">6.4. deletePermission</a></li>
+<li><a href="#hasPermission">6.5. hasPermission</a></li>
+<li><a href="#readAcl">6.6. readAcl</a></li>
 </ul>
 </li>
-<li><a href="#Scripts">6. Scripts</a>
+<li><a href="#Scripts">7. Scripts</a>
 <ul class="sectlevel2">
-<li><a href="#s2-create-acl-domains">6.1. s2-create-acl-domains</a></li>
+<li><a href="#s2-create-acl-domains">7.1. s2-create-acl-domains</a></li>
 </ul>
 </li>
-<li><a href="#TagLibraries">7. Tag Libraries</a>
+<li><a href="#TagLibraries">8. Tag Libraries</a>
 <ul class="sectlevel2">
-<li><a href="#permitted">7.1. permitted</a></li>
-<li><a href="#notPermitted">7.2. notPermitted</a></li>
+<li><a href="#permitted">8.1. permitted</a></li>
+<li><a href="#notPermitted">8.2. notPermitted</a></li>
+</ul>
+</li>
+<li><a href="#History">9. History</a>
+<ul class="sectlevel2">
+<li><a href="#authors">9.1. Authors</a></li>
+<li><a href="#previouswork">9.2. Previous work</a></li>
 </ul>
 </li>
 </ul>
@@ -494,158 +500,64 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>In addition to this document, you should read the <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#domain-acls">Spring Security documentation</a>.</p>
 </div>
-<div class="sect2">
-<h3 id="history">1.1. History</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>May 4, 2017</p>
-<div class="ulist">
-<ul>
-<li>
-<p>3.1.1 release</p>
-</li>
-</ul>
 </div>
-</li>
-<li>
-<p>December 20, 2015</p>
-<div class="ulist">
-<ul>
-<li>
-<p>3.0.1 release</p>
-</li>
-</ul>
 </div>
-</li>
-<li>
-<p>December 8, 2015</p>
-<div class="ulist">
-<ul>
-<li>
-<p>3.0.0 release</p>
-</li>
-</ul>
+<div class="sect1">
+<h2 id="Installing">2. Installing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Add an entry in the dependencies block of your `build.gradle file, changing the version as needed:</p>
 </div>
-</li>
-<li>
-<p>August 25, 2015</p>
-<div class="ulist">
-<ul>
-<li>
-<p>3.0.0.M1 release</p>
-</li>
-</ul>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+   ...
+   compile 'org.grails.plugins:spring-security-acl:3.2.0.BUILD-SNAPSHOT'
+   ...</code></pre>
 </div>
-</li>
-<li>
-<p>November 17, 2014</p>
-<div class="ulist">
-<ul>
-<li>
-<p>2.0-RC2 release</p>
-</li>
-</ul>
 </div>
-</li>
-<li>
-<p>October 08, 2013</p>
-<div class="ulist">
-<ul>
-<li>
-<p>2.0-RC1 release</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>Previous version is only compatible with Grails 3.3.x or higher.</p>
 </div>
-</li>
-<li>
-<p>August 20, 2012</p>
-<div class="ulist">
-<ul>
-<li>
-<p>1.1.1 release</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>For previous Grails 3 versions ( 3.0.x, 3.1.x and 3.2.x ) use:</p>
 </div>
-</li>
-<li>
-<p>February 16, 2011</p>
-<div class="ulist">
-<ul>
-<li>
-<p>1.1 release</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>February 7, 2011</p>
-<div class="ulist">
-<ul>
-<li>
-<p>1.0.2 release</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>August 1, 2010</p>
-<div class="ulist">
-<ul>
-<li>
-<p>1.0.1 release</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>July 27, 2010</p>
-<div class="ulist">
-<ul>
-<li>
-<p>1.0 release</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>May 22, 2010</p>
-<div class="ulist">
-<ul>
-<li>
-<p>initial 0.1 release</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+   ...
+   compile 'org.grails.plugins:spring-security-acl:3.1.1'
+   ...</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="authors">1.2. Authors</h3>
+<h3 id="Distribution">2.1. Distribution</h3>
 <div class="paragraph">
-<p>Burt Beckwith</p>
+<p>Grails Spring Security ACL plugin is <a href="https://bintray.com/grails/plugins/spring-security-acl">distributed in bintray</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="previous-work">1.3. Previous work</h3>
+<h3 id="Snapshots">2.2. Snapshots</h3>
 <div class="paragraph">
-<p>Stephan February did the <a href="http://blog.bruary.net/2008/04/grails-acegi-acl-howto.html">first work</a> adding ACL support to the <a href="http://grails.org/plugin/acegi/">Acegi</a> plugin. At the time the plugin was based on Acegi 1.0.x and around the same time the plugin was converted to use Spring Security 2.0 and the ACL support wasn&#8217;t converted to use the new package layout and approach.</p>
+<p>Snapshots are published automatically to <a href="https://oss.jfrog.org/">Artifactory OSS</a> on every successful build.
+You can use them by defining this Maven repository inside
+the <code>repositories</code> block in your <code>build.gradle</code>:</p>
 </div>
-<div class="paragraph">
-<p>Work was done in 2009 to create a GORM-based implementation (the standard Spring Security implementation uses JDBC). Around the same time, Phillip Merensky <a href="http://grails.1312388.n4.nabble.com/Acegi-Plugin-0-5-1-with-ACL-support-implemented-td1400650.html">mentioned on the Grails mailing list</a> that he was working on an implementation. He wrote about his approach <a href="http://imagesiteproject.wordpress.com/2009/09/24/integration-of-spring-security-into-grails-plugin-approach-3/">here</a> and this was merged in with the other approach but never formally released.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }</code></pre>
 </div>
-<div class="paragraph">
-<p>This plugin builds on that work but is based on Spring Security 4 and Spring 4.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="usage">2. Usage</h2>
+<h2 id="usage">3. Usage</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="serviceMethods">2.1. Securing Service Methods</h3>
+<h3 id="serviceMethods">3.1. Securing Service Methods</h3>
 <div class="paragraph">
 <p>There are two primary use cases for ACL security: determining whether a user is allowed to perform an action on an instance before the action is invoked, and restricting access to single or multiple instances after methods are invoked (this is typically implemented by collection filtering). You can call <code>aclUtilService.hasPermission()</code> explicitly, but this tends to clutter your code with security logic that often has little to do with business logic. Instead, Spring Security provides some convenient annotations that are used to wrap your method calls in access checks.</p>
 </div>
@@ -755,9 +667,9 @@ class ReportService {
 </div>
 </div>
 <div class="sect2">
-<h3 id="acls">2.2. Working with ACLs</h3>
+<h3 id="acls">3.2. Working with ACLs</h3>
 <div class="sect3">
-<h4 id="suggested-application-changes">2.2.1. Suggested application changes</h4>
+<h4 id="suggested-application-changes">3.2.1. Suggested application changes</h4>
 <div class="paragraph">
 <p>To properly display access denied exceptions (e.g. when a user tries to perform an action but doesn&#8217;t have a grant authorizing it), you should create a mapping in <code>grails-app/controllers/UrlMappings.groovy</code> for error code 403. In addition, it&#8217;s possible to trigger a <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/acls/model/NotFoundException.html">NotFoundException</a> which will create an error 500, but should be treated like a 403 error, so you should add mappings for these conditions:</p>
 </div>
@@ -823,7 +735,7 @@ class ErrorsController {
 </div>
 </div>
 <div class="sect3">
-<h4 id="actionsubmit">2.2.2. actionSubmit</h4>
+<h4 id="actionsubmit">3.2.2. actionSubmit</h4>
 <div class="paragraph">
 <p>Grails has a convenient feature where it supports multiple submit actions per form via the <code>&lt;g:actionSubmit&gt;</code> tag. This is done by posting to the <code>index</code> action but with a special parameter that indicates which action to invoke. This is a problem in general for security since any URL rules for edit, delete, save, etc. will be bypassed. It&#8217;s an even more significant issue with ACLs because of the way that the access denied exception interacts with the <code>actionSubmit</code> processing. If you don&#8217;t make any adjustments for this, your users will see a blank page when they attempt to submit a form and the action is disallowed. The solution is to remove <code>actionSubmit</code> buttons and replace them with regular submit buttons. This requires one form per button, and without adjusting the CSS the buttons will look differently than if they were in-line <code>actionSubmit</code> buttons, but that is fixable with the appropriate CSS changes.</p>
 </div>
@@ -902,7 +814,7 @@ class ErrorsController {
 </div>
 </div>
 <div class="sect2">
-<h3 id="domainClasses">2.3. Domain Classes</h3>
+<h3 id="domainClasses">3.3. Domain Classes</h3>
 <div class="paragraph">
 <p>The plugin uses domain classes to manage database state. Ordinarily the database structure isn&#8217;t all that important, but to be compatible with the traditional JDBC-based Spring Security code, the domain classes are configured to generate the table and column names that are used there.</p>
 </div>
@@ -913,7 +825,7 @@ class ErrorsController {
 <p>As you can see, the database structure is highly normalized.</p>
 </div>
 <div class="sect3">
-<h4 id="aclclass">2.3.1. AclClass</h4>
+<h4 id="aclclass">3.3.1. AclClass</h4>
 <div class="paragraph">
 <p>The <code>AclClass</code> domain class contains entries for the names of each application domain class that has associated permissions:</p>
 </div>
@@ -943,7 +855,7 @@ class AclClass {
 </div>
 </div>
 <div class="sect3">
-<h4 id="aclsid">2.3.2. AclSid</h4>
+<h4 id="aclsid">3.3.2. AclSid</h4>
 <div class="paragraph">
 <p>The <code>AclSid</code> domain class contains entries for the names of grant recipients (a principal or authority - SID is an acronym for &#8220;security identity&#8221;). These are typically usernames (where <code>principal</code> is <code>true</code>) but can also be a <code>GrantedAuthority</code> (role name, where <code>principal</code> is <code>false</code>). When granting permissions to a role, any user with that role receives that permission:</p>
 </div>
@@ -974,7 +886,7 @@ class AclSid {
 </div>
 </div>
 <div class="sect3">
-<h4 id="aclobjectidentity">2.3.3. AclObjectIdentity</h4>
+<h4 id="aclobjectidentity">3.3.3. AclObjectIdentity</h4>
 <div class="paragraph">
 <p>The <code>AclObjectIdentity</code> domain class contains entries representing individual domain class instances (OIDs). It has a field for the instance id (<code>objectId</code>) and domain class (<code>aclClass</code>) that uniquely identify the instance. In addition there are optional nullable fields for the parent OID (<code>parent</code>) and owner (<code>owner</code>). There&#8217;s also a flag (<code>entriesInheriting</code>) to indicate whether ACL entries can inherit from a parent ACL.</p>
 </div>
@@ -1030,7 +942,7 @@ class AclObjectIdentity extends AbstractAclObjectIdentity {
 </div>
 </div>
 <div class="sect3">
-<h4 id="aclentry">2.3.4. AclEntry</h4>
+<h4 id="aclentry">3.3.4. AclEntry</h4>
 <div class="paragraph">
 <p>Finally, the <code>AclEntry</code> domain class contains entries representing grants (or denials) of a permission on an object instance to a recipient. The <code>aclObjectIdentity</code> field references the domain class instance (since an instance can have many granted permissions). The <code>sid</code> field references the recipient. The <code>granting</code> field determines whether the entry grants the permission (<code>true</code>) or denies it (<code>false</code>). The <code>aceOrder</code> field specifies the position of the entry, which is important because the entries are evaluated in order and the first matching entry determines whether access is allowed. <code>auditSuccess</code> and <code>auditFailure</code> determine whether to log success and/or failure events (these both default to <code>false</code>).</p>
 </div>
@@ -1072,7 +984,7 @@ class AclEntry {
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration">2.4. Configuration</h3>
+<h3 id="configuration">3.4. Configuration</h3>
 <div class="paragraph">
 <p>Creating, editing, or deleting permissions requires an authenticated user. In most cases  if the authenticated user is the owner of the ACL then access is allowed, but granted roles also affect whether access is allowed. The default required role is <code>ROLE_ADMIN</code> for all actions, but this can be configured in <code>grails-app/conf/application.groovy</code>. This table summarizes the attribute names and the corresponding actions that are allowed for it:</p>
 </div>
@@ -1118,7 +1030,7 @@ grails.plugin.springsecurity.acl.authority.
 </div>
 </div>
 <div class="sect3">
-<h4 id="run-as-authentication-replacement">2.4.1. Run-As Authentication Replacement</h4>
+<h4 id="run-as-authentication-replacement">3.4.1. Run-As Authentication Replacement</h4>
 <div class="paragraph">
 <p>There are also two options to configure <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#runas">Run-As Authentication Replacement</a>:</p>
 </div>
@@ -1156,7 +1068,7 @@ grails.plugin.springsecurity.runAs.key = 'your run-as key'</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="runAs">2.5. Run-As Authentication Replacement</h3>
+<h3 id="runAs">3.5. Run-As Authentication Replacement</h3>
 <div class="paragraph">
 <p>Although not strictly related to ACLs, the plugin implements <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#runas">Run-As Authentication Replacement</a> since it&#8217;s related to method security in general. This feature is similar to the Switch User feature of the Spring Security Core plugin, but instead of running as another user until you choose to revert to your original <code>Authentication</code>, the temporary authentication switch only lasts for one method invocation.</p>
 </div>
@@ -1176,7 +1088,7 @@ grails.plugin.springsecurity.runAs.key = 'your run-as key'</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="customPermissions">2.6. Custom Permissions</h3>
+<h3 id="customPermissions">3.6. Custom Permissions</h3>
 <div class="paragraph">
 <p>By default there are 5 permissions available from the <code>org.springframework.security.acls.domain. BasePermission</code> class: <code>READ</code>, <code>WRITE</code>, <code>CREATE</code>, <code>DELETE</code>, and <code>ADMINISTRATION</code>. You can also add your own permissions if these aren&#8217;t sufficient.</p>
 </div>
@@ -1253,7 +1165,7 @@ Report get(long id) {
 </div>
 </div>
 <div class="sect1">
-<h2 id="tutorial">3. Tutorial</h2>
+<h2 id="tutorial">4. Tutorial</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>First create a test application:</p>
@@ -1778,7 +1690,7 @@ class ErrorsController {
 </div>
 </div>
 <div class="sect2">
-<h3 id="actionsubmit-issues">3.1. actionSubmit issues</h3>
+<h3 id="actionsubmit-issues">4.1. actionSubmit issues</h3>
 <div class="paragraph">
 <p>Grails has a convenient feature where it supports multiple submit actions per form via the <code>&lt;g:actionSubmit&gt;</code> tag. This is done by posting to the <code>index</code> action but with a special parameter that indicates which action to invoke. This is a problem in general for security since any URL rules for edit, delete, save, etc. will be bypassed. It&#8217;s an even more significant issue with ACLs because of the way that the access denied exception interacts with the <code>actionSubmit</code> processing. If you don&#8217;t make any adjustments for this, your users will see a blank page when they attempt to submit a form and the action is disallowed. The solution is to remove <code>actionSubmit</code> buttons and replace them with regular submit buttons. This requires one form per button, and without adjusting the CSS the buttons will look differently than if they were in-line <code>actionSubmit</code> buttons, but that is fixable with the appropriate CSS changes.</p>
 </div>
@@ -1879,7 +1791,7 @@ class ErrorsController {
 </div>
 </div>
 <div class="sect2">
-<h3 id="testing">3.2. Testing</h3>
+<h3 id="testing">4.2. Testing</h3>
 <div class="paragraph">
 <p>Now start the app:</p>
 </div>
@@ -1927,7 +1839,7 @@ class ErrorsController {
 </div>
 </div>
 <div class="sect1">
-<h2 id="sampleApp">4. Sample Application</h2>
+<h2 id="sampleApp">5. Sample Application</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Working with ACLs in Spring Security is complex but it will be easier to understand with a sample application. To help get you started, there&#8217;s a Grails application that uses the plugin to test with. It&#8217;s based on the Spring Security <a href="https://github.com/spring-projects/spring-security/tree/master/samples/contacts-xml">Contacts</a> sample application. But where the Spring Security application uses SpringMVC, JDBC, etc., this application is 100% Grails. The application is available <a href="https://github.com/burtbeckwith/grails-contacts">at GitHub</a>.</p>
@@ -1946,10 +1858,10 @@ class ErrorsController {
 </div>
 </div>
 <div class="sect1">
-<h2 id="AclUtilService">5. AclUtilService</h2>
+<h2 id="AclUtilService">6. AclUtilService</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="addPermission">5.1. addPermission</h3>
+<h3 id="addPermission">6.1. addPermission</h3>
 <div class="paragraph">
 <div class="title">Purpose</div>
 <p>Grant a permission on a domain object instance to a recipient.</p>
@@ -1997,7 +1909,7 @@ void addPermission(ObjectIdentity oid, recipient, Permission permission)</code><
 </div>
 </div>
 <div class="sect2">
-<h3 id="changeOwner">5.2. changeOwner</h3>
+<h3 id="changeOwner">6.2. changeOwner</h3>
 <div class="paragraph">
 <div class="title">Purpose</div>
 <p>Change the ACL owner for a domain class instance.</p>
@@ -2027,7 +1939,7 @@ void addPermission(ObjectIdentity oid, recipient, Permission permission)</code><
 </div>
 </div>
 <div class="sect2">
-<h3 id="deleteAcl">5.3. deleteAcl</h3>
+<h3 id="deleteAcl">6.3. deleteAcl</h3>
 <div class="paragraph">
 <div class="title">Purpose</div>
 <p>Deletes the ACL for a domain class instance.</p>
@@ -2054,7 +1966,7 @@ void addPermission(ObjectIdentity oid, recipient, Permission permission)</code><
 </div>
 </div>
 <div class="sect2">
-<h3 id="deletePermission">5.4. deletePermission</h3>
+<h3 id="deletePermission">6.4. deletePermission</h3>
 <div class="paragraph">
 <div class="title">Purpose</div>
 <p>Removes a granted permission.</p>
@@ -2097,7 +2009,7 @@ void deletePermission(Class&lt;?&gt; domainClass, long id, recipient, Permission
 </div>
 </div>
 <div class="sect2">
-<h3 id="hasPermission">5.5. hasPermission</h3>
+<h3 id="hasPermission">6.5. hasPermission</h3>
 <div class="paragraph">
 <div class="title">Purpose</div>
 <p>Check if the authentication has grants for the specified permission(s) on the domain class instance.</p>
@@ -2134,7 +2046,7 @@ boolean hasPermission(Authentication authentication, domainObject, List&lt;Permi
 </div>
 </div>
 <div class="sect2">
-<h3 id="readAcl">5.6. readAcl</h3>
+<h3 id="readAcl">6.6. readAcl</h3>
 <div class="paragraph">
 <div class="title">Purpose</div>
 <p>Retrieves the ACL for a domain class instance.</p>
@@ -2173,10 +2085,10 @@ Acl readAcl(Class&lt;?&gt; domainClass, id)</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="Scripts">6. Scripts</h2>
+<h2 id="Scripts">7. Scripts</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="s2-create-acl-domains">6.1. s2-create-acl-domains</h3>
+<h3 id="s2-create-acl-domains">7.1. s2-create-acl-domains</h3>
 <div class="paragraph">
 <div class="title">Purpose</div>
 <p>Creates the domain classes that manage ACL data.</p>
@@ -2195,10 +2107,10 @@ Acl readAcl(Class&lt;?&gt; domainClass, id)</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="TagLibraries">7. Tag Libraries</h2>
+<h2 id="TagLibraries">8. Tag Libraries</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="permitted">7.1. permitted</h3>
+<h3 id="permitted">8.1. permitted</h3>
 <div class="paragraph">
 <div class="title">Purpose</div>
 <p>Renders the body if the user is granted the specified permission(s)</p>
@@ -2286,7 +2198,7 @@ the body content
 </div>
 </div>
 <div class="sect2">
-<h3 id="notPermitted">7.2. notPermitted</h3>
+<h3 id="notPermitted">8.2. notPermitted</h3>
 <div class="paragraph">
 <div class="title">Purpose</div>
 <p>Renders the body if the user is not granted the specified permission(s)</p>
@@ -2375,11 +2287,168 @@ the body content
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="History">9. History</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Dec 4, 2017</p>
+<div class="ulist">
+<ul>
+<li>
+<p>3.2.0 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>May 4, 2017</p>
+<div class="ulist">
+<ul>
+<li>
+<p>3.1.1 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>December 20, 2015</p>
+<div class="ulist">
+<ul>
+<li>
+<p>3.0.1 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>December 8, 2015</p>
+<div class="ulist">
+<ul>
+<li>
+<p>3.0.0 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>August 25, 2015</p>
+<div class="ulist">
+<ul>
+<li>
+<p>3.0.0.M1 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>November 17, 2014</p>
+<div class="ulist">
+<ul>
+<li>
+<p>2.0-RC2 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>October 08, 2013</p>
+<div class="ulist">
+<ul>
+<li>
+<p>2.0-RC1 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>August 20, 2012</p>
+<div class="ulist">
+<ul>
+<li>
+<p>1.1.1 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>February 16, 2011</p>
+<div class="ulist">
+<ul>
+<li>
+<p>1.1 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>February 7, 2011</p>
+<div class="ulist">
+<ul>
+<li>
+<p>1.0.2 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>August 1, 2010</p>
+<div class="ulist">
+<ul>
+<li>
+<p>1.0.1 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>July 27, 2010</p>
+<div class="ulist">
+<ul>
+<li>
+<p>1.0 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>May 22, 2010</p>
+<div class="ulist">
+<ul>
+<li>
+<p>initial 0.1 release</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="authors">9.1. Authors</h3>
+<div class="paragraph">
+<p>Burt Beckwith</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="previouswork">9.2. Previous work</h3>
+<div class="paragraph">
+<p>Stephan February did the <a href="http://blog.bruary.net/2008/04/grails-acegi-acl-howto.html">first work</a> adding ACL support to the <a href="http://grails.org/plugin/acegi/">Acegi</a> plugin. At the time the plugin was based on Acegi 1.0.x and around the same time the plugin was converted to use Spring Security 2.0 and the ACL support wasn&#8217;t converted to use the new package layout and approach.</p>
+</div>
+<div class="paragraph">
+<p>Work was done in 2009 to create a GORM-based implementation (the standard Spring Security implementation uses JDBC). Around the same time, Phillip Merensky <a href="http://grails.1312388.n4.nabble.com/Acegi-Plugin-0-5-1-with-ACL-support-implemented-td1400650.html">mentioned on the Grails mailing list</a> that he was working on an implementation. He wrote about his approach <a href="http://imagesiteproject.wordpress.com/2009/09/24/integration-of-spring-security-into-grails-plugin-approach-3/">here</a> and this was merged in with the other approach but never formally released.</p>
+</div>
+<div class="paragraph">
+<p>This plugin builds on that work but is based on Spring Security 4 and Spring 4.</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version unspecified<br>
-Last updated 2017-12-02 12:43:10 +00:00
+Version 3.2.0.BUILD-SNAPSHOT<br>
+Last updated 2017-12-04 08:59:55 +00:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
