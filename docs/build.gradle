@@ -25,7 +25,7 @@ def asciidoctorAttributes = [
         linkattrs           : true,
         numbered            : '',
         producer            : 'Asciidoctor',
-        revnumber           : project.version,
+        revnumber           : project.projectVersion,
         setanchors          : true,
         'source-highlighter' : 'prettify',
         toc                 : 'left',

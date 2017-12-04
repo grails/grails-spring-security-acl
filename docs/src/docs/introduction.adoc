@@ -8,5 +8,3 @@ The core plugin and other extension plugins support restricting access to URLs v
 To learn about using ACLs in Grails, you can follow the <<tutorial>> and in addition you can download and run a complete Grails application that uses the plugin. Installing and running the application are described in <<sampleApp>>.
 
 In addition to this document, you should read the http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#domain-acls[Spring Security documentation].
-
-include::introduction/history.adoc[]
