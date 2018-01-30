@@ -71,7 +71,7 @@ bootRun {
 }
 
 webdriverBinaries {
-    chromedriver '2.32'
+    chromedriver '2.35'
     geckodriver '0.18.0'
 }
 
