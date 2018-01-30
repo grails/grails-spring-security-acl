@@ -1,7 +1,9 @@
 dist: trusty
 language: groovy
 addons:
-  chrome: stable
+  apt:
+    packages:
+      - google-chrome-stable
 sudo: false
 cache:
   directories:
