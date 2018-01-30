@@ -302,12 +302,12 @@ class AclService implements MutableAclService, WarnErros {
 		Class.forName className, true, Thread.currentThread().contextClassLoader
 	}
 
-	@ReadOnly
+	@ReadOnly(noRollbackFor = [NotFoundException])
 	Acl readAclById(ObjectIdentity object) throws NotFoundException {
 		readAclById object, null
 	}
 
-	@ReadOnly
+	@ReadOnly(noRollbackFor = [NotFoundException])
 	Acl readAclById(ObjectIdentity object, List<Sid> sids) throws NotFoundException {
 		Map<ObjectIdentity, Acl> map = readAclsById([object], sids)
 		Assert.isTrue map.containsKey(object),
@@ -315,12 +315,12 @@ class AclService implements MutableAclService, WarnErros {
 		map[object]
 	}
 
-	@ReadOnly
+	@ReadOnly(noRollbackFor = [NotFoundException])
 	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects) throws NotFoundException {
 		readAclsById objects, null
 	}
 
-	@ReadOnly
+	@ReadOnly(noRollbackFor = [NotFoundException])
 	Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) throws NotFoundException {
 		Map<ObjectIdentity, Acl> result = aclLookupStrategy.readAclsById(objects, sids)
 		// Check every requested object identity was found (throw NotFoundException if needed)
