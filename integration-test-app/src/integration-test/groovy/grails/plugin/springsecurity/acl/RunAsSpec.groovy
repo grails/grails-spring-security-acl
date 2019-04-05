@@ -14,11 +14,12 @@
  */
 package grails.plugin.springsecurity.acl
 
+
 import org.springframework.security.access.AccessDeniedException
 import test.TestRunAsService
 import test.TestSecureService
 import grails.testing.mixin.integration.Integration
-import grails.transaction.Rollback
+
 
 /**
  * Integration tests for run-as functionality.
@@ -26,7 +27,7 @@ import grails.transaction.Rollback
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 @Integration
-@Rollback
+@grails.gorm.transactions.Rollback
 class RunAsSpec extends AbstractIntegrationSpec {
 
 	TestRunAsService testRunAsService

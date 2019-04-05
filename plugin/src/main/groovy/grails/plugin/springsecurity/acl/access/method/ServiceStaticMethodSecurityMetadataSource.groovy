@@ -35,12 +35,12 @@ class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackMethodSe
 
 	@Override
 	protected Collection<ConfigAttribute> findAttributes(Class<?> clazz) {
-		classConfigs[ProxyUtils.unproxy(clazz).name]
+		classConfigs.get(ProxyUtils.unproxy(clazz).name)
 	}
 
 	@Override
 	protected Collection<ConfigAttribute> findAttributes(Method method, Class<?> targetClass) {
-		methodConfigs[ProxyUtils.unproxy(targetClass).name]?.get(ProxyUtils.unproxy(method).name)
+		methodConfigs.get(ProxyUtils.unproxy(targetClass).name)?.get(ProxyUtils.unproxy(method).name)
 	}
 
 	Collection<ConfigAttribute> getAllConfigAttributes() {}
@@ -65,13 +65,14 @@ class ServiceStaticMethodSecurityMetadataSource extends AbstractFallbackMethodSe
 		methodConfigNames.each { String key, Map<String, List<String>> value ->
 			Map<String, List<ConfigAttribute>> configs = [:]
 			populateMap configs, value
-			methodConfigs[key] = configs
+			//methodConfigs[key] = configs // workaround for groovy 2.5.6 bug
+			methodConfigs.put(key,configs)
 		}
 	}
 
 	protected void populateMap(Map<String, List<ConfigAttribute>> dest, Map<String, List<String>> source) {
 		source.each { String key, List<String> value ->
-			dest[key] = value.collect { String config -> new SecurityConfig(config) } as List
+			dest.put(key,value.collect { String config -> new SecurityConfig(config) } as List<ConfigAttribute>)
 		}
 	}
 }

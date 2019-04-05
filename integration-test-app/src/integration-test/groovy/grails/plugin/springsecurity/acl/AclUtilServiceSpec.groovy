@@ -14,6 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
+import grails.gorm.transactions.Rollback
 import grails.plugin.springsecurity.acl.util.ProxyUtils
 import org.springframework.security.acls.domain.CumulativePermission
 import spock.lang.Issue
@@ -22,7 +23,6 @@ import test.Report
 import static org.springframework.security.acls.domain.BasePermission.READ
 import static org.springframework.security.acls.domain.BasePermission.WRITE
 import grails.testing.mixin.integration.Integration
-import grails.transaction.Rollback
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>

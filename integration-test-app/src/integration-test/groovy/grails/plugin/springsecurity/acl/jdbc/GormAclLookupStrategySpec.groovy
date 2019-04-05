@@ -14,6 +14,7 @@
  */
 package grails.plugin.springsecurity.acl.jdbc
 
+import grails.gorm.transactions.Rollback
 import grails.plugin.springsecurity.acl.AbstractIntegrationSpec
 import grails.plugin.springsecurity.acl.AclClass
 import grails.plugin.springsecurity.acl.AclEntry
@@ -30,7 +31,7 @@ import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
 import test.Report
 import grails.testing.mixin.integration.Integration
-import grails.transaction.Rollback
+
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>

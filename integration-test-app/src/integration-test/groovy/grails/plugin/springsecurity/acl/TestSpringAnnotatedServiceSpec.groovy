@@ -14,8 +14,6 @@
  */
 package grails.plugin.springsecurity.acl
 
-import grails.testing.mixin.integration.Integration
-import grails.transaction.Rollback
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>

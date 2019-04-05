@@ -14,11 +14,12 @@
  */
 package grails.plugin.springsecurity.acl
 
+import grails.gorm.transactions.Rollback
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
 import test.TestClassAnnotatedService
 import grails.testing.mixin.integration.Integration
-import grails.transaction.Rollback
+
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>

@@ -14,6 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
+import grails.gorm.transactions.Rollback
 import net.sf.ehcache.Ehcache
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.CumulativePermission
@@ -31,7 +32,7 @@ import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
 import test.Report
 import grails.testing.mixin.integration.Integration
-import grails.transaction.Rollback
+
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>

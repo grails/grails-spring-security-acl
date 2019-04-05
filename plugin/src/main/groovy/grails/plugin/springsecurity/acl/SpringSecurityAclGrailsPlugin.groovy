@@ -14,6 +14,7 @@
  */
 package grails.plugin.springsecurity.acl
 
+import grails.plugin.springsecurity.BeanTypeResolver
 import grails.util.GrailsClassUtils as GCU
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
@@ -56,11 +57,32 @@ import grails.plugin.springsecurity.acl.domain.NullAclAuditLogger
 import grails.plugin.springsecurity.acl.jdbc.GormAclLookupStrategy
 import grails.plugin.springsecurity.acl.model.GormObjectIdentityRetrievalStrategy
 import grails.plugins.Plugin
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder
+import org.springframework.security.crypto.password.LdapShaPasswordEncoder
+import org.springframework.security.crypto.password.Md4PasswordEncoder
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder
+import org.springframework.security.crypto.password.NoOpPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder
+import org.springframework.security.crypto.password.StandardPasswordEncoder
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 class SpringSecurityAclGrailsPlugin extends Plugin {
+
+	public static final String ENCODING_ID_BCRYPT = "bcrypt"
+	public static final String ENCODING_ID_LDAP = "ldap"
+	public static final String ENCODING_ID_MD4 = "MD4"
+	public static final String ENCODING_ID_MD5 = "MD5"
+	public static final String ENCODING_ID_NOOP = "noop"
+	public static final String ENCODING_ID_PBKDF2 = "pbkdf2"
+	public static final String ENCODING_ID_SCRYPT = "scrypt"
+	public static final String ENCODING_ID_SHA1 = "SHA-1"
+	public static final String ENCODING_IDSHA256 = "SHA-256"
+
 
 	String grailsVersion = '3.0.0 > *'
 	String author = 'Burt Beckwith'
@@ -74,6 +96,8 @@ class SpringSecurityAclGrailsPlugin extends Plugin {
 	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-acl']
 	def loadAfter = ['springSecurityCore']
 	def profiles = ['web']
+
+	private beanTypeResolver
 
 	Closure doWithSpring() {{ ->
 
@@ -89,6 +113,9 @@ class SpringSecurityAclGrailsPlugin extends Plugin {
 		if (!conf.acl.active) {
 			return
 		}
+
+		Class beanTypeResolverClass = conf.beanTypeResolverClass ?: BeanTypeResolver
+		beanTypeResolver = beanTypeResolverClass.newInstance(conf, grailsApplication)
 
 		boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
 
@@ -179,6 +206,8 @@ class SpringSecurityAclGrailsPlugin extends Plugin {
 			permissionFactory = ref('aclPermissionFactory')
 			permissionGrantingStrategy = ref('aclPermissionGrantingStrategy')
 		}
+		String algorithm = conf.password.algorithm
+		passwordEncoder(classFor('passwordEncoder', DelegatingPasswordEncoder), algorithm, idToPasswordEncoder(conf))
 	}
 
 	private configureExpressionBeans = { conf ->
@@ -322,8 +351,6 @@ class SpringSecurityAclGrailsPlugin extends Plugin {
 			validateConfigAttributes = false
 		}
 
-//		methodSecurityMetadataSourceAdvisor(MethodSecurityMetadataSourceAdvisor,
-//				'methodSecurityInterceptor', ref('aclSecurityMetadataSource'), 'aclSecurityMetadataSource')
 	}
 
 	private void findConfigNames(Map<String, List<String>> classConfigNames,
@@ -342,6 +369,7 @@ class SpringSecurityAclGrailsPlugin extends Plugin {
 		*/
 
 		for (serviceClass in grailsApplication.serviceClasses) {
+			//methodConfigNames.put(serviceClass.clazz.name, [:])
 			methodConfigNames[serviceClass.clazz.name] = [:]
 		}
 
@@ -354,6 +382,7 @@ class SpringSecurityAclGrailsPlugin extends Plugin {
 			def springSecurityACL = serviceClass.clazz.springSecurityACL
 			springSecurityACL.each { methodName, configNames ->
 				if ('*'.equals(methodName)) {
+					//classConfigNames.put(className,configNames)
 					classConfigNames[className] = configNames
 				}
 				else {
@@ -437,4 +466,37 @@ class SpringSecurityAclGrailsPlugin extends Plugin {
 //		log.debug message
 //		println message
 	}
+
+	Map<String, PasswordEncoder> idToPasswordEncoder(ConfigObject conf) {
+
+		MessageDigestPasswordEncoder messsageDigestPasswordEncoderMD5 = new MessageDigestPasswordEncoder(ENCODING_ID_MD5)
+		messsageDigestPasswordEncoderMD5.encodeHashAsBase64 = conf.password.encodeHashAsBase64 // false
+		messsageDigestPasswordEncoderMD5.iterations = conf.password.hash.iterations // 10000
+
+		MessageDigestPasswordEncoder messsageDigestPasswordEncoderSHA1 = new MessageDigestPasswordEncoder(ENCODING_ID_SHA1)
+		messsageDigestPasswordEncoderSHA1.encodeHashAsBase64 = conf.password.encodeHashAsBase64 // false
+		messsageDigestPasswordEncoderSHA1.iterations = conf.password.hash.iterations // 10000
+
+		MessageDigestPasswordEncoder messsageDigestPasswordEncoderSHA256 = new MessageDigestPasswordEncoder(ENCODING_IDSHA256)
+		messsageDigestPasswordEncoderSHA256.encodeHashAsBase64 = conf.password.encodeHashAsBase64 // false
+		messsageDigestPasswordEncoderSHA256.iterations = conf.password.hash.iterations // 10000
+
+		int strength = conf.password.bcrypt.logrounds
+		[(ENCODING_ID_BCRYPT): new BCryptPasswordEncoder(strength),
+		 (ENCODING_ID_LDAP): new LdapShaPasswordEncoder(),
+		 (ENCODING_ID_MD4): new Md4PasswordEncoder(),
+		 (ENCODING_ID_MD5): messsageDigestPasswordEncoderMD5,
+		 (ENCODING_ID_NOOP): NoOpPasswordEncoder.getInstance(),
+		 (ENCODING_ID_PBKDF2): new Pbkdf2PasswordEncoder(),
+		 (ENCODING_ID_SCRYPT): new SCryptPasswordEncoder(),
+		 (ENCODING_ID_SHA1): messsageDigestPasswordEncoderSHA1,
+		 (ENCODING_IDSHA256): messsageDigestPasswordEncoderSHA256,
+		 "sha256": new StandardPasswordEncoder()]
+	}
+
+	private Class classFor(String beanName, Class defaultType) {
+		beanTypeResolver.resolveType beanName, defaultType
+	}
+
+
 }

@@ -23,6 +23,7 @@ grails {
 			}
 			logout.postOnly = false
 			roleHierarchy = 'ROLE_ADMIN > ROLE_USER'
+			password.algorithm = 'bcrypt'
 			userLookup {
 				authorityJoinClassName = 'com.testacl.UserRole'
 				userDomainClassName = 'com.testacl.User'

@@ -2,12 +2,11 @@ package test
 
 import geb.spock.GebReportingSpec
 import grails.testing.mixin.integration.Integration
-import grails.transaction.Rollback
 import pages.LoginPage
 import spock.lang.Shared
 
 @Integration
-@Rollback
+@grails.gorm.transactions.Rollback
 abstract class AbstractSecuritySpec extends GebReportingSpec {
 
 	@Shared boolean reset = false

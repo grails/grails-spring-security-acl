@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         mavenLocal()
+        mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -45,7 +46,6 @@ dependencies {
     provided "org.grails:grails-plugin-services"
     provided "org.grails:grails-plugin-domain-class"
     testCompile "org.grails:grails-gorm-testing-support"
-    testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-web-testing-support"
 
     compile "org.grails.plugins:spring-security-core:$springSecurityCoreVersion"
@@ -54,10 +54,8 @@ dependencies {
 
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')
-    addResources = true
+    sourceResources sourceSets.main
 }
-// enable if you wish to package this plugin as a standalone application
-bootRepackage.enabled = false
 
 apply from: "${rootProject.projectDir}/gradle/artifactoryPublish.gradle"
 apply from: "${rootProject.projectDir}/gradle/grailsPublish.gradle"
