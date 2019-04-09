@@ -4,6 +4,12 @@ set -e
 
 EXIT_STATUS=0
 
+echo "TRAVIS_BRANCH:"
+echo $TRAVIS_BRANCH
+echo "TRAVIS_TAG:"
+echo $TRAVIS_TAG
+
+
 ./gradlew check -Dgeb.env=chromeHeadless || EXIT_STATUS=$?
 
 if [[ $EXIT_STATUS -ne 0 ]]; then
