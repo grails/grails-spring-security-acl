@@ -11,6 +11,22 @@ if [[ $EXIT_STATUS -ne 0 ]]; then
   exit $EXIT_STATUS
 fi
 
+./gradlew :integration-test-app:check -Dgeb.env=chromeHeadless || EXIT_STATUS=$?
+
+if [[ $EXIT_STATUS -ne 0 ]]; then
+  echo "Integration Tests Check failed"
+  exit $EXIT_STATUS
+fi
+
+./gradlew :functional-test-app:check -Dgeb.env=chromeHeadless || EXIT_STATUS=$?
+
+if [[ $EXIT_STATUS -ne 0 ]]; then
+  echo "Integration Tests Check failed"
+  exit $EXIT_STATUS
+fi
+
+
+
 ./gradlew :spring-security-acl:assemble --stacktrace || EXIT_STATUS=$?
 if [[ $EXIT_STATUS -ne 0 ]]; then
     echo ":spring-security-acl:assemble failed"

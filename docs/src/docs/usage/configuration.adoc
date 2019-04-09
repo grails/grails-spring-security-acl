@@ -27,7 +27,7 @@ grails.plugin.springsecurity.acl.authority.
 
 ==== Run-As Authentication Replacement
 
-There are also two options to configure http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#runas[Run-As Authentication Replacement]:
+There are also two options to configure http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#runas[Run-As Authentication Replacement]:
 
 [width="100%",options="header"]
 |====================

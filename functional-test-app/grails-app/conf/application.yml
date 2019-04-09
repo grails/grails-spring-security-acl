@@ -31,6 +31,10 @@ endpoints:
 
 ---
 grails:
+    plugin:
+        springsecurity:
+            userLookup:
+                user-domain-class-name: com.testacl.User
     mime:
         disable:
             accept:
@@ -130,3 +134,4 @@ environments:
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+

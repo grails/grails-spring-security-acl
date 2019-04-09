@@ -1,5 +1,7 @@
 [[History]]
 == History
+* Apr 8, 2019
+** 4.0.0.M1 release
 * Feb 15, 2018
 ** 3.2.1 release
 * Dec 4, 2017

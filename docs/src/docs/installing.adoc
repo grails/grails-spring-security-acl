@@ -13,7 +13,16 @@ dependencies {
    ...
 ----
 
-Previous version is only compatible with Grails 3.3.x or higher.
+Different Branches are built for different versions of Grails
+
+* master: Grails 4
+* 3.3.x: Grails 3.3+
+* grails_32: Grails 3.2
+* 2.x: Grails 2
+
+
+Current version (master) is for Grails 4 only.
+Previous version (3.3.x) is only compatible with Grails 3.3.x or higher.
 
 For previous Grails 3 versions ( 3.0.x, 3.1.x and 3.2.x ) use:
 

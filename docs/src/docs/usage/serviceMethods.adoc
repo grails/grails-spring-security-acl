@@ -5,12 +5,12 @@ There are two primary use cases for ACL security: determining whether a user is 
 
 There are four annotations:
 
-* http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/access/prepost/PreAuthorize.html[@PreAuthorize]
-* http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/access/prepost/PreFilter.html[@PreFilter]
-* http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html[@PostAuthorize]
-* http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/access/prepost/PostFilter.html[@PostFilter]
+* http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PreAuthorize.html[@PreAuthorize]
+* http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PreFilter.html[@PreFilter]
+* http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html[@PostAuthorize]
+* http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PostFilter.html[@PostFilter]
 
-The annotations use security-specific Spring expression language (SpEL) expressions - see http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#el-access[the documentation] for the available standard and method expressions.
+The annotations use security-specific Spring expression language (SpEL) expressions - see http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#el-access[the documentation] for the available standard and method expressions.
 
 Here's an example service that manages a `Report` domain class and uses these annotations and expressions:
 
