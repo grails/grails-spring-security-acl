@@ -425,7 +425,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>Spring Security ACL Plugin - Reference Documentation</h1>
 <div class="details">
 <span id="author" class="author">Burt Beckwith</span><br>
-<span id="revnumber">version 3.2.2.BUILD-SNAPSHOT</span>
+<span id="revnumber">version 4.0.0.BUILD-SNAPSHOT</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -498,7 +498,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>To learn about using ACLs in Grails, you can follow the <a href="#tutorial">Tutorial</a> and in addition you can download and run a complete Grails application that uses the plugin. Installing and running the application are described in <a href="#sampleApp">Sample Application</a>.</p>
 </div>
 <div class="paragraph">
-<p>In addition to this document, you should read the <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#domain-acls">Spring Security documentation</a>.</p>
+<p>In addition to this document, you should read the <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#domain-acls">Spring Security documentation</a>.</p>
 </div>
 </div>
 </div>
@@ -513,12 +513,32 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">dependencies {
    ...
-   compile 'org.grails.plugins:spring-security-acl:3.2.2.BUILD-SNAPSHOT'
+   compile 'org.grails.plugins:spring-security-acl:4.0.0.BUILD-SNAPSHOT'
    ...</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Previous version is only compatible with Grails 3.3.x or higher.</p>
+<p>Different Branches are built for different versions of Grails</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>master: Grails 4</p>
+</li>
+<li>
+<p>3.3.x: Grails 3.3+</p>
+</li>
+<li>
+<p>grails_32: Grails 3.2</p>
+</li>
+<li>
+<p>2.x: Grails 2</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Current version (master) is for Grails 4 only.
+Previous version (3.3.x) is only compatible with Grails 3.3.x or higher.</p>
 </div>
 <div class="paragraph">
 <p>For previous Grails 3 versions ( 3.0.x, 3.1.x and 3.2.x ) use:</p>
@@ -567,21 +587,21 @@ the <code>repositories</code> block in your <code>build.gradle</code>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/access/prepost/PreAuthorize.html">@PreAuthorize</a></p>
+<p><a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PreAuthorize.html">@PreAuthorize</a></p>
 </li>
 <li>
-<p><a href="http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/access/prepost/PreFilter.html">@PreFilter</a></p>
+<p><a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PreFilter.html">@PreFilter</a></p>
 </li>
 <li>
-<p><a href="http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html">@PostAuthorize</a></p>
+<p><a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html">@PostAuthorize</a></p>
 </li>
 <li>
-<p><a href="http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/access/prepost/PostFilter.html">@PostFilter</a></p>
+<p><a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PostFilter.html">@PostFilter</a></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The annotations use security-specific Spring expression language (SpEL) expressions - see <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#el-access">the documentation</a> for the available standard and method expressions.</p>
+<p>The annotations use security-specific Spring expression language (SpEL) expressions - see <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#el-access">the documentation</a> for the available standard and method expressions.</p>
 </div>
 <div class="paragraph">
 <p>Here&#8217;s an example service that manages a <code>Report</code> domain class and uses these annotations and expressions:</p>
@@ -671,7 +691,7 @@ class ReportService {
 <div class="sect3">
 <h4 id="suggested-application-changes">3.2.1. Suggested application changes</h4>
 <div class="paragraph">
-<p>To properly display access denied exceptions (e.g. when a user tries to perform an action but doesn&#8217;t have a grant authorizing it), you should create a mapping in <code>grails-app/controllers/UrlMappings.groovy</code> for error code 403. In addition, it&#8217;s possible to trigger a <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/acls/model/NotFoundException.html">NotFoundException</a> which will create an error 500, but should be treated like a 403 error, so you should add mappings for these conditions:</p>
+<p>To properly display access denied exceptions (e.g. when a user tries to perform an action but doesn&#8217;t have a grant authorizing it), you should create a mapping in <code>grails-app/controllers/UrlMappings.groovy</code> for error code 403. In addition, it&#8217;s possible to trigger a <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/acls/model/NotFoundException.html">NotFoundException</a> which will create an error 500, but should be treated like a 403 error, so you should add mappings for these conditions:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -947,7 +967,7 @@ class AclObjectIdentity extends AbstractAclObjectIdentity {
 <p>Finally, the <code>AclEntry</code> domain class contains entries representing grants (or denials) of a permission on an object instance to a recipient. The <code>aclObjectIdentity</code> field references the domain class instance (since an instance can have many granted permissions). The <code>sid</code> field references the recipient. The <code>granting</code> field determines whether the entry grants the permission (<code>true</code>) or denies it (<code>false</code>). The <code>aceOrder</code> field specifies the position of the entry, which is important because the entries are evaluated in order and the first matching entry determines whether access is allowed. <code>auditSuccess</code> and <code>auditFailure</code> determine whether to log success and/or failure events (these both default to <code>false</code>).</p>
 </div>
 <div class="paragraph">
-<p>The <code>mask</code> field holds the permission. This can be a source of confusion because the name (and the Spring Security documentation) indicates that it&#8217;s a bit mask. A value of 1 indicates permission A, a value of 2 indicates permission B, a value of 4 indicates permission C, a value of 8 indicates permission D, etc. So you would think that a value of 5 would indicate a grant of both permission A and C. Unfortunately this is not the case. There is a <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/acls/domain/CumulativePermission.html">CumulativePermission</a> class that supports this, but the standard classes don&#8217;t support it (<code>AclImpl.isGranted()</code> checks for == rather than using | (bitwise or) so a combined entry would never match). So rather than grouping all permissions for one recipient on one instances into a bit mask, you must create individual records for each.</p>
+<p>The <code>mask</code> field holds the permission. This can be a source of confusion because the name (and the Spring Security documentation) indicates that it&#8217;s a bit mask. A value of 1 indicates permission A, a value of 2 indicates permission B, a value of 4 indicates permission C, a value of 8 indicates permission D, etc. So you would think that a value of 5 would indicate a grant of both permission A and C. Unfortunately this is not the case. There is a <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/acls/domain/CumulativePermission.html">CumulativePermission</a> class that supports this, but the standard classes don&#8217;t support it (<code>AclImpl.isGranted()</code> checks for == rather than using | (bitwise or) so a combined entry would never match). So rather than grouping all permissions for one recipient on one instances into a bit mask, you must create individual records for each.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1032,7 +1052,7 @@ grails.plugin.springsecurity.acl.authority.
 <div class="sect3">
 <h4 id="run-as-authentication-replacement">3.4.1. Run-As Authentication Replacement</h4>
 <div class="paragraph">
-<p>There are also two options to configure <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#runas">Run-As Authentication Replacement</a>:</p>
+<p>There are also two options to configure <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#runas">Run-As Authentication Replacement</a>:</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
@@ -1070,7 +1090,7 @@ grails.plugin.springsecurity.runAs.key = 'your run-as key'</code></pre>
 <div class="sect2">
 <h3 id="runAs">3.5. Run-As Authentication Replacement</h3>
 <div class="paragraph">
-<p>Although not strictly related to ACLs, the plugin implements <a href="http://docs.spring.io/spring-security/site/docs/4.0.x/reference/htmlsingle/#runas">Run-As Authentication Replacement</a> since it&#8217;s related to method security in general. This feature is similar to the Switch User feature of the Spring Security Core plugin, but instead of running as another user until you choose to revert to your original <code>Authentication</code>, the temporary authentication switch only lasts for one method invocation.</p>
+<p>Although not strictly related to ACLs, the plugin implements <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#runas">Run-As Authentication Replacement</a> since it&#8217;s related to method security in general. This feature is similar to the Switch User feature of the Spring Security Core plugin, but instead of running as another user until you choose to revert to your original <code>Authentication</code>, the temporary authentication switch only lasts for one method invocation.</p>
 </div>
 <div class="paragraph">
 <p>For example, in this service <code>someMethod()</code> requires that the authenticated user have <code>ROLE_ADMIN</code> and will also be granted <code>ROLE_RUN_AS_SUPERUSER</code> for the duration of the method only:</p>
@@ -2293,6 +2313,26 @@ the body content
 <div class="ulist">
 <ul>
 <li>
+<p>Apr 18, 2019</p>
+<div class="ulist">
+<ul>
+<li>
+<p>4.0.0.M2 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Apr 8, 2019</p>
+<div class="ulist">
+<ul>
+<li>
+<p>4.0.0.M1 release</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
 <p>Feb 15, 2018</p>
 <div class="ulist">
 <ul>
@@ -2457,8 +2497,8 @@ the body content
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 3.2.2.BUILD-SNAPSHOT<br>
-Last updated 2018-02-15 11:14:26 +00:00
+Version 4.0.0.BUILD-SNAPSHOT<br>
+Last updated 2019-04-18 16:06:59 +00:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
