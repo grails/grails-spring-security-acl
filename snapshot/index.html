@@ -509,7 +509,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="introduction">1. Introduction to the Spring Security ACL Plugin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The ACL plugin adds Domain Object Security support to a Grails application that uses Spring Security. It depends on the <a href="http://grails.org/plugin/spring-security-core">Spring Security Core plugin</a>.</p>
+<p>The ACL plugin adds Domain Object Security support to a Grails application that uses Spring Security. It depends on the <a href="https://github.com/grails/grails-spring-security-core">Spring Security Core plugin</a>.</p>
 </div>
 <div class="paragraph">
 <p>The core plugin and other extension plugins support restricting access to URLs via rules that include checking a user&#8217;s authentication status, roles, etc. and the ACL plugin extends this by adding support for restricting access to individual domain class instances. The access can be very fine-grained and can define which actions can be taken on an object - these typically include Read, Create, Write, Delete, and Administer but you&#8217;re free to define whatever actions you like.</p>
@@ -518,7 +518,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>To learn about using ACLs in Grails, you can follow the <a href="#tutorial">Tutorial</a> and in addition you can download and run a complete Grails application that uses the plugin. Installing and running the application are described in <a href="#sampleApp">Sample Application</a>.</p>
 </div>
 <div class="paragraph">
-<p>In addition to this document, you should read the <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#domain-acls">Spring Security documentation</a>.</p>
+<p>In addition to this document, you should read the <a href="https://docs.spring.io/spring-security/reference/servlet/authorization/acls.html">Spring Security documentation</a>.</p>
 </div>
 </div>
 </div>
@@ -533,7 +533,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="groovy">dependencies {
    ...
-   compile 'org.grails.plugins:spring-security-acl:5.0.0-SNAPSHOT'
+   implementation 'org.grails.plugins:spring-security-acl:5.0.0-SNAPSHOT'
    ...</code></pre>
 </div>
 </div>
@@ -543,10 +543,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>master: Grails 4</p>
+<p>5.0.x: Grails 7</p>
 </li>
 <li>
-<p>3.3.x: Grails 3.3+</p>
+<p>4.0: Grails 4 through Grails 6</p>
+</li>
+<li>
+<p>3.3.x: Grails 3.3</p>
 </li>
 <li>
 <p>grails_32: Grails 3.2</p>
@@ -557,8 +560,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 <div class="paragraph">
-<p>Current version (master) is for Grails 4 only.
-Previous version (3.3.x) is only compatible with Grails 3.3.x or higher.</p>
+<p>Current version (5.0.x) is for Grails 7 only.</p>
+</div>
+<div class="paragraph">
+<p>For Grails 3.3.x use:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="groovy">dependencies {
+   ...
+   implementation 'org.grails.plugins:spring-security-acl:3.2.1'
+   ...</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>For previous Grails 3 versions ( 3.0.x, 3.1.x and 3.2.x ) use:</p>
@@ -568,26 +582,26 @@ Previous version (3.3.x) is only compatible with Grails 3.3.x or higher.</p>
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="groovy">dependencies {
    ...
-   compile 'org.grails.plugins:spring-security-acl:3.1.1'
+   implementation 'org.grails.plugins:spring-security-acl:3.1.1'
    ...</code></pre>
 </div>
 </div>
 <div class="sect2">
 <h3 id="Distribution">2.1. Distribution</h3>
 <div class="paragraph">
-<p>Grails Spring Security ACL plugin is <a href="https://bintray.com/grails/plugins/spring-security-acl">distributed in bintray</a>.</p>
+<p>Grails Spring Security ACL plugin is <a href="https://repo.grails.org/ui/native/core/org/grails/plugins/spring-security-acl/">distributed in repo.grails.org</a>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="Snapshots">2.2. Snapshots</h3>
 <div class="paragraph">
-<p>Snapshots are published automatically to <a href="https://oss.jfrog.org/">Artifactory OSS</a> on every successful build.
+<p>Snapshots are published automatically to <a href="https://repo.grails.org/ui/native/core/org/grails/plugins/spring-security-acl/">repo.grails.org</a> on every successful build.
 You can use them by defining this Maven repository inside
 the <code>repositories</code> block in your <code>build.gradle</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="groovy">maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }</code></pre>
+<pre class="prettyprint highlight"><code data-lang="groovy">maven { url "https://repo.grails.org/grails/core" }</code></pre>
 </div>
 </div>
 </div>
@@ -607,29 +621,30 @@ the <code>repositories</code> block in your <code>build.gradle</code>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PreAuthorize.html">@PreAuthorize</a></p>
+<p><a href="https://docs.spring.io/spring-security/site/docs/6.4.x/api/org/springframework/security/access/prepost/PreAuthorize.html">@PreAuthorize</a></p>
 </li>
 <li>
-<p><a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PreFilter.html">@PreFilter</a></p>
+<p><a href="https://docs.spring.io/spring-security/site/docs/6.4.x/api/org/springframework/security/access/prepost/PreFilter.html">@PreFilter</a></p>
 </li>
 <li>
-<p><a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PostAuthorize.html">@PostAuthorize</a></p>
+<p><a href="https://docs.spring.io/spring-security/site/docs/6.4.x/api/org/springframework/security/access/prepost/PostAuthorize.html">@PostAuthorize</a></p>
 </li>
 <li>
-<p><a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/access/prepost/PostFilter.html">@PostFilter</a></p>
+<p><a href="https://docs.spring.io/spring-security/site/docs/6.4.x/api/org/springframework/security/access/prepost/PostFilter.html">@PostFilter</a></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The annotations use security-specific Spring expression language (SpEL) expressions - see <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#el-access">the documentation</a> for the available standard and method expressions.</p>
+<p>The annotations use security-specific Spring expression language (SpEL) expressions - see <a href="https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#authorization-expressions">the documentation</a> for the available standard and method expressions.</p>
 </div>
 <div class="paragraph">
 <p>Here&#8217;s an example service that manages a <code>Report</code> domain class and uses these annotations and expressions:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">import org.springframework.security.access.prepost.PostFilter
+<pre class="prettyprint highlight"><code data-lang="groovy">import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.parameters.P
 import grails.gorm.transactions.Transactional
 
 import com.yourapp.Report
@@ -638,7 +653,7 @@ class ReportService {
 
    @PreAuthorize("hasPermission(#id, 'com.yourapp.Report', read) or " +
                  "hasPermission(#id, 'com.yourapp.Report', admin)")
-   Report getReport(long id) {
+   Report getReport(@P("id") long id) {
       Report.get(id)
    }
 
@@ -665,7 +680,7 @@ class ReportService {
    @Transactional
    @PreAuthorize("hasPermission(#report, write) or " +
                  "hasPermission(#report, admin)")
-   Report updateReport(Report report, params) {
+   Report updateReport(@P("report") Report report, params) {
       report.properties = params
       report.save()
       report
@@ -674,7 +689,7 @@ class ReportService {
    @Transactional
    @PreAuthorize("hasPermission(#report, delete) or " +
                  "hasPermission(#report, admin)")
-   void deleteReport(Report report) {
+   void deleteReport(@P("report") Report report) {
       report.delete()
    }
 }</code></pre>
@@ -711,11 +726,11 @@ class ReportService {
 <div class="sect3">
 <h4 id="suggested-application-changes">3.2.1. Suggested application changes</h4>
 <div class="paragraph">
-<p>To properly display access denied exceptions (e.g. when a user tries to perform an action but doesn&#8217;t have a grant authorizing it), you should create a mapping in <code>grails-app/controllers/UrlMappings.groovy</code> for error code 403. In addition, it&#8217;s possible to trigger a <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/acls/model/NotFoundException.html">NotFoundException</a> which will create an error 500, but should be treated like a 403 error, so you should add mappings for these conditions:</p>
+<p>To properly display access denied exceptions (e.g. when a user tries to perform an action but doesn&#8217;t have a grant authorizing it), you should create a mapping in <code>grails-app/controllers/UrlMappings.groovy</code> for error code 403. In addition, it&#8217;s possible to trigger a <a href="https://docs.spring.io/spring-security/site/docs/6.4.x/api/org/springframework/security/acls/model/NotFoundException.html">NotFoundException</a> which will create an error 500, but should be treated like a 403 error, so you should add mappings for these conditions:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">import org.springframework.security.access.AccessDeniedException
+<pre class="prettyprint highlight"><code data-lang="groovy">import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.acls.model.NotFoundException
 
 class UrlMappings {
@@ -739,7 +754,7 @@ class UrlMappings {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">package com.yourcompany.yourapp
+<pre class="prettyprint highlight"><code data-lang="groovy">package com.yourcompany.yourapp
 
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -798,7 +813,7 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;div class="buttons"&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;div class="buttons"&gt;
    &lt;g:form action='edit'&gt;
       &lt;g:hiddenField name="id" value="${reportInstance?.id}" /&gt;
       &lt;span class="button"&gt;
@@ -820,7 +835,7 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;g:form action='update'&gt;</code></pre>
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;g:form action='update'&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -828,7 +843,7 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;div class="buttons"&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;div class="buttons"&gt;
    &lt;span class="button"&gt;
       &lt;g:submitButton class="save" name="Update" /&gt;
    &lt;/span&gt;
@@ -840,7 +855,7 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;g:form action='delete'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;g:form action='delete'&gt;
    &lt;g:hiddenField name="id" value="${reportInstance?.id}" /&gt;
    &lt;div class="buttons"&gt;
       &lt;span class="button"&gt;
@@ -963,7 +978,7 @@ class AclObjectIdentity extends AbstractAclObjectIdentity {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">abstract class AbstractAclObjectIdentity {
+<pre class="prettyprint highlight"><code data-lang="groovy">abstract class AbstractAclObjectIdentity {
 
    AclClass aclClass
    AclObjectIdentity parent
@@ -987,7 +1002,7 @@ class AclObjectIdentity extends AbstractAclObjectIdentity {
 <p>Finally, the <code>AclEntry</code> domain class contains entries representing grants (or denials) of a permission on an object instance to a recipient. The <code>aclObjectIdentity</code> field references the domain class instance (since an instance can have many granted permissions). The <code>sid</code> field references the recipient. The <code>granting</code> field determines whether the entry grants the permission (<code>true</code>) or denies it (<code>false</code>). The <code>aceOrder</code> field specifies the position of the entry, which is important because the entries are evaluated in order and the first matching entry determines whether access is allowed. <code>auditSuccess</code> and <code>auditFailure</code> determine whether to log success and/or failure events (these both default to <code>false</code>).</p>
 </div>
 <div class="paragraph">
-<p>The <code>mask</code> field holds the permission. This can be a source of confusion because the name (and the Spring Security documentation) indicates that it&#8217;s a bit mask. A value of 1 indicates permission A, a value of 2 indicates permission B, a value of 4 indicates permission C, a value of 8 indicates permission D, etc. So you would think that a value of 5 would indicate a grant of both permission A and C. Unfortunately this is not the case. There is a <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/apidocs/org/springframework/security/acls/domain/CumulativePermission.html">CumulativePermission</a> class that supports this, but the standard classes don&#8217;t support it (<code>AclImpl.isGranted()</code> checks for == rather than using | (bitwise or) so a combined entry would never match). So rather than grouping all permissions for one recipient on one instances into a bit mask, you must create individual records for each.</p>
+<p>The <code>mask</code> field holds the permission. This can be a source of confusion because the name (and the Spring Security documentation) indicates that it&#8217;s a bit mask. A value of 1 indicates permission A, a value of 2 indicates permission B, a value of 4 indicates permission C, a value of 8 indicates permission D, etc. So you would think that a value of 5 would indicate a grant of both permission A and C. Unfortunately this is not the case. There is a <a href="https://docs.spring.io/spring-security/site/docs/6.4.x/api/org/springframework/security/acls/domain/CumulativePermission.html">CumulativePermission</a> class that supports this, but the standard classes don&#8217;t support it (<code>AclImpl.isGranted()</code> checks for == rather than using | (bitwise or) so a combined entry would never match). So rather than grouping all permissions for one recipient on one instances into a bit mask, you must create individual records for each.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1059,7 +1074,7 @@ class AclEntry {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">grails.plugin.springsecurity.acl.authority.
+<pre class="prettyprint highlight"><code data-lang="groovy">grails.plugin.springsecurity.acl.authority.
         modifyAuditingDetails = 'ROLE_ACL_MODIFY_AUDITING'
 
 grails.plugin.springsecurity.acl.authority.
@@ -1072,7 +1087,7 @@ grails.plugin.springsecurity.acl.authority.
 <div class="sect3">
 <h4 id="run-as-authentication-replacement">3.4.1. Run-As Authentication Replacement</h4>
 <div class="paragraph">
-<p>There are also two options to configure <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#runas">Run-As Authentication Replacement</a>:</p>
+<p>There are also two options to configure <a href="https://docs.spring.io/spring-security/reference/servlet/authentication/runas.html">Run-As Authentication Replacement</a>:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1101,7 +1116,7 @@ grails.plugin.springsecurity.acl.authority.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">grails.plugin.springsecurity.useRunAs = true
+<pre class="prettyprint highlight"><code data-lang="groovy">grails.plugin.springsecurity.useRunAs = true
 grails.plugin.springsecurity.runAs.key = 'your run-as key'</code></pre>
 </div>
 </div>
@@ -1110,14 +1125,14 @@ grails.plugin.springsecurity.runAs.key = 'your run-as key'</code></pre>
 <div class="sect2">
 <h3 id="runAs">3.5. Run-As Authentication Replacement</h3>
 <div class="paragraph">
-<p>Although not strictly related to ACLs, the plugin implements <a href="http://docs.spring.io/spring-security/site/docs/5.0.x/reference/htmlsingle/#runas">Run-As Authentication Replacement</a> since it&#8217;s related to method security in general. This feature is similar to the Switch User feature of the Spring Security Core plugin, but instead of running as another user until you choose to revert to your original <code>Authentication</code>, the temporary authentication switch only lasts for one method invocation.</p>
+<p>Although not strictly related to ACLs, the plugin implements <a href="https://docs.spring.io/spring-security/reference/servlet/authentication/runas.html">Run-As Authentication Replacement</a> since it&#8217;s related to method security in general. This feature is similar to the Switch User feature of the Spring Security Core plugin, but instead of running as another user until you choose to revert to your original <code>Authentication</code>, the temporary authentication switch only lasts for one method invocation.</p>
 </div>
 <div class="paragraph">
 <p>For example, in this service <code>someMethod()</code> requires that the authenticated user have <code>ROLE_ADMIN</code> and will also be granted <code>ROLE_RUN_AS_SUPERUSER</code> for the duration of the method only:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">class SecureService {
+<pre class="prettyprint highlight"><code data-lang="groovy">class SecureService {
 
    @Secured(['ROLE_ADMIN', 'RUN_AS_SUPERUSER'])
    def someMethod() {
@@ -1164,7 +1179,7 @@ public class MyPermission extends BasePermission {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">import com.mycompany.myapp.MyPermissions
+<pre class="prettyprint highlight"><code data-lang="groovy">import com.mycompany.myapp.MyPermissions
 ...
 grails.plugin.springsecurity.acl. permissionClass = MyPermissions</code></pre>
 </div>
@@ -1174,7 +1189,7 @@ grails.plugin.springsecurity.acl. permissionClass = MyPermissions</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">grails.plugin.springsecurity.acl.permissionClass = 'com.mycompany.myapp.MyPermissions'</code></pre>
+<pre class="prettyprint highlight"><code data-lang="groovy">grails.plugin.springsecurity.acl.permissionClass = 'com.mycompany.myapp.MyPermissions'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1182,7 +1197,7 @@ grails.plugin.springsecurity.acl. permissionClass = MyPermissions</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">import org.springframework.security.acls.domain.DefaultPermissionFactory
+<pre class="prettyprint highlight"><code data-lang="groovy">import org.springframework.security.acls.domain.DefaultPermissionFactory
 import com.mycompany.myapp.MyPermission
 
 beans = {
@@ -1195,8 +1210,8 @@ beans = {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">@PreAuthorize("hasPermission(#id, 'com.testacl.Report', 'approve')")
-Report get(long id) {
+<pre class="prettyprint highlight"><code data-lang="groovy">@PreAuthorize("hasPermission(#id, 'com.testacl.Report', 'approve')")
+Report get(@P("id") long id) {
    Report.get id
 }</code></pre>
 </div>
@@ -1221,9 +1236,9 @@ $ cd acltest</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">dependencies {
+<pre class="prettyprint highlight"><code data-lang="groovy">dependencies {
    ...
-   compile 'org.grails.plugins:spring-security-acl:{project-version}'
+   implementation 'org.grails.plugins:spring-security-acl:{project-version}'
    ...
 }</code></pre>
 </div>
@@ -1237,7 +1252,7 @@ $ cd acltest</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This will transitively install the <a href="http://grails.org/plugin/spring-security-core">Spring Security Core</a> plugin, so you&#8217;ll need to configure that by running the <code>s2-quickstart</code> script:</p>
+<p>This will transitively install the <a href="https://github.com/grails/grails-spring-security-core">Spring Security Core</a> plugin, so you&#8217;ll need to configure that by running the <code>s2-quickstart</code> script:</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -1266,7 +1281,7 @@ $ cd acltest</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">package com.testacl
+<pre class="prettyprint highlight"><code data-lang="groovy">package com.testacl
 
 class Report {
    String name
@@ -1286,7 +1301,7 @@ class Report {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">package com.testacl
+<pre class="prettyprint highlight"><code data-lang="groovy">package com.testacl
 
 import static org.springframework.security.acls.domain.BasePermission.ADMINISTRATION
 
@@ -1297,6 +1312,7 @@ import org.springframework.security.acls.model.AccessControlEntry
 import org.springframework.security.acls.model.MutableAcl
 import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
+import org.springframework.security.core.parameters.P
 
 import grails.compiler.GrailsCompileStatic
 import grails.plugin.springsecurity.SpringSecurityService
@@ -1318,7 +1334,7 @@ class ReportService {
 
    @PreAuthorize('hasPermission(#report, admin)')
    @Transactional
-   void addPermission(Report report, String username, Permission permission) {
+   void addPermission(@P("report") Report report, String username, Permission permission) {
       aclUtilService.addPermission report, username, permission
    }
 
@@ -1334,7 +1350,7 @@ class ReportService {
    }
 
    @PreAuthorize('hasPermission(#id, "com.testacl.Report", read) or hasPermission(#id, "com.testacl.Report", admin)')
-   Report get(long id) {
+   Report get(@P("id") long id) {
       Report.get id
    }
 
@@ -1350,13 +1366,13 @@ class ReportService {
 
    @Transactional
    @PreAuthorize('hasPermission(#report, write) or hasPermission(#report, admin)')
-   void update(Report report, String name) {
+   void update(@P("report") Report report, String name) {
       report.name = name
    }
 
    @Transactional
    @PreAuthorize('hasPermission(#report, delete) or hasPermission(#report, admin)')
-   void delete(Report report) {
+   void delete(@P("report") Report report) {
       report.delete()
 
       // Delete the ACL information as well
@@ -1365,7 +1381,7 @@ class ReportService {
 
    @Transactional
    @PreAuthorize('hasPermission(#report, admin)')
-   void deletePermission(Report report, Sid recipient, Permission permission) {
+   void deletePermission(@P("report") Report report, Sid recipient, Permission permission) {
       MutableAcl acl = (MutableAcl)aclUtilService.readAcl(report)
 
       // Remove all permissions associated with this particular
@@ -1425,7 +1441,7 @@ class ReportService {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">package com.testacl
+<pre class="prettyprint highlight"><code data-lang="groovy">package com.testacl
 
 import static org.springframework.security.acls.domain.BasePermission.ADMINISTRATION
 import static org.springframework.security.acls.domain.BasePermission.READ
@@ -1518,7 +1534,7 @@ class SampleDataService {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">class BootStrap {
+<pre class="prettyprint highlight"><code data-lang="groovy">class BootStrap {
 
    def sampleDataService
 
@@ -1541,7 +1557,7 @@ class SampleDataService {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">package com.testacl
+<pre class="prettyprint highlight"><code data-lang="groovy">package com.testacl
 
 import org.springframework.dao.DataIntegrityViolationException
 
@@ -1658,7 +1674,7 @@ class ReportController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">import org.springframework.security.access.AccessDeniedException
+<pre class="prettyprint highlight"><code data-lang="groovy">import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.acls.model.NotFoundException
 
 class UrlMappings {
@@ -1691,7 +1707,7 @@ class UrlMappings {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">package com.testacl
+<pre class="prettyprint highlight"><code data-lang="groovy">package com.testacl
 
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -1753,7 +1769,7 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;div class="buttons"&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;div class="buttons"&gt;
     &lt;g:form action='edit'&gt;
         &lt;g:hiddenField name="id" value="${reportInstance?.id}" /&gt;
         &lt;span class="button"&gt;
@@ -1775,7 +1791,7 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;g:form action='update'&gt;</code></pre>
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;g:form action='update'&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1783,7 +1799,7 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;div class="buttons"&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;div class="buttons"&gt;
     &lt;span class="button"&gt;&lt;g:submitButton class="save" name="Update" /&gt;&lt;/span&gt;
 &lt;/div&gt;</code></pre>
 </div>
@@ -1793,7 +1809,7 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;g:form action='delete'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;g:form action='delete'&gt;
     &lt;g:hiddenField name="id" value="${reportInstance?.id}" /&gt;
     &lt;div class="buttons"&gt;
         &lt;span class="button"&gt;
@@ -1812,7 +1828,7 @@ class ErrorsController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;sec:ifLoggedIn&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;sec:ifLoggedIn&gt;
 
 &lt;g:form controller='logout'&gt;
    Logged in as &lt;sec:username/&gt; - &lt;g:submitButton name='logout' value='Logout'/&gt;
@@ -1851,7 +1867,7 @@ class ErrorsController {
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If you see the error <code>NoSuchMethodError: org.springframework.cache.ehcache.EhCacheFactoryBean.setMaxEntriesLocalHeap(J)V</code> when starting the app, comment out the <code>compile 'org.hibernate:hibernate-ehcache'</code> dependency and disable the second-level cache in <code>application.yml</code> with <code>use_second_level_cache: false</code>, and restart.</p>
+<p>If you see the error <code>NoSuchMethodError: org.springframework.cache.ehcache.EhCacheFactoryBean.setMaxEntriesLocalHeap(J)V</code> when starting the app, comment out the <code>implementation 'org.hibernate:hibernate-ehcache'</code> dependency and disable the second-level cache in <code>application.yml</code> with <code>use_second_level_cache: false</code>, and restart.</p>
 </div>
 </td>
 </tr>
@@ -1909,7 +1925,7 @@ class ErrorsController {
 <div class="listingblock">
 <div class="title">Examples</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">aclUtilService.addPermission Report, 1124, 'user123', BasePermission.WRITE
+<pre class="prettyprint highlight"><code data-lang="groovy">aclUtilService.addPermission Report, 1124, 'user123', BasePermission.WRITE
 
 aclUtilService.addPermission reportInstance, 'user123', BasePermission.WRITE</code></pre>
 </div>
@@ -1920,7 +1936,7 @@ aclUtilService.addPermission reportInstance, 'user123', BasePermission.WRITE</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">void addPermission(Class&lt;?&gt; domainClass, long id, recipient, Permission permission)
+<pre class="prettyprint highlight"><code data-lang="groovy">void addPermission(Class&lt;?&gt; domainClass, long id, recipient, Permission permission)
 
 void addPermission(domainObject, recipient, Permission permission)
 
@@ -1957,13 +1973,13 @@ void addPermission(ObjectIdentity oid, recipient, Permission permission)</code><
 <div class="listingblock">
 <div class="title">Examples</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">aclUtilService.changeOwner reportInstance, 'user123'</code></pre>
+<pre class="prettyprint highlight"><code data-lang="groovy">aclUtilService.changeOwner reportInstance, 'user123'</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Description</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">void changeOwner(domainObject, String newUsername)</code></pre>
+<pre class="prettyprint highlight"><code data-lang="groovy">void changeOwner(domainObject, String newUsername)</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1987,13 +2003,13 @@ void addPermission(ObjectIdentity oid, recipient, Permission permission)</code><
 <div class="listingblock">
 <div class="title">Examples</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">aclUtilService.deleteAcl reportInstance</code></pre>
+<pre class="prettyprint highlight"><code data-lang="groovy">aclUtilService.deleteAcl reportInstance</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Description</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">void deleteAcl(domainObject)</code></pre>
+<pre class="prettyprint highlight"><code data-lang="groovy">void deleteAcl(domainObject)</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -2014,7 +2030,7 @@ void addPermission(ObjectIdentity oid, recipient, Permission permission)</code><
 <div class="listingblock">
 <div class="title">Examples</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">aclUtilService.deletePermission Report, 42, 'user123', BasePermission.WRITE
+<pre class="prettyprint highlight"><code data-lang="groovy">aclUtilService.deletePermission Report, 42, 'user123', BasePermission.WRITE
 
 aclUtilService.deletePermission reportInstance, 'user123', BasePermission.WRITE</code></pre>
 </div>
@@ -2022,7 +2038,7 @@ aclUtilService.deletePermission reportInstance, 'user123', BasePermission.WRITE<
 <div class="listingblock">
 <div class="title">Description</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">void deletePermission(domainObject, recipient, Permission permission)
+<pre class="prettyprint highlight"><code data-lang="groovy">void deletePermission(domainObject, recipient, Permission permission)
 
 void deletePermission(Class&lt;?&gt; domainClass, long id, recipient, Permission permission)</code></pre>
 </div>
@@ -2057,7 +2073,7 @@ void deletePermission(Class&lt;?&gt; domainClass, long id, recipient, Permission
 <div class="listingblock">
 <div class="title">Examples</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">if (aclUtilService.hasPermission(auth, reportInstance, BasePermission.WRITE)) {
+<pre class="prettyprint highlight"><code data-lang="groovy">if (aclUtilService.hasPermission(auth, reportInstance, BasePermission.WRITE)) {
    ...
 }</code></pre>
 </div>
@@ -2065,7 +2081,7 @@ void deletePermission(Class&lt;?&gt; domainClass, long id, recipient, Permission
 <div class="listingblock">
 <div class="title">Description</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">boolean hasPermission(Authentication authentication, domainObject, Permission... permissions)
+<pre class="prettyprint highlight"><code data-lang="groovy">boolean hasPermission(Authentication authentication, domainObject, Permission... permissions)
 
 boolean hasPermission(Authentication authentication, domainObject, List&lt;Permission&gt; permissions)</code></pre>
 </div>
@@ -2094,7 +2110,7 @@ boolean hasPermission(Authentication authentication, domainObject, List&lt;Permi
 <div class="listingblock">
 <div class="title">Examples</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">def acl = aclUtilService.readAcl(reportInstance)
+<pre class="prettyprint highlight"><code data-lang="groovy">def acl = aclUtilService.readAcl(reportInstance)
 
 def acl = aclUtilService.readAcl(Report, 42)</code></pre>
 </div>
@@ -2102,7 +2118,7 @@ def acl = aclUtilService.readAcl(Report, 42)</code></pre>
 <div class="listingblock">
 <div class="title">Description</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="java">Acl readAcl(domainObject)
+<pre class="prettyprint highlight"><code data-lang="groovy">Acl readAcl(domainObject)
 
 Acl readAcl(Class&lt;?&gt; domainClass, id)</code></pre>
 </div>
@@ -2161,7 +2177,7 @@ Acl readAcl(Class&lt;?&gt; domainClass, id)</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='read'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='read'&gt;
 
 the body content
 
@@ -2173,7 +2189,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='write,read'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='write,read'&gt;
 
 the body content
 
@@ -2185,7 +2201,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;%@ page import="org.springframework.security.acls.domain.BasePermission" %&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;%@ page import="org.springframework.security.acls.domain.BasePermission" %&gt;
 
 &lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='${BasePermission.READ}'&gt;
 
@@ -2199,7 +2215,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;%@ page import="org.springframework.security.acls.domain.BasePermission" %&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;%@ page import="org.springframework.security.acls.domain.BasePermission" %&gt;
 
 &lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='${[BasePermission.WRITE,BasePermission.READ]}'&gt;
 
@@ -2213,7 +2229,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='${1}'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='${1}'&gt;
 
 the body content
 
@@ -2225,7 +2241,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='2,1'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;sec:permitted className='com.foo.Report' id='${reportId}' permission='2,1'&gt;
 
 the body content
 
@@ -2249,7 +2265,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='read'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='read'&gt;
 
 the body content
 
@@ -2261,7 +2277,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='read,write'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='read,write'&gt;
 
 the body content
 
@@ -2273,7 +2289,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;%@ page import="org.springframework.security.acls.domain.BasePermission" %&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;%@ page import="org.springframework.security.acls.domain.BasePermission" %&gt;
 
 &lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='${BasePermission.READ}'&gt;
 
@@ -2287,7 +2303,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;%@ page import="org.springframework.security.acls.domain.BasePermission" %&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;%@ page import="org.springframework.security.acls.domain.BasePermission" %&gt;
 
 &lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='${[BasePermission.WRITE,BasePermission.READ]}'&gt;
 
@@ -2301,7 +2317,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='${1}'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='${1}'&gt;
 
 the body content
 
@@ -2313,7 +2329,7 @@ the body content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="html">&lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='2,1'&gt;
+<pre class="prettyprint highlight"><code data-lang="xml">&lt;sec:notPermitted className='com.foo.Report' id='${reportId}' permission='2,1'&gt;
 
 the body content
 
@@ -2518,7 +2534,7 @@ the body content
 <div id="footer">
 <div id="footer-text">
 Version 5.0.0-SNAPSHOT<br>
-Last updated 2024-12-03 21:21:58 UTC
+Last updated 2024-12-09 22:46:44 UTC
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.min.js"></script>
