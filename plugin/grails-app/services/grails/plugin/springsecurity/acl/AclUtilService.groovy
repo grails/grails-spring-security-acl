@@ -102,11 +102,12 @@ class AclUtilService {
 	 * Update the owner of the domain class instance.
 	 *
 	 * @param domainObject  the domain class instance
-	 * @param newOwnerUsername  the new username
+	 * @param newRecipient  can be a username, role name, Sid, or Authentication
 	 */
-	void changeOwner(domainObject, String newUsername) {
+	void changeOwner(domainObject, recipient) {
 		MutableAcl acl = readAcl(domainObject)
-		acl.owner = new PrincipalSid(newUsername)
+		Sid newSid = createSid(recipient)
+		acl.owner = newSid
 		aclService.updateAcl acl
 	}
 

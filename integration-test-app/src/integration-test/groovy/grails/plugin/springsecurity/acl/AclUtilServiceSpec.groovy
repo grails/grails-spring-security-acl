@@ -175,4 +175,36 @@ class AclUtilServiceSpec extends AbstractAclSpec {
 		ProxyUtils.isProxy report.getClass()
 		aclUtilService.hasPermission(authenticateAsUser(false), report, WRITE)
 	}
+
+	void 'change owner'() {
+		given:
+		buildReports()
+		AclSid sid = new AclSid(sid: 'ben', principal: true).save(failOnError: true)
+		def report = Report.get(report1Id)
+		AclClass aclClass = new AclClass(className: Report.name).save(failOnError: true)
+		AclObjectIdentity aclObjectIdentity = new AclObjectIdentity(
+				aclClass: aclClass,
+				objectId: report1Id,
+				owner: sid,
+				entriesInheriting: true).save(failOnError: true)
+
+		new AclEntry(
+				aclObjectIdentity: aclObjectIdentity,
+				sid: sid,
+				mask: 1,
+				granting: true).save(failOnError: true)
+		flushAndClear()
+
+		expect: 'persistent data to be same as Acl'
+		aclUtilService.readAcl(report).owner.principal == AclObjectIdentity.findByObjectId(report1Id).owner.sid
+
+		when:
+		authenticateAsAdmin()
+		aclUtilService.changeOwner(report, 'admin')
+		flushAndClear()
+
+		then: "compare Acl with persistent data"
+		def aoi1 = AclObjectIdentity.findByObjectId(report1Id)
+		aclUtilService.readAcl(report).owner.principal == aoi1.owner.sid
+	}
 }

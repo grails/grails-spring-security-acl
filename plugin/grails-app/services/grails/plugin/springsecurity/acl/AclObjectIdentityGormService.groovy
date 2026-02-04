@@ -26,11 +26,12 @@ class AclObjectIdentityGormService {
     @CompileDynamic
     @ReadOnly
     List<AclObjectIdentity> findAllByParentObjectIdAndParentAclClassName(Long objectId, String aclClassName) {
-        //findQueryByParentObjectIdAndParentAclClassName(objectId, aclClassName).list()
-        List<AclObjectIdentity> aclObjectIdentityList = findAll()
-        aclObjectIdentityList.findAll { AclObjectIdentity oid ->
-            (oid?.parent?.aclClass?.className == aclClassName) &&  ( oid?.parent?.objectId == objectId)
-        }
+        return findQueryByParentObjectIdAndParentAclClassName(objectId, aclClassName).list()
+        //This is the non-optimized version using in-memory filtering - huge performance hit on large datasets
+//        List<AclObjectIdentity> aclObjectIdentityList = findAll()
+//        aclObjectIdentityList.findAll { AclObjectIdentity oid ->
+//            (oid?.parent?.aclClass?.className == aclClassName) &&  ( oid?.parent?.objectId == objectId)
+//        }
     }
 
     @ReadOnly
